@@ -5,11 +5,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/heathcliff26/containers/apps/cloudflare-dyndns/pkg/client"
-	"github.com/heathcliff26/containers/apps/cloudflare-dyndns/pkg/config"
-	"github.com/heathcliff26/containers/apps/cloudflare-dyndns/pkg/dyndns"
-	"github.com/heathcliff26/containers/apps/cloudflare-dyndns/pkg/relay"
-	"github.com/heathcliff26/containers/apps/cloudflare-dyndns/pkg/server"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/client"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/config"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/relay"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/server"
 )
 
 var (

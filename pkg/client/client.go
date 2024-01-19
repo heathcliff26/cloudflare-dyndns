@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/heathcliff26/containers/apps/cloudflare-dyndns/pkg/dyndns"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
 )
 
 const CLOUDFLARE_API_ENDPOINT = "https://api.cloudflare.com/client/v4/"
