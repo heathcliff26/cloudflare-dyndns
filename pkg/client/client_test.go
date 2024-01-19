@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/heathcliff26/containers/apps/cloudflare-dyndns/pkg/dyndns"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
 	"github.com/stretchr/testify/assert"
 )
 

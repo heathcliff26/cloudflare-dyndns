@@ -1,4 +1,4 @@
-module github.com/heathcliff26/containers/apps/cloudflare-dyndns
+module github.com/heathcliff26/cloudflare-dyndns
 
 go 1.21
 
