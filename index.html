@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>client: Go Coverage Report</title>
+		<title>cmd: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,27 +55,29 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/heathcliff26/cloudflare-dyndns/pkg/client/client.go (52.4%)</option>
+				<option value="file0">github.com/heathcliff26/cloudflare-dyndns/cmd/main.go (0.0%)</option>
 				
-				<option value="file1">github.com/heathcliff26/cloudflare-dyndns/pkg/client/utils.go (100.0%)</option>
+				<option value="file1">github.com/heathcliff26/cloudflare-dyndns/pkg/client/client.go (52.4%)</option>
 				
-				<option value="file2">github.com/heathcliff26/cloudflare-dyndns/pkg/config/config.go (97.9%)</option>
+				<option value="file2">github.com/heathcliff26/cloudflare-dyndns/pkg/client/utils.go (100.0%)</option>
 				
-				<option value="file3">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
+				<option value="file3">github.com/heathcliff26/cloudflare-dyndns/pkg/config/config.go (97.9%)</option>
 				
-				<option value="file4">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (60.9%)</option>
+				<option value="file4">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
 				
-				<option value="file5">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
+				<option value="file5">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (60.9%)</option>
 				
-				<option value="file6">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/testclient.go (90.9%)</option>
+				<option value="file6">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
 				
-				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
+				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/testclient.go (90.9%)</option>
 				
-				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
+				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
 				
-				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
+				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
 				
-				<option value="file10">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
+				<option value="file10">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
+				
+				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
 				
 				</select>
 			</div>
@@ -89,7 +91,77 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package client
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "flag"
+        "log/slog"
+        "os"
+
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/client"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/relay"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/server"
+)
+
+var (
+        mode       string
+        configPath string
+        env        bool
+)
+
+// Initialize the needed flags for cli options
+func init() <span class="cov0" title="0">{
+        flag.StringVar(&amp;mode, "mode", config.MODE_SERVER, "Set what mode to run, options are \""+config.MODE_SERVER+"\", \""+config.MODE_CLIENT+"\" and \""+config.MODE_RELAY+"\"")
+        flag.StringVar(&amp;configPath, "config", "", "Path to config file, can be empty when running in mode "+config.MODE_SERVER)
+        flag.BoolVar(&amp;env, "env", false, "Used together with -config, when set will expand enviroment variables in config")
+}</span>
+
+func main() <span class="cov0" title="0">{
+        flag.Parse()
+
+        cfg, err := config.LoadConfig(configPath, mode, env)
+        if err != nil </span><span class="cov0" title="0">{
+                slog.Error("Could not load configuration", slog.String("path", configPath), slog.String("err", err.Error()))
+                os.Exit(1)
+        }</span>
+
+        <span class="cov0" title="0">switch mode </span>{
+        case config.MODE_SERVER:<span class="cov0" title="0">
+                s := server.NewServer(cfg.Server)
+                err := s.Run()
+                if err != nil </span><span class="cov0" title="0">{
+                        slog.Error("Failed to start the server", "err", err)
+                        os.Exit(1)
+                }</span>
+        case config.MODE_CLIENT:<span class="cov0" title="0">
+                c, err := client.NewCloudflareClient(cfg.Client.Token, cfg.Client.Proxy)
+                if err != nil </span><span class="cov0" title="0">{
+                        slog.Error("Could not create new client", "err", err)
+                        os.Exit(1)
+                }</span>
+                <span class="cov0" title="0">runClient(c, cfg.Client)</span>
+        case config.MODE_RELAY:<span class="cov0" title="0">
+                r, err := relay.NewRelay(cfg.Client.Token, cfg.Client.Proxy, cfg.Client.Endpoint)
+                if err != nil </span><span class="cov0" title="0">{
+                        slog.Error("Could not create new client", "err", err)
+                        os.Exit(1)
+                }</span>
+                <span class="cov0" title="0">runClient(r, cfg.Client)</span>
+        default:<span class="cov0" title="0">
+                slog.Error("Unknown mode", slog.String("mode", mode))
+                os.Exit(1)</span>
+        }
+}
+
+func runClient(c dyndns.Client, cfg config.ClientConfig) <span class="cov0" title="0">{
+        c.Data().SetDomains(cfg.Domains)
+        dyndns.Run(c, cfg.Interval)
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package client
 
 import (
         "bytes"
@@ -326,7 +398,7 @@ func (c *cloudflareClient) Update() error <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">package client
+		<pre class="file" id="file2" style="display: none">package client
 
 import "strings"
 
@@ -342,7 +414,7 @@ func getBaseDomain(domain string) string <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package config
+		<pre class="file" id="file3" style="display: none">package config
 
 import (
         "fmt"
@@ -524,7 +596,7 @@ func setLogLevel(level string) error <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package config
+		<pre class="file" id="file4" style="display: none">package config
 
 import "time"
 
@@ -551,7 +623,7 @@ func (e ErrIncompleteSSLConfig) Error() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package dyndns
+		<pre class="file" id="file5" style="display: none">package dyndns
 
 import (
         "log/slog"
@@ -720,7 +792,7 @@ func Run(c Client, interval time.Duration) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package dyndns
+		<pre class="file" id="file6" style="display: none">package dyndns
 
 import (
         "fmt"
@@ -807,7 +879,7 @@ func (e *ErrOperationFailed) Error() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package dyndns
+		<pre class="file" id="file7" style="display: none">package dyndns
 
 import "fmt"
 
@@ -850,7 +922,7 @@ func (c *testClient) Update() error <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package dyndns
+		<pre class="file" id="file8" style="display: none">package dyndns
 
 import (
         "io"
@@ -920,7 +992,7 @@ func GetPublicIPv6() (string, error) <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package relay
+		<pre class="file" id="file9" style="display: none">package relay
 
 import (
         "bytes"
@@ -1009,7 +1081,7 @@ func (r *relay) Update() error <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package server
+		<pre class="file" id="file10" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1225,7 +1297,7 @@ func (s *Server) Run() error <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package server
+		<pre class="file" id="file11" style="display: none">package server
 
 import (
         "encoding/json"
