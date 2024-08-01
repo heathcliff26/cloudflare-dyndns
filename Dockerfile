@@ -1,7 +1,7 @@
 ###############################################################################
 # BEGIN build-stage
 # Compile the binary
-FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.22.5@sha256:829eff99a4b2abffe68f6a3847337bf6455d69d17e49ec1a97dac78834754bd6 AS build-stage
+FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.22.5@sha256:86a3c48a61915a8c62c0e1d7594730399caa3feb73655dfe96c7bc17710e96cf AS build-stage
 
 ARG BUILDPLATFORM
 ARG TARGETARCH
@@ -22,7 +22,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH="${TARGETARCH}" go build -ldflags="-w -s" -o
 ###############################################################################
 # BEGIN test-stage
 # Run the tests in the container
-FROM docker.io/library/golang:1.22.5@sha256:829eff99a4b2abffe68f6a3847337bf6455d69d17e49ec1a97dac78834754bd6 AS test-stage
+FROM docker.io/library/golang:1.22.5@sha256:86a3c48a61915a8c62c0e1d7594730399caa3feb73655dfe96c7bc17710e96cf AS test-stage
 
 WORKDIR /app
 
