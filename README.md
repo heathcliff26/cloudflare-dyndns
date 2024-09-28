@@ -30,10 +30,11 @@ The client package can also be used as a golang API, should you want to build yo
 
 There are different flavors of the image:
 
-| Tag(s)           | Describtion                                                                                                                                                                              |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **latest, slim** | Contains only the golang binary                                                                                                                                                          |
-| **php**          | Deprecated: Contains the original php script from [Fritz!Box DynDNS Script for Cloudflare](https://github.com/1rfsNet/Fritz-Box-Cloudflare-DynDNS) and is based on `php:apache-bookworm` |
+| Tag(s)      | Description                                                 |
+| ----------- | ----------------------------------------------------------- |
+| **latest**  | Last released version of the image                          |
+| **rolling** | Rolling update of the image, always build from main branch. |
+| **vX.Y.Z**  | Released version of the image                               |
 
 ## Usage
 
@@ -50,6 +51,7 @@ Usage of cloudflare-dyndns:
         Used together with -config, when set will expand enviroment variables in config
   -mode string
         Set what mode to run, options are "server", "client" and "relay" (default "server")
+  -v    Print the version information and exit
 ```
 An example config can be found [here](configs/example-config.yaml).
 
