@@ -39,7 +39,27 @@ jobs:
   unit-tests:
     uses: heathcliff26/ci/.github/workflows/golang-unit-tests.yaml@main
 
-  build:
+  build-binary:
+    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+    needs:
+      - lint
+      - unit-tests
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+          - arch: arm64
+    with:
+      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
+      goos: "linux"
+      goarch: "${{ matrix.arch }}"
+      artifact: "bin/cloudflare-dyndns-${{ matrix.arch }}"
+      artifact-name: "cloudflare-dyndns-${{ matrix.arch }}"
+      cmd: "hack/build.sh cloudflare-dyndns-${{ matrix.arch }}"
+    secrets: inherit
+
+  build-image:
     uses: heathcliff26/ci/.github/workflows/build-container.yaml@main
     needs:
       - lint
