@@ -79,6 +79,8 @@
 				
 				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
 				
+				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (73.3%)</option>
+				
 				</select>
 			</div>
 			<div id="legend">
@@ -95,6 +97,7 @@
 
 import (
         "flag"
+        "fmt"
         "log/slog"
         "os"
 
@@ -103,12 +106,14 @@ import (
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/relay"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/server"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/version"
 )
 
 var (
-        mode       string
-        configPath string
-        env        bool
+        mode         string
+        configPath   string
+        env          bool
+        printVersion bool
 )
 
 // Initialize the needed flags for cli options
@@ -116,12 +121,18 @@ func init() <span class="cov0" title="0">{
         flag.StringVar(&amp;mode, "mode", config.MODE_SERVER, "Set what mode to run, options are \""+config.MODE_SERVER+"\", \""+config.MODE_CLIENT+"\" and \""+config.MODE_RELAY+"\"")
         flag.StringVar(&amp;configPath, "config", "", "Path to config file, can be empty when running in mode "+config.MODE_SERVER)
         flag.BoolVar(&amp;env, "env", false, "Used together with -config, when set will expand enviroment variables in config")
+        flag.BoolVar(&amp;printVersion, "v", false, "Print the version information and exit")
 }</span>
 
 func main() <span class="cov0" title="0">{
         flag.Parse()
 
-        cfg, err := config.LoadConfig(configPath, mode, env)
+        if printVersion </span><span class="cov0" title="0">{
+                fmt.Print(version.Version())
+                os.Exit(0)
+        }</span>
+
+        <span class="cov0" title="0">cfg, err := config.LoadConfig(configPath, mode, env)
         if err != nil </span><span class="cov0" title="0">{
                 slog.Error("Could not load configuration", slog.String("path", configPath), slog.String("err", err.Error()))
                 os.Exit(1)
@@ -1364,6 +1375,41 @@ func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8
                 }</span>
         }
         <span class="cov8" title="1">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package version
+
+import (
+        "runtime"
+        "runtime/debug"
+)
+
+const Name = "cloudflare-dyndns"
+
+var version = "devel"
+
+func Version() string <span class="cov8" title="1">{
+        var commit string
+        buildinfo, _ := debug.ReadBuildInfo()
+        for _, item := range buildinfo.Settings </span><span class="cov0" title="0">{
+                if item.Key == "vcs.revision" </span><span class="cov0" title="0">{
+                        commit = item.Value
+                        break</span>
+                }
+        }
+        <span class="cov8" title="1">if len(commit) &gt; 7 </span><span class="cov0" title="0">{
+                commit = commit[:7]
+        }</span> else<span class="cov8" title="1"> if commit == "" </span><span class="cov8" title="1">{
+                commit = "Unknown"
+        }</span>
+
+        <span class="cov8" title="1">result := Name + ":\n"
+        result += "    Version: " + version + "\n"
+        result += "    Commit:  " + commit + "\n"
+        result += "    Go:      " + runtime.Version() + "\n"
+
+        return result</span>
 }
 </pre>
 		
