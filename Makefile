@@ -4,22 +4,32 @@ REPOSITORY ?= localhost
 CONTAINER_NAME ?= cloudflare-dyndns
 TAG ?= latest
 
-GO_BUILD_FLAGS ?= -ldflags="-w -s"
-
 default: build
 
 build:
+	hack/build.sh
+
+image:
 	podman build -t $(REPOSITORY)/$(CONTAINER_NAME):$(TAG) .
 
-go-build:
-	go build $(GO_BUILD_FLAGS) -o bin/cloudflare-dyndns ./cmd/
+test:
+	go test -v -race ./...
 
-go-test:
-	go test -v ./...
+update-deps:
+	hack/update-deps.sh
+
+coverprofile:
+	hack/coverprofile.sh
+
+lint:
+	golangci-lint run -v
 
 .PHONY: \
 	default \
 	build \
-	go-build \
-	go-test \
+	image \
+	test \
+	update-deps \
+	coverprofile \
+	lint \
 	$(NULL)
