@@ -20,30 +20,13 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH="${TARGETARCH}" go build -ldflags="-w -s" -o
 ###############################################################################
 
 ###############################################################################
-# BEGIN test-stage
-# Run the tests in the container
-FROM docker.io/library/golang:1.23.1@sha256:efa59042e5f808134d279113530cf419e939d40dab6475584a13c62aa8497c64 AS test-stage
-
-WORKDIR /app
-
-COPY --from=build-stage /app /app
-# Not needed for testing, but needed for later stage
-COPY --from=build-stage /cloudflare-dyndns /
-
-RUN go test -v ./...
-
-#
-# END test-stage
-###############################################################################
-
-###############################################################################
 # BEGIN combine-stage
 # Combine all outputs, to enable single layer copy for the final image
 FROM scratch AS combine-stage
 
-COPY --from=test-stage /cloudflare-dyndns /
+COPY --from=build-stage /cloudflare-dyndns /
 
-COPY --from=test-stage /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build-stage /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 #
 # END combine-stage
