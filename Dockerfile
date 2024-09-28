@@ -41,8 +41,6 @@ WORKDIR /
 
 COPY --from=combine-stage / /
 
-EXPOSE 8080
-
 USER 1001
 
 ENTRYPOINT ["/cloudflare-dyndns"]
