@@ -14,6 +14,7 @@ The client package can also be used as a golang API, should you want to build yo
     - [Image location](#image-location)
     - [Tags](#tags)
   - [Usage](#usage)
+    - [Kubernetes](#kubernetes)
   - [API (Server Mode)](#api-server-mode)
     - [Examples](#examples)
 
@@ -63,7 +64,13 @@ Flags:
 
 Use "cloudflare-dyndns [command] --help" for more information about a command.
 ```
-An example config can be found [here](configs/example-config.yaml).
+An example config can be found [here](examples/example-config.yaml).
+
+### Kubernetes
+
+The container image can be deployed as part of a daemonset, to ensure all nodes in your cluster have a valid DNS record.
+
+An example daemonset using the relay mode can be found [here](examples/example-relay-daemonset.yaml).
 
 ## API (Server Mode)
 
@@ -76,6 +83,7 @@ An example config can be found [here](configs/example-config.yaml).
 | proxy            | Indicate if domain should be proxied, defaults to true                         |
 
 ### Examples
+
 Here is an example GET request:
 ```
 https://dyndns.example.com/?token=testtoken&domains=foo.example.net,bar.example.org,example.net&ipv4=100.100.100.100&ipv6=fd00::dead&proxy=true
