@@ -53,11 +53,19 @@ func TestClientDataSetFunctions(t *testing.T) {
 		err := d.SetIPv4("100.100.100.100")
 		assert.Equal(t, "100.100.100.100", d.IPv4())
 		assert.Nil(t, err)
+
+		err = d.SetIPv4("")
+		assert.Equal(t, "", d.IPv4())
+		assert.Nil(t, err)
 	})
 	t.Run("SetIPv6", func(t *testing.T) {
 		d := &ClientData{}
 		err := d.SetIPv6("fd00::dead")
 		assert.Equal(t, "fd00::dead", d.IPv6())
+		assert.Nil(t, err)
+
+		err = d.SetIPv6("")
+		assert.Equal(t, "", d.IPv6())
 		assert.Nil(t, err)
 	})
 }
