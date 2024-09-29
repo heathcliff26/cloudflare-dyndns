@@ -205,11 +205,19 @@ func (c *cloudflareClient) Update() error {
 			)
 			switch record.Type {
 			case "A":
+				if c.Data().IPv4() == "" {
+					continue
+				}
+
 				v4 = true
 				if record.Content == c.Data().IPv4() {
 					continue
 				}
 			case "AAAA":
+				if c.Data().IPv6() == "" {
+					continue
+				}
+
 				v6 = true
 				if record.Content == c.Data().IPv6() {
 					continue
