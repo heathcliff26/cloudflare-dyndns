@@ -42,16 +42,26 @@ The binary can be run either as a server, a standalone client or in relay mode w
 
 The main use case for relay mode would be when you want to restrict your cloudflare API key to a static IP.
 
-Output of `cloudflare-dyndns -h`
+Output of `cloudflare-dyndns help`
 ```
-Usage of cloudflare-dyndns:
-  -config string
-        Path to config file, can be empty when running in mode server
-  -env
-        Used together with -config, when set will expand enviroment variables in config
-  -mode string
-        Set what mode to run, options are "server", "client" and "relay" (default "server")
-  -v    Print the version information and exit
+cloudflare-dyndns provides DynDNS functionality for cloudflare.
+
+Usage:
+  cloudflare-dyndns [flags]
+  cloudflare-dyndns [command]
+
+Available Commands:
+  client      Update DDNS Records by calling the cloudflare API
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  relay       Update DDNS Records but relay the calls through a server
+  server      Run a server for relay clients
+  version     Print version information and exit
+
+Flags:
+  -h, --help   help for cloudflare-dyndns
+
+Use "cloudflare-dyndns [command] --help" for more information about a command.
 ```
 An example config can be found [here](configs/example-config.yaml).
 
