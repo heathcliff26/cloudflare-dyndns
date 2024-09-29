@@ -24,6 +24,12 @@ coverprofile:
 lint:
 	golangci-lint run -v
 
+package-openwrt:
+	hack/build-package-openwrt.sh
+
+clean:
+	rm -rf bin coverprofiles packages/openwrt/*.tar.gz packages/openwrt/control/control
+
 .PHONY: \
 	default \
 	build \
@@ -32,4 +38,6 @@ lint:
 	update-deps \
 	coverprofile \
 	lint \
+	package-openwrt \
+	clean \
 	$(NULL)

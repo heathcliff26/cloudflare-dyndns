@@ -1,0 +1,7 @@
+Package: cloudflare-dyndns
+Version: ${RELEASE_VERSION}
+Depends: ca-bundle
+License: Apache 2.0
+Architecture: ${PKG_ARCH}
+Maintainer: heathcliff@heathcliff.eu
+Description: DDNS client for cloudflare

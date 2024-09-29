@@ -1,0 +1,8 @@
+
+config cloudflare_dyndns 'main'
+        option enabled '0'
+        option log_level 'info'
+        option token ''
+        option proxy '1'
+        option domain 'openwrt.example.com'
+        option interval '5m'

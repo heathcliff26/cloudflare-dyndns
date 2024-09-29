@@ -17,7 +17,7 @@ server:
     # SSL private key
     key: ""
 
-# Config for running in client mode
+# Config for running in client/relay mode
 client:
   # Token for accessing the cloudflare api
   token: ""
