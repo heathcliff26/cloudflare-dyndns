@@ -423,6 +423,40 @@ func TestUpdate(t *testing.T) {
 			},
 			UpdatedRecords: 1,
 		},
+		{
+			Name: "DualStackIPv4OnlyUpdate",
+			Data: singleStackDataIPv4,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.120",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+				{
+					Content: "fd69::dead",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
+		{
+			Name: "DualStackIPv6OnlyUpdate",
+			Data: singleStackDataIPv6,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.100",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+				{
+					Content: "fd69::1234",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
 	}
 
 	for _, tCase := range tMatrix {
