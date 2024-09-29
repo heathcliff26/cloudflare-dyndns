@@ -170,7 +170,7 @@ func TestUpdateRecord(t *testing.T) {
 			Name: "CreateA",
 			Record: cloudflareRecord{
 				Content: "10.8.100.100",
-				Id:      "6dbf0f498e60487f",
+				Id:      "",
 				Type:    "A",
 			},
 		},
@@ -178,7 +178,7 @@ func TestUpdateRecord(t *testing.T) {
 			Name: "CreateAAAA",
 			Record: cloudflareRecord{
 				Content: "fd69::dead",
-				Id:      "ce8a2c45433edf26",
+				Id:      "",
 				Type:    "AAAA",
 			},
 		},
@@ -237,6 +237,241 @@ func TestUpdateRecord(t *testing.T) {
 			err := c.updateRecord(zone, domain, tCase.Record.Type, tCase.Record.Id)
 			if !assert.Nil(err) {
 				t.Fatalf("Failed to update record: %v", err)
+			}
+		})
+	}
+}
+
+func TestUpdate(t *testing.T) {
+	singleStackDataIPv4 := dyndns.NewClientData(false)
+	singleStackDataIPv4.AddDomain("foo.example.org")
+	_ = singleStackDataIPv4.SetIPv4("100.100.100.100")
+
+	singleStackDataIPv6 := dyndns.NewClientData(false)
+	singleStackDataIPv6.AddDomain("foo.example.org")
+	_ = singleStackDataIPv6.SetIPv6("fd69::dead")
+
+	dualStackData := dyndns.NewClientData(false)
+	dualStackData.AddDomain("foo.example.org")
+	_ = dualStackData.SetIPv4("100.100.100.100")
+	_ = dualStackData.SetIPv6("fd69::dead")
+
+	tMatrix := []struct {
+		Name           string
+		Records        []cloudflareRecord
+		Data           *dyndns.ClientData
+		UpdatedRecords int
+		Error          bool
+	}{
+		{
+			Name:  "InvalidData",
+			Data:  dyndns.NewClientData(false),
+			Error: true,
+		},
+		{
+			Name: "SingleStackIPv4Update",
+			Data: singleStackDataIPv4,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.120",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
+		{
+			Name:           "SingleStackIPv4Create",
+			Data:           singleStackDataIPv4,
+			UpdatedRecords: 1,
+		},
+		{
+			Name: "SingleStackIPv4NoUpdate",
+			Data: singleStackDataIPv4,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.100",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 0,
+		},
+		{
+			Name: "SingleStackIPv6Update",
+			Data: singleStackDataIPv6,
+			Records: []cloudflareRecord{
+				{
+					Content: "fd69::1234",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
+		{
+			Name:           "SingleStackIPv6Create",
+			Data:           singleStackDataIPv6,
+			UpdatedRecords: 1,
+		},
+		{
+			Name: "SingleStackIPv6NoUpdate",
+			Data: singleStackDataIPv6,
+			Records: []cloudflareRecord{
+				{
+					Content: "fd69::dead",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 0,
+		},
+		{
+			Name: "DualStackUpdate",
+			Data: dualStackData,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.120",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+				{
+					Content: "fd69::1234",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 2,
+		},
+		{
+			Name:           "DualStackCreate",
+			Data:           dualStackData,
+			UpdatedRecords: 2,
+		},
+		{
+			Name: "DualStackNoUpdate",
+			Data: dualStackData,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.100",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+				{
+					Content: "fd69::dead",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 0,
+		},
+		{
+			Name: "DualStackIPv4Changed",
+			Data: dualStackData,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.120",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+				{
+					Content: "fd69::dead",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
+		{
+			Name: "DualStackIPv6Changed",
+			Data: dualStackData,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.100",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+				{
+					Content: "fd69::1234",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
+		{
+			Name: "SingleStackIPv4ToDualStack",
+			Data: dualStackData,
+			Records: []cloudflareRecord{
+				{
+					Content: "100.100.100.100",
+					Type:    "A",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
+		{
+			Name: "SingleStackIPv6ToDualStack",
+			Data: dualStackData,
+			Records: []cloudflareRecord{
+				{
+					Content: "fd69::dead",
+					Type:    "AAAA",
+					Id:      "1234567890",
+				},
+			},
+			UpdatedRecords: 1,
+		},
+	}
+
+	for _, tCase := range tMatrix {
+		t.Run(tCase.Name, func(t *testing.T) {
+			assert := assert.New(t)
+
+			updatedRecords := 0
+
+			server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+				assert.Equal("Bearer testtoken", req.Header.Get("Authorization"))
+				assert.Equal("application/json", req.Header.Get("Content-Type"))
+
+				var record cloudflareRecord
+				err := json.NewDecoder(req.Body).Decode(&record)
+				if !assert.Nil(err) {
+					t.Fatalf("Could not convert request to cloudflareRecord: %v", err)
+				}
+				updatedRecords++
+
+				res := cloudflareResponse{Success: true}
+
+				b, err := json.Marshal(res)
+				if err != nil {
+					t.Fatalf("Could not convert cloudflareResponse to json body, err: %v", err)
+				}
+
+				rw.WriteHeader(http.StatusOK)
+				_, _ = rw.Write(b)
+			}))
+			defer server.Close()
+
+			c := &cloudflareClient{
+				endpoint: server.URL + "/",
+				token:    "testtoken",
+				data:     tCase.Data,
+			}
+			c.getZoneIdFN = func(_ string) (string, error) {
+				return "1234567890", nil
+			}
+			c.getRecordsFN = func(_, _ string) ([]cloudflareRecord, error) {
+				return tCase.Records, nil
+			}
+
+			err := c.Update()
+			if tCase.Error {
+				assert.Error(err)
+			} else {
+				assert.NoError(err)
+				assert.Equal(tCase.UpdatedRecords, updatedRecords, "Should have updated the expected number of records")
 			}
 		})
 	}

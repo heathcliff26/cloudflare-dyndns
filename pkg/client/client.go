@@ -19,6 +19,10 @@ type cloudflareClient struct {
 	endpoint string
 	token    string
 	data     *dyndns.ClientData
+
+	// Functions are abstracted here to allow testing
+	getZoneIdFN  func(domain string) (string, error)
+	getRecordsFN func(zone string, domain string) ([]cloudflareRecord, error)
 }
 
 // Create a new CloudflareClient and test if the token is valid
@@ -32,6 +36,9 @@ func NewCloudflareClient(token string, proxy bool) (dyndns.Client, error) {
 		token:    token,
 		data:     dyndns.NewClientData(proxy),
 	}
+	c.getZoneIdFN = c.getZoneId
+	c.getRecordsFN = c.getRecords
+
 	_, err := c.cloudflare(http.MethodGet, "zones", nil)
 	if err != nil {
 		return nil, err
@@ -177,12 +184,12 @@ func (c *cloudflareClient) Update() error {
 		return err
 	}
 	for _, domain := range c.Data().Domains() {
-		zone, err := c.getZoneId(domain)
+		zone, err := c.getZoneIdFN(domain)
 		if err != nil {
 			return err
 		}
 
-		records, err := c.getRecords(zone, domain)
+		records, err := c.getRecordsFN(zone, domain)
 		if err != nil {
 			return err
 		}
