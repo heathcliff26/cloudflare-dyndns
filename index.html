@@ -57,7 +57,7 @@
 				
 				<option value="file0">github.com/heathcliff26/cloudflare-dyndns/cmd/main.go (0.0%)</option>
 				
-				<option value="file1">github.com/heathcliff26/cloudflare-dyndns/pkg/client/client.go (52.4%)</option>
+				<option value="file1">github.com/heathcliff26/cloudflare-dyndns/pkg/client/client.go (77.5%)</option>
 				
 				<option value="file2">github.com/heathcliff26/cloudflare-dyndns/pkg/client/cmd.go (0.0%)</option>
 				
@@ -133,6 +133,10 @@ type cloudflareClient struct {
         endpoint string
         token    string
         data     *dyndns.ClientData
+
+        // Functions are abstracted here to allow testing
+        getZoneIdFN  func(domain string) (string, error)
+        getRecordsFN func(zone string, domain string) ([]cloudflareRecord, error)
 }
 
 // Create a new CloudflareClient and test if the token is valid
@@ -146,6 +150,9 @@ func NewCloudflareClient(token string, proxy bool) (dyndns.Client, error) <span 
                 token:    token,
                 data:     dyndns.NewClientData(proxy),
         }
+        c.getZoneIdFN = c.getZoneId
+        c.getRecordsFN = c.getRecords
+
         _, err := c.cloudflare(http.MethodGet, "zones", nil)
         if err != nil </span><span class="cov0" title="0">{
                 return nil, err
@@ -285,25 +292,25 @@ func (c *cloudflareClient) updateRecord(zone string, domain string, recordType s
 
 // Update all domains, needs at least one of IPv4/IPv6 set.
 // Will return with the first error
-func (c *cloudflareClient) Update() error <span class="cov0" title="0">{
+func (c *cloudflareClient) Update() error <span class="cov8" title="1">{
         err := c.Data().CheckData()
-        if err != nil </span><span class="cov0" title="0">{
+        if err != nil </span><span class="cov8" title="1">{
                 return err
         }</span>
-        <span class="cov0" title="0">for _, domain := range c.Data().Domains() </span><span class="cov0" title="0">{
-                zone, err := c.getZoneId(domain)
+        <span class="cov8" title="1">for _, domain := range c.Data().Domains() </span><span class="cov8" title="1">{
+                zone, err := c.getZoneIdFN(domain)
                 if err != nil </span><span class="cov0" title="0">{
                         return err
                 }</span>
 
-                <span class="cov0" title="0">records, err := c.getRecords(zone, domain)
+                <span class="cov8" title="1">records, err := c.getRecordsFN(zone, domain)
                 if err != nil </span><span class="cov0" title="0">{
                         return err
                 }</span>
 
                 // Iterate over all records and update the A and AAAA record if necessary
-                <span class="cov0" title="0">var v4, v6 bool = false, false
-                for _, record := range records </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">var v4, v6 bool = false, false
+                for _, record := range records </span><span class="cov8" title="1">{
                         slog.Debug("Received record",
                                 slog.String("domain", domain),
                                 slog.String("type", record.Type),
@@ -311,41 +318,49 @@ func (c *cloudflareClient) Update() error <span class="cov0" title="0">{
                                 slog.String("modified_on", record.ModifiedOn),
                         )
                         switch record.Type </span>{
-                        case "A":<span class="cov0" title="0">
-                                v4 = true
-                                if record.Content == c.Data().IPv4() </span><span class="cov0" title="0">{
+                        case "A":<span class="cov8" title="1">
+                                if c.Data().IPv4() == "" </span><span class="cov8" title="1">{
                                         continue</span>
                                 }
-                        case "AAAA":<span class="cov0" title="0">
-                                v6 = true
-                                if record.Content == c.Data().IPv6() </span><span class="cov0" title="0">{
+
+                                <span class="cov8" title="1">v4 = true
+                                if record.Content == c.Data().IPv4() </span><span class="cov8" title="1">{
+                                        continue</span>
+                                }
+                        case "AAAA":<span class="cov8" title="1">
+                                if c.Data().IPv6() == "" </span><span class="cov8" title="1">{
+                                        continue</span>
+                                }
+
+                                <span class="cov8" title="1">v6 = true
+                                if record.Content == c.Data().IPv6() </span><span class="cov8" title="1">{
                                         continue</span>
                                 }
                         default:<span class="cov0" title="0">
                                 continue</span>
                         }
-                        <span class="cov0" title="0">err = c.updateRecord(zone, domain, record.Type, record.Id)
+                        <span class="cov8" title="1">err = c.updateRecord(zone, domain, record.Type, record.Id)
                         if err != nil </span><span class="cov0" title="0">{
                                 return err
                         }</span>
                 }
 
                 // Create A record if necessary
-                <span class="cov0" title="0">if !v4 &amp;&amp; c.Data().IPv4() != "" </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">if !v4 &amp;&amp; c.Data().IPv4() != "" </span><span class="cov8" title="1">{
                         err = c.updateRecord(zone, domain, "A", "")
                         if err != nil </span><span class="cov0" title="0">{
                                 return err
                         }</span>
                 }
                 // Create AAAA record if necessary
-                <span class="cov0" title="0">if !v6 &amp;&amp; c.Data().IPv6() != "" </span><span class="cov0" title="0">{
+                <span class="cov8" title="1">if !v6 &amp;&amp; c.Data().IPv6() != "" </span><span class="cov8" title="1">{
                         err = c.updateRecord(zone, domain, "AAAA", "")
                         if err != nil </span><span class="cov0" title="0">{
                                 return err
                         }</span>
                 }
         }
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 </pre>
 		
