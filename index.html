@@ -1534,7 +1534,7 @@ type Response struct {
 func sendResponse(rw http.ResponseWriter, msg string, success bool) <span class="cov8" title="1">{
         res := Response{msg, success}
 
-        b, err := json.Marshal(res)
+        b, err := json.MarshalIndent(res, "", "  ")
         if err != nil </span><span class="cov0" title="0">{
                 if success </span><span class="cov0" title="0">{
                         rw.WriteHeader(http.StatusInternalServerError)
