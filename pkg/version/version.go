@@ -1,13 +1,30 @@
 package version
 
 import (
+	"fmt"
 	"runtime"
 	"runtime/debug"
+
+	"github.com/spf13/cobra"
 )
 
 const Name = "cloudflare-dyndns"
 
 var version = "devel"
+
+func NewCommand() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "version",
+		Short: "Print version information and exit",
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Print(Version())
+		},
+	}
+	// Override to prevent parent function from running
+	cmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {}
+
+	return cmd
+}
 
 func Version() string {
 	var commit string

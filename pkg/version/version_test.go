@@ -8,6 +8,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNewVersionCommand(t *testing.T) {
+	cmd := NewCommand()
+
+	assert := assert.New(t)
+
+	assert.Equal("version", cmd.Use)
+	assert.NotNil(cmd.PersistentPreRun, "Should have empty function assigned to override parent function")
+}
+
 func TestVersion(t *testing.T) {
 	result := Version()
 
