@@ -18,7 +18,7 @@ type Response struct {
 func sendResponse(rw http.ResponseWriter, msg string, success bool) {
 	res := Response{msg, success}
 
-	b, err := json.Marshal(res)
+	b, err := json.MarshalIndent(res, "", "  ")
 	if err != nil {
 		if success {
 			rw.WriteHeader(http.StatusInternalServerError)
