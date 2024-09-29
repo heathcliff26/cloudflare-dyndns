@@ -59,27 +59,35 @@
 				
 				<option value="file1">github.com/heathcliff26/cloudflare-dyndns/pkg/client/client.go (52.4%)</option>
 				
-				<option value="file2">github.com/heathcliff26/cloudflare-dyndns/pkg/client/utils.go (100.0%)</option>
+				<option value="file2">github.com/heathcliff26/cloudflare-dyndns/pkg/client/cmd.go (0.0%)</option>
 				
-				<option value="file3">github.com/heathcliff26/cloudflare-dyndns/pkg/config/config.go (97.9%)</option>
+				<option value="file3">github.com/heathcliff26/cloudflare-dyndns/pkg/client/utils.go (100.0%)</option>
 				
-				<option value="file4">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
+				<option value="file4">github.com/heathcliff26/cloudflare-dyndns/pkg/cloudflare-dyndns/root.go (47.6%)</option>
 				
-				<option value="file5">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (60.9%)</option>
+				<option value="file5">github.com/heathcliff26/cloudflare-dyndns/pkg/config/config.go (97.9%)</option>
 				
-				<option value="file6">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
+				<option value="file6">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
 				
-				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/testclient.go (90.9%)</option>
+				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (60.9%)</option>
 				
-				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
+				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
 				
-				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
+				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/testclient.go (90.9%)</option>
 				
-				<option value="file10">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
+				<option value="file10">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
 				
-				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
+				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/cmd.go (0.0%)</option>
 				
-				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (73.3%)</option>
+				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
+				
+				<option value="file13">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
+				
+				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
+				
+				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
+				
+				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (73.7%)</option>
 				
 				</select>
 			</div>
@@ -96,79 +104,11 @@
 		<pre class="file" id="file0" style="display: none">package main
 
 import (
-        "flag"
-        "fmt"
-        "log/slog"
-        "os"
-
-        "github.com/heathcliff26/cloudflare-dyndns/pkg/client"
-        "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
-        "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
-        "github.com/heathcliff26/cloudflare-dyndns/pkg/relay"
-        "github.com/heathcliff26/cloudflare-dyndns/pkg/server"
-        "github.com/heathcliff26/cloudflare-dyndns/pkg/version"
+        cloudflaredyndns "github.com/heathcliff26/cloudflare-dyndns/pkg/cloudflare-dyndns"
 )
-
-var (
-        mode         string
-        configPath   string
-        env          bool
-        printVersion bool
-)
-
-// Initialize the needed flags for cli options
-func init() <span class="cov0" title="0">{
-        flag.StringVar(&amp;mode, "mode", config.MODE_SERVER, "Set what mode to run, options are \""+config.MODE_SERVER+"\", \""+config.MODE_CLIENT+"\" and \""+config.MODE_RELAY+"\"")
-        flag.StringVar(&amp;configPath, "config", "", "Path to config file, can be empty when running in mode "+config.MODE_SERVER)
-        flag.BoolVar(&amp;env, "env", false, "Used together with -config, when set will expand enviroment variables in config")
-        flag.BoolVar(&amp;printVersion, "v", false, "Print the version information and exit")
-}</span>
 
 func main() <span class="cov0" title="0">{
-        flag.Parse()
-
-        if printVersion </span><span class="cov0" title="0">{
-                fmt.Print(version.Version())
-                os.Exit(0)
-        }</span>
-
-        <span class="cov0" title="0">cfg, err := config.LoadConfig(configPath, mode, env)
-        if err != nil </span><span class="cov0" title="0">{
-                slog.Error("Could not load configuration", slog.String("path", configPath), slog.String("err", err.Error()))
-                os.Exit(1)
-        }</span>
-
-        <span class="cov0" title="0">switch mode </span>{
-        case config.MODE_SERVER:<span class="cov0" title="0">
-                s := server.NewServer(cfg.Server)
-                err := s.Run()
-                if err != nil </span><span class="cov0" title="0">{
-                        slog.Error("Failed to start the server", "err", err)
-                        os.Exit(1)
-                }</span>
-        case config.MODE_CLIENT:<span class="cov0" title="0">
-                c, err := client.NewCloudflareClient(cfg.Client.Token, cfg.Client.Proxy)
-                if err != nil </span><span class="cov0" title="0">{
-                        slog.Error("Could not create new client", "err", err)
-                        os.Exit(1)
-                }</span>
-                <span class="cov0" title="0">runClient(c, cfg.Client)</span>
-        case config.MODE_RELAY:<span class="cov0" title="0">
-                r, err := relay.NewRelay(cfg.Client.Token, cfg.Client.Proxy, cfg.Client.Endpoint)
-                if err != nil </span><span class="cov0" title="0">{
-                        slog.Error("Could not create new client", "err", err)
-                        os.Exit(1)
-                }</span>
-                <span class="cov0" title="0">runClient(r, cfg.Client)</span>
-        default:<span class="cov0" title="0">
-                slog.Error("Unknown mode", slog.String("mode", mode))
-                os.Exit(1)</span>
-        }
-}
-
-func runClient(c dyndns.Client, cfg config.ClientConfig) <span class="cov0" title="0">{
-        c.Data().SetDomains(cfg.Domains)
-        dyndns.Run(c, cfg.Interval)
+        cloudflaredyndns.Execute()
 }</span>
 </pre>
 		
@@ -411,6 +351,74 @@ func (c *cloudflareClient) Update() error <span class="cov0" title="0">{
 		
 		<pre class="file" id="file2" style="display: none">package client
 
+import (
+        "log/slog"
+        "os"
+
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/spf13/cobra"
+)
+
+const (
+        flagNameConfig = "config"
+        flagNameEnv    = "env"
+)
+
+func NewCommand() (*cobra.Command, error) <span class="cov0" title="0">{
+        cmd := &amp;cobra.Command{
+                Use:   config.MODE_CLIENT,
+                Short: "Update DDNS Records by calling the cloudflare API",
+                RunE: func(cmd *cobra.Command, _ []string) error </span><span class="cov0" title="0">{
+                        cfg, err := cmd.Flags().GetString(flagNameConfig)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+
+                        <span class="cov0" title="0">env, err := cmd.Flags().GetBool(flagNameEnv)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+
+                        <span class="cov0" title="0">run(cfg, env)
+                        return nil</span>
+                },
+        }
+
+        <span class="cov0" title="0">cmd.Flags().StringP(flagNameConfig, "c", "", "Path to config file")
+        err := cmd.MarkFlagFilename(flagNameConfig, "yaml", "yml")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">err = cmd.MarkFlagRequired(flagNameConfig)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">cmd.Flags().Bool(flagNameEnv, false, "Expand enviroment variables in config file")
+
+        return cmd, nil</span>
+}
+
+func run(configPath string, env bool) <span class="cov0" title="0">{
+        cfg, err := config.LoadConfig(configPath, config.MODE_CLIENT, env)
+        if err != nil </span><span class="cov0" title="0">{
+                slog.Error("Could not load configuration", slog.String("path", configPath), slog.String("err", err.Error()))
+                os.Exit(1)
+        }</span>
+
+        <span class="cov0" title="0">c, err := NewCloudflareClient(cfg.Client.Token, cfg.Client.Proxy)
+        if err != nil </span><span class="cov0" title="0">{
+                slog.Error("Could not create new client", "err", err)
+                os.Exit(1)
+        }</span>
+        <span class="cov0" title="0">c.Data().SetDomains(cfg.Client.Domains)
+        dyndns.Run(c, cfg.Client.Interval)</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package client
+
 import "strings"
 
 // Example: foo.example.org -&gt; example.org
@@ -425,7 +433,75 @@ func getBaseDomain(domain string) string <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package config
+		<pre class="file" id="file4" style="display: none">package cloudflaredyndns
+
+import (
+        "fmt"
+        "os"
+
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/client"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/relay"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/server"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/version"
+        "github.com/spf13/cobra"
+)
+
+func NewRootCommand() *cobra.Command <span class="cov8" title="1">{
+        cobra.AddTemplateFunc(
+                "ProgramName", func() string </span><span class="cov0" title="0">{
+                        return version.Name
+                }</span>,
+        )
+
+        <span class="cov8" title="1">rootCmd := &amp;cobra.Command{
+                Use:   version.Name,
+                Short: version.Name + " provides DynDNS functionality for cloudflare.",
+                RunE: func(cmd *cobra.Command, _ []string) error </span><span class="cov0" title="0">{
+                        return cmd.Help()
+                }</span>,
+        }
+
+        <span class="cov8" title="1">serverCMD, err := server.NewCommand()
+        if err != nil </span><span class="cov0" title="0">{
+                exitError(rootCmd, err)
+        }</span>
+
+        <span class="cov8" title="1">clientCMD, err := client.NewCommand()
+        if err != nil </span><span class="cov0" title="0">{
+                exitError(rootCmd, err)
+        }</span>
+
+        <span class="cov8" title="1">relayCMD, err := relay.NewCommand()
+        if err != nil </span><span class="cov0" title="0">{
+                exitError(rootCmd, err)
+        }</span>
+
+        <span class="cov8" title="1">rootCmd.AddCommand(
+                serverCMD,
+                clientCMD,
+                relayCMD,
+                version.NewCommand(),
+        )
+
+        return rootCmd</span>
+}
+
+func Execute() <span class="cov0" title="0">{
+        cmd := NewRootCommand()
+        err := cmd.Execute()
+        if err != nil </span><span class="cov0" title="0">{
+                os.Exit(1)
+        }</span>
+}
+
+// Print the error information on stderr and exit with code 1
+func exitError(cmd *cobra.Command, err error) <span class="cov0" title="0">{
+        fmt.Fprintln(cmd.Root().ErrOrStderr(), "Fatal: "+err.Error())
+        os.Exit(1)
+}</span>
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package config
 
 import (
         "fmt"
@@ -607,7 +683,7 @@ func setLogLevel(level string) error <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package config
+		<pre class="file" id="file6" style="display: none">package config
 
 import "time"
 
@@ -634,7 +710,7 @@ func (e ErrIncompleteSSLConfig) Error() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package dyndns
+		<pre class="file" id="file7" style="display: none">package dyndns
 
 import (
         "log/slog"
@@ -803,7 +879,7 @@ func Run(c Client, interval time.Duration) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package dyndns
+		<pre class="file" id="file8" style="display: none">package dyndns
 
 import (
         "fmt"
@@ -890,7 +966,7 @@ func (e *ErrOperationFailed) Error() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package dyndns
+		<pre class="file" id="file9" style="display: none">package dyndns
 
 import "fmt"
 
@@ -933,7 +1009,7 @@ func (c *testClient) Update() error <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package dyndns
+		<pre class="file" id="file10" style="display: none">package dyndns
 
 import (
         "io"
@@ -1003,7 +1079,75 @@ func GetPublicIPv6() (string, error) <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package relay
+		<pre class="file" id="file11" style="display: none">package relay
+
+import (
+        "log/slog"
+        "os"
+
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/spf13/cobra"
+)
+
+const (
+        flagNameConfig = "config"
+        flagNameEnv    = "env"
+)
+
+func NewCommand() (*cobra.Command, error) <span class="cov0" title="0">{
+        cmd := &amp;cobra.Command{
+                Use:   config.MODE_RELAY,
+                Short: "Update DDNS Records but relay the calls through a server",
+                RunE: func(cmd *cobra.Command, _ []string) error </span><span class="cov0" title="0">{
+                        cfg, err := cmd.Flags().GetString(flagNameConfig)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+
+                        <span class="cov0" title="0">env, err := cmd.Flags().GetBool(flagNameEnv)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+
+                        <span class="cov0" title="0">run(cfg, env)
+                        return nil</span>
+                },
+        }
+
+        <span class="cov0" title="0">cmd.Flags().StringP(flagNameConfig, "c", "", "Path to config file")
+        err := cmd.MarkFlagFilename(flagNameConfig, "yaml", "yml")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">err = cmd.MarkFlagRequired(flagNameConfig)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">cmd.Flags().Bool(flagNameEnv, false, "Expand enviroment variables in config file")
+
+        return cmd, nil</span>
+}
+
+func run(configPath string, env bool) <span class="cov0" title="0">{
+        cfg, err := config.LoadConfig(configPath, config.MODE_RELAY, env)
+        if err != nil </span><span class="cov0" title="0">{
+                slog.Error("Could not load configuration", slog.String("path", configPath), slog.String("err", err.Error()))
+                os.Exit(1)
+        }</span>
+
+        <span class="cov0" title="0">r, err := NewRelay(cfg.Client.Token, cfg.Client.Proxy, cfg.Client.Endpoint)
+        if err != nil </span><span class="cov0" title="0">{
+                slog.Error("Could not create new client", "err", err)
+                os.Exit(1)
+        }</span>
+        <span class="cov0" title="0">r.Data().SetDomains(cfg.Client.Domains)
+        dyndns.Run(r, cfg.Client.Interval)</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package relay
 
 import (
         "bytes"
@@ -1092,7 +1236,69 @@ func (r *relay) Update() error <span class="cov8" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package server
+		<pre class="file" id="file13" style="display: none">package server
+
+import (
+        "log/slog"
+        "os"
+
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
+        "github.com/spf13/cobra"
+)
+
+const (
+        flagNameConfig = "config"
+        flagNameEnv    = "env"
+)
+
+func NewCommand() (*cobra.Command, error) <span class="cov0" title="0">{
+        cmd := &amp;cobra.Command{
+                Use:   config.MODE_SERVER,
+                Short: "Run a server for relay clients",
+                RunE: func(cmd *cobra.Command, _ []string) error </span><span class="cov0" title="0">{
+                        cfg, err := cmd.Flags().GetString(flagNameConfig)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+
+                        <span class="cov0" title="0">env, err := cmd.Flags().GetBool(flagNameEnv)
+                        if err != nil </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+
+                        <span class="cov0" title="0">run(cfg, env)
+                        return nil</span>
+                },
+        }
+
+        <span class="cov0" title="0">cmd.Flags().StringP(flagNameConfig, "c", "", "Path to config file")
+        err := cmd.MarkFlagFilename(flagNameConfig, "yaml", "yml")
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">cmd.Flags().Bool(flagNameEnv, false, "Expand enviroment variables in config file")
+
+        return cmd, nil</span>
+}
+
+func run(configPath string, env bool) <span class="cov0" title="0">{
+        cfg, err := config.LoadConfig(configPath, config.MODE_SERVER, env)
+        if err != nil </span><span class="cov0" title="0">{
+                slog.Error("Could not load configuration", slog.String("path", configPath), slog.String("err", err.Error()))
+                os.Exit(1)
+        }</span>
+
+        <span class="cov0" title="0">s := NewServer(cfg.Server)
+        err = s.Run()
+        if err != nil </span><span class="cov0" title="0">{
+                slog.Error("Failed to start the server", "err", err)
+                os.Exit(1)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1308,7 +1514,7 @@ func (s *Server) Run() error <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package server
+		<pre class="file" id="file15" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1378,16 +1584,33 @@ func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package version
+		<pre class="file" id="file16" style="display: none">package version
 
 import (
+        "fmt"
         "runtime"
         "runtime/debug"
+
+        "github.com/spf13/cobra"
 )
 
 const Name = "cloudflare-dyndns"
 
 var version = "devel"
+
+func NewCommand() *cobra.Command <span class="cov8" title="1">{
+        cmd := &amp;cobra.Command{
+                Use:   "version",
+                Short: "Print version information and exit",
+                Run: func(cmd *cobra.Command, args []string) </span><span class="cov0" title="0">{
+                        fmt.Print(Version())
+                }</span>,
+        }
+        // Override to prevent parent function from running
+        <span class="cov8" title="1">cmd.PersistentPreRun = func(cmd *cobra.Command, args []string) </span>{<span class="cov0" title="0">}</span>
+
+        <span class="cov8" title="1">return cmd</span>
+}
 
 func Version() string <span class="cov8" title="1">{
         var commit string
