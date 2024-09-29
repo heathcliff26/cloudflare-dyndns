@@ -91,3 +91,16 @@ jobs:
       dry-run: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || inputs.dry-run == 'true' }}
       build-args: "RELEASE_VERSION=${{ inputs.tag == '' && 'rolling' || inputs.tag }}"
     secrets: inherit
+
+  build-packages:
+    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+    needs:
+      - lint
+      - unit-tests
+    with:
+      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
+      goos: "linux"
+      artifact: "bin/cloudflare-dyndns_*.ipk"
+      artifact-name: "cloudflare-dyndns-openwrt"
+      cmd: "make package-openwrt"
+    secrets: inherit
