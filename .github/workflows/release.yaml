@@ -19,7 +19,7 @@ on:
       latest:
         description: "Tag container as latest"
         type: boolean
-        default: false
+        default: true
 
 jobs:
   build:
