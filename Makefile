@@ -24,6 +24,12 @@ coverprofile:
 lint:
 	golangci-lint run -v
 
+fmt:
+	gofmt -s -w ./cmd ./pkg
+
+validate:
+	hack/validate.sh
+
 package-openwrt:
 	hack/build-package-openwrt.sh
 
@@ -38,6 +44,8 @@ clean:
 	update-deps \
 	coverprofile \
 	lint \
+	fmt \
+	validate \
 	package-openwrt \
 	clean \
 	$(NULL)
