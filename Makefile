@@ -4,8 +4,6 @@ REPOSITORY ?= localhost
 CONTAINER_NAME ?= cloudflare-dyndns
 TAG ?= latest
 
-default: build
-
 build:
 	hack/build.sh
 
