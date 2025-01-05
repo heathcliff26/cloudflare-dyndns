@@ -1,3 +1,9 @@
+[![CI](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/ci.yaml/badge.svg?event=push)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/ci.yaml)
+[![Coverage Status](https://coveralls.io/repos/github/heathcliff26/cloudflare-dyndns/badge.svg)](https://coveralls.io/github/heathcliff26/cloudflare-dyndns)
+[![Editorconfig Check](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/editorconfig-check.yaml/badge.svg?event=push)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/editorconfig-check.yaml)
+[![Generate go test cover report](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/go-testcover-report.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/go-testcover-report.yaml)
+[![Renovate](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/renovate.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/renovate.yaml)
+
 # cloudflare-dyndns
 
 Implements the API from [Fritz!Box DynDNS Script for Cloudflare](https://github.com/1rfsNet/Fritz-Box-Cloudflare-DynDNS), but can also be used as a standalone client.

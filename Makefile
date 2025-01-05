@@ -13,7 +13,7 @@ image:
 	podman build -t $(REPOSITORY)/$(CONTAINER_NAME):$(TAG) .
 
 test:
-	go test -v -race ./...
+	go test -v -race -coverprofile=coverprofile.out ./...
 
 update-deps:
 	hack/update-deps.sh
@@ -34,7 +34,7 @@ package-openwrt:
 	hack/build-package-openwrt.sh
 
 clean:
-	rm -rf bin coverprofiles packages/openwrt/*.tar.gz packages/openwrt/control/control
+	rm -rf bin coverprofiles coverprofile.out packages/openwrt/*.tar.gz packages/openwrt/control/control
 
 .PHONY: \
 	default \
