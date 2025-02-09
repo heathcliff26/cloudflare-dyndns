@@ -31,7 +31,7 @@ The client package can also be used as a golang API, should you want to build yo
 | Container Registry                                                                                     | Image                                      |
 | ------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
 | [Github Container](https://github.com/users/heathcliff26/packages/container/package/cloudflare-dyndns) | `ghcr.io/heathcliff26/cloudflare-dyndns`   |
-| [Docker Hub](https://hub.docker.com/repository/docker/heathcliff26/cloudflare-dyndns)                  | `docker.io/heathcliff26/cloudflare-dyndns` |
+| [Docker Hub](https://hub.docker.com/r/heathcliff26/cloudflare-dyndns)                  | `docker.io/heathcliff26/cloudflare-dyndns` |
 
 ### Tags
 
