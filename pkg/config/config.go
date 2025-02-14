@@ -82,7 +82,7 @@ func (c *Config) validateClient() error {
 		return dyndns.ErrMissingToken{}
 	}
 
-	if c.Client.Domains == nil || len(c.Client.Domains) < 1 {
+	if len(c.Client.Domains) < 1 {
 		return dyndns.ErrNoDomain{}
 	}
 
