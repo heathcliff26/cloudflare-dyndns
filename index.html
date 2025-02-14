@@ -87,7 +87,7 @@
 				
 				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
 				
-				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (73.7%)</option>
+				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (81.0%)</option>
 				
 				</select>
 			</div>
@@ -609,7 +609,7 @@ func (c *Config) validateClient() error <span class="cov7" title="13">{
                 return dyndns.ErrMissingToken{}
         }</span>
 
-        <span class="cov7" title="11">if c.Client.Domains == nil || len(c.Client.Domains) &lt; 1 </span><span class="cov2" title="2">{
+        <span class="cov7" title="11">if len(c.Client.Domains) &lt; 1 </span><span class="cov2" title="2">{
                 return dyndns.ErrNoDomain{}
         }</span>
 
@@ -1611,7 +1611,6 @@ func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8
 		<pre class="file" id="file16" style="display: none">package version
 
 import (
-        "fmt"
         "runtime"
         "runtime/debug"
 
@@ -1620,39 +1619,45 @@ import (
 
 const Name = "cloudflare-dyndns"
 
-var version = "devel"
-
-func NewCommand() *cobra.Command <span class="cov8" title="1">{
+// Create a new version command with the given app name
+func NewCommand() *cobra.Command <span class="cov1" title="1">{
         cmd := &amp;cobra.Command{
                 Use:   "version",
                 Short: "Print version information and exit",
                 Run: func(cmd *cobra.Command, args []string) </span><span class="cov0" title="0">{
-                        fmt.Print(Version())
+                        cmd.Print(VersionInfoString())
                 }</span>,
         }
         // Override to prevent parent function from running
-        <span class="cov8" title="1">cmd.PersistentPreRun = func(cmd *cobra.Command, args []string) </span>{<span class="cov0" title="0">}</span>
+        <span class="cov1" title="1">cmd.PersistentPreRun = func(cmd *cobra.Command, args []string) </span>{<span class="cov0" title="0">}</span>
 
-        <span class="cov8" title="1">return cmd</span>
+        <span class="cov1" title="1">return cmd</span>
 }
 
-func Version() string <span class="cov8" title="1">{
+// Return the version string
+func Version() string <span class="cov1" title="1">{
+        buildinfo, _ := debug.ReadBuildInfo()
+        return buildinfo.Main.Version
+}</span>
+
+// Return a formated string containing the version, git commit and go version the app was compiled with.
+func VersionInfoString() string <span class="cov1" title="1">{
         var commit string
         buildinfo, _ := debug.ReadBuildInfo()
-        for _, item := range buildinfo.Settings </span><span class="cov0" title="0">{
+        for _, item := range buildinfo.Settings </span><span class="cov10" title="12">{
                 if item.Key == "vcs.revision" </span><span class="cov0" title="0">{
                         commit = item.Value
                         break</span>
                 }
         }
-        <span class="cov8" title="1">if len(commit) &gt; 7 </span><span class="cov0" title="0">{
+        <span class="cov1" title="1">if len(commit) &gt; 7 </span><span class="cov0" title="0">{
                 commit = commit[:7]
-        }</span> else<span class="cov8" title="1"> if commit == "" </span><span class="cov8" title="1">{
+        }</span> else<span class="cov1" title="1"> if commit == "" </span><span class="cov1" title="1">{
                 commit = "Unknown"
         }</span>
 
-        <span class="cov8" title="1">result := Name + ":\n"
-        result += "    Version: " + version + "\n"
+        <span class="cov1" title="1">result := Name + ":\n"
+        result += "    Version: " + buildinfo.Main.Version + "\n"
         result += "    Commit:  " + commit + "\n"
         result += "    Go:      " + runtime.Version() + "\n"
 
