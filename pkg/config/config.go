@@ -8,13 +8,13 @@ import (
 	"time"
 
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
-	"gopkg.in/yaml.v3"
+	"sigs.k8s.io/yaml"
 )
 
 const (
 	DEFAULT_LOG_LEVEL       = "info"
 	DEFAULT_SERVER_PORT     = 8080
-	DEFAULT_CLIENT_INTERVAL = time.Duration(5 * time.Minute)
+	DEFAULT_CLIENT_INTERVAL = Duration(5 * time.Minute)
 
 	MODE_SERVER = "server"
 	MODE_CLIENT = "client"
@@ -34,31 +34,31 @@ func init() {
 }
 
 type Config struct {
-	LogLevel string       `yaml:"logLevel,omitempty"`
-	Server   ServerConfig `yaml:"server,omitempty"`
-	Client   ClientConfig `yaml:"client,omitempty"`
+	LogLevel string       `json:"logLevel,omitempty"`
+	Server   ServerConfig `json:"server,omitempty"`
+	Client   ClientConfig `json:"client,omitempty"`
 }
 
 // Yaml configuration for dyndns server
 type ServerConfig struct {
-	Port    int       `yaml:"port"`
-	Domains []string  `yaml:"domains,omitempty"`
-	SSL     SSLConfig `yaml:"ssl,omitempty"`
+	Port    int       `json:"port"`
+	Domains []string  `json:"domains,omitempty"`
+	SSL     SSLConfig `json:"ssl,omitempty"`
 }
 
 type SSLConfig struct {
-	Enabled bool   `yaml:"enabled,omitempty"`
-	Cert    string `yaml:"cert,omitempty"`
-	Key     string `yaml:"key,omitempty"`
+	Enabled bool   `json:"enabled,omitempty"`
+	Cert    string `json:"cert,omitempty"`
+	Key     string `json:"key,omitempty"`
 }
 
 // Yaml configuration for dyndns client
 type ClientConfig struct {
-	Token    string        `yaml:"token"`
-	Proxy    bool          `yaml:"proxy,omitempty"`
-	Domains  []string      `yaml:"domains"`
-	Interval time.Duration `yaml:"interval,omitempty"`
-	Endpoint string        `yaml:"endpoint,omitempty"`
+	Token    string   `json:"token"`
+	Proxy    bool     `json:"proxy,omitempty"`
+	Domains  []string `json:"domains"`
+	Interval Duration `json:"interval,omitempty"`
+	Endpoint string   `json:"endpoint,omitempty"`
 }
 
 // Validate the server part of the config
@@ -86,7 +86,7 @@ func (c *Config) validateClient() error {
 		return dyndns.ErrNoDomain{}
 	}
 
-	if c.Client.Interval < time.Duration(30*time.Second) {
+	if c.Client.Interval < Duration(30*time.Second) {
 		return &ErrInvalidInterval{c.Client.Interval}
 	}
 
