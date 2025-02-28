@@ -1,7 +1,5 @@
 package config
 
-import "time"
-
 type ErrUnknownLogLevel struct {
 	Level string
 }
@@ -11,7 +9,7 @@ func (e *ErrUnknownLogLevel) Error() string {
 }
 
 type ErrInvalidInterval struct {
-	Interval time.Duration
+	Interval Duration
 }
 
 func (e *ErrInvalidInterval) Error() string {
