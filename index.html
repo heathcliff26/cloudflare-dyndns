@@ -67,27 +67,29 @@
 				
 				<option value="file5">github.com/heathcliff26/cloudflare-dyndns/pkg/config/config.go (97.9%)</option>
 				
-				<option value="file6">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
+				<option value="file6">github.com/heathcliff26/cloudflare-dyndns/pkg/config/duration.go (90.9%)</option>
 				
-				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (60.9%)</option>
+				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
 				
-				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
+				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (60.9%)</option>
 				
-				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/testclient.go (90.9%)</option>
+				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
 				
-				<option value="file10">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
+				<option value="file10">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/testclient.go (90.9%)</option>
 				
-				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/cmd.go (0.0%)</option>
+				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
 				
-				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
+				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/cmd.go (0.0%)</option>
 				
-				<option value="file13">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
+				<option value="file13">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
 				
-				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
+				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
 				
-				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
+				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
 				
-				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (81.0%)</option>
+				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
+				
+				<option value="file17">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (81.0%)</option>
 				
 				</select>
 			</div>
@@ -378,6 +380,7 @@ func (c *cloudflareClient) Update() error <span class="cov6" title="16">{
 import (
         "log/slog"
         "os"
+        "time"
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
@@ -437,7 +440,7 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
                 os.Exit(1)
         }</span>
         <span class="cov0" title="0">c.Data().SetDomains(cfg.Client.Domains)
-        dyndns.Run(c, cfg.Client.Interval)</span>
+        dyndns.Run(c, time.Duration(cfg.Client.Interval))</span>
 }
 </pre>
 		
@@ -535,13 +538,13 @@ import (
         "time"
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
-        "gopkg.in/yaml.v3"
+        "sigs.k8s.io/yaml"
 )
 
 const (
         DEFAULT_LOG_LEVEL       = "info"
         DEFAULT_SERVER_PORT     = 8080
-        DEFAULT_CLIENT_INTERVAL = time.Duration(5 * time.Minute)
+        DEFAULT_CLIENT_INTERVAL = Duration(5 * time.Minute)
 
         MODE_SERVER = "server"
         MODE_CLIENT = "client"
@@ -561,31 +564,31 @@ func init() <span class="cov1" title="1">{
 }</span>
 
 type Config struct {
-        LogLevel string       `yaml:"logLevel,omitempty"`
-        Server   ServerConfig `yaml:"server,omitempty"`
-        Client   ClientConfig `yaml:"client,omitempty"`
+        LogLevel string       `json:"logLevel,omitempty"`
+        Server   ServerConfig `json:"server,omitempty"`
+        Client   ClientConfig `json:"client,omitempty"`
 }
 
 // Yaml configuration for dyndns server
 type ServerConfig struct {
-        Port    int       `yaml:"port"`
-        Domains []string  `yaml:"domains,omitempty"`
-        SSL     SSLConfig `yaml:"ssl,omitempty"`
+        Port    int       `json:"port"`
+        Domains []string  `json:"domains,omitempty"`
+        SSL     SSLConfig `json:"ssl,omitempty"`
 }
 
 type SSLConfig struct {
-        Enabled bool   `yaml:"enabled,omitempty"`
-        Cert    string `yaml:"cert,omitempty"`
-        Key     string `yaml:"key,omitempty"`
+        Enabled bool   `json:"enabled,omitempty"`
+        Cert    string `json:"cert,omitempty"`
+        Key     string `json:"key,omitempty"`
 }
 
 // Yaml configuration for dyndns client
 type ClientConfig struct {
-        Token    string        `yaml:"token"`
-        Proxy    bool          `yaml:"proxy,omitempty"`
-        Domains  []string      `yaml:"domains"`
-        Interval time.Duration `yaml:"interval,omitempty"`
-        Endpoint string        `yaml:"endpoint,omitempty"`
+        Token    string   `json:"token"`
+        Proxy    bool     `json:"proxy,omitempty"`
+        Domains  []string `json:"domains"`
+        Interval Duration `json:"interval,omitempty"`
+        Endpoint string   `json:"endpoint,omitempty"`
 }
 
 // Validate the server part of the config
@@ -613,7 +616,7 @@ func (c *Config) validateClient() error <span class="cov7" title="13">{
                 return dyndns.ErrNoDomain{}
         }</span>
 
-        <span class="cov6" title="9">if c.Client.Interval &lt; time.Duration(30*time.Second) </span><span class="cov2" title="2">{
+        <span class="cov6" title="9">if c.Client.Interval &lt; Duration(30*time.Second) </span><span class="cov2" title="2">{
                 return &amp;ErrInvalidInterval{c.Client.Interval}
         }</span>
 
@@ -709,7 +712,41 @@ func setLogLevel(level string) error <span class="cov10" title="30">{
 		
 		<pre class="file" id="file6" style="display: none">package config
 
-import "time"
+import (
+        "encoding/json"
+        "time"
+)
+
+// Custom wrapper around time.Duration to implement json marshalling
+type Duration time.Duration
+
+func (d *Duration) UnmarshalJSON(b []byte) error <span class="cov10" title="19">{
+        var s string
+        err := json.Unmarshal(b, &amp;s)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov10" title="19">res, err := time.ParseDuration(s)
+        if err != nil </span><span class="cov3" title="2">{
+                return err
+        }</span>
+
+        <span class="cov9" title="17">*d = Duration(res)
+
+        return nil</span>
+}
+
+func (d Duration) MarshalJSON() ([]byte, error) <span class="cov1" title="1">{
+        return json.Marshal(d.String())
+}</span>
+
+func (d Duration) String() string <span class="cov7" title="9">{
+        return time.Duration(d).String()
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package config
 
 type ErrUnknownLogLevel struct {
         Level string
@@ -720,7 +757,7 @@ func (e *ErrUnknownLogLevel) Error() string <span class="cov0" title="0">{
 }</span>
 
 type ErrInvalidInterval struct {
-        Interval time.Duration
+        Interval Duration
 }
 
 func (e *ErrInvalidInterval) Error() string <span class="cov0" title="0">{
@@ -734,7 +771,7 @@ func (e ErrIncompleteSSLConfig) Error() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package dyndns
+		<pre class="file" id="file8" style="display: none">package dyndns
 
 import (
         "log/slog"
@@ -903,7 +940,7 @@ func Run(c Client, interval time.Duration) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package dyndns
+		<pre class="file" id="file9" style="display: none">package dyndns
 
 import (
         "fmt"
@@ -990,7 +1027,7 @@ func (e *ErrOperationFailed) Error() string <span class="cov0" title="0">{
 }</span>
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package dyndns
+		<pre class="file" id="file10" style="display: none">package dyndns
 
 import "fmt"
 
@@ -1033,7 +1070,7 @@ func (c *testClient) Update() error <span class="cov3" title="3">{
 }
 </pre>
 		
-		<pre class="file" id="file10" style="display: none">package dyndns
+		<pre class="file" id="file11" style="display: none">package dyndns
 
 import (
         "io"
@@ -1103,11 +1140,12 @@ func GetPublicIPv6() (string, error) <span class="cov5" title="4">{
 }
 </pre>
 		
-		<pre class="file" id="file11" style="display: none">package relay
+		<pre class="file" id="file12" style="display: none">package relay
 
 import (
         "log/slog"
         "os"
+        "time"
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
@@ -1167,11 +1205,11 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
                 os.Exit(1)
         }</span>
         <span class="cov0" title="0">r.Data().SetDomains(cfg.Client.Domains)
-        dyndns.Run(r, cfg.Client.Interval)</span>
+        dyndns.Run(r, time.Duration(cfg.Client.Interval))</span>
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package relay
+		<pre class="file" id="file13" style="display: none">package relay
 
 import (
         "bytes"
@@ -1260,7 +1298,7 @@ func (r *relay) Update() error <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">package server
+		<pre class="file" id="file14" style="display: none">package server
 
 import (
         "log/slog"
@@ -1322,7 +1360,7 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">package server
+		<pre class="file" id="file15" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1538,7 +1576,7 @@ func (s *Server) Run() error <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file15" style="display: none">package server
+		<pre class="file" id="file16" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1608,7 +1646,7 @@ func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8
 }
 </pre>
 		
-		<pre class="file" id="file16" style="display: none">package version
+		<pre class="file" id="file17" style="display: none">package version
 
 import (
         "runtime"
