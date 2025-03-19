@@ -85,7 +85,7 @@
 				
 				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
 				
-				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
+				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.1%)</option>
 				
 				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
 				
@@ -1374,6 +1374,7 @@ import (
         "github.com/heathcliff26/cloudflare-dyndns/pkg/client"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/heathcliff26/simple-fileserver/pkg/middleware"
 )
 
 type Server struct {
@@ -1393,7 +1394,6 @@ type RequestParams struct {
 }
 
 const (
-        MESSAGE_WRONG_METHOD           = "Wrong Method, expected GET or POST"
         MESSAGE_WRONG_CONTENT_TYPE     = "Wrong Content-Type, expected application/json"
         MESSAGE_REQUEST_PARSING_FAILED = "Failed to parse the request, received wrong or malformed parameters"
         MESSAGE_UNAUTHORIZED           = "Failed to authenticate to cloudflare"
@@ -1423,48 +1423,37 @@ func newDomainMap(domains []string) map[string]bool <span class="cov6" title="6"
 }
 
 // Ensures that all domains listed here are
-func (s *Server) verifyAllowedDomains(domains []string) bool <span class="cov8" title="12">{
-        if len(s.Domains) == 0 </span><span class="cov3" title="2">{
+func (s *Server) verifyAllowedDomains(domains []string) bool <span class="cov8" title="13">{
+        if len(s.Domains) == 0 </span><span class="cov2" title="2">{
                 return true
         }</span>
 
-        <span class="cov7" title="10">for _, domain := range domains </span><span class="cov7" title="9">{
+        <span class="cov7" title="11">for _, domain := range domains </span><span class="cov7" title="10">{
                 forbidden := true
                 d := strings.Split(domain, ".")
                 domain = ""
-                for i := len(d) - 1; i &gt;= 0; i-- </span><span class="cov10" title="21">{
-                        if domain == "" </span><span class="cov7" title="9">{
+                for i := len(d) - 1; i &gt;= 0; i-- </span><span class="cov10" title="23">{
+                        if domain == "" </span><span class="cov7" title="10">{
                                 domain = d[i]
-                        }</span> else<span class="cov8" title="12"> {
+                        }</span> else<span class="cov8" title="13"> {
                                 domain = d[i] + "." + domain
                         }</span>
-                        <span class="cov10" title="21">if s.Domains[domain] </span><span class="cov6" title="6">{
+                        <span class="cov10" title="23">if s.Domains[domain] </span><span class="cov6" title="7">{
                                 forbidden = false
                                 break</span>
                         }
                 }
-                <span class="cov7" title="9">if forbidden </span><span class="cov4" title="3">{
+                <span class="cov7" title="10">if forbidden </span><span class="cov4" title="3">{
                         return false
                 }</span>
         }
-        <span class="cov6" title="7">return true</span>
+        <span class="cov6" title="8">return true</span>
 }
 
 // Main function of the server, used to server requests from clients
-func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span class="cov8" title="12">{
-        if strings.Split(req.URL.String(), "?")[0] != "/" </span><span class="cov1" title="1">{
-                rw.WriteHeader(http.StatusNotFound)
-                return
-        }</span>
-        // Verify right method
-        <span class="cov8" title="11">if req.Method != http.MethodGet &amp;&amp; req.Method != http.MethodPost </span><span class="cov1" title="1">{
-                slog.Debug("Received request with wrong method type", "method", req.Method)
-                rw.WriteHeader(http.StatusMethodNotAllowed)
-                sendResponse(rw, MESSAGE_WRONG_METHOD, false)
-                return
-        }</span>
+func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span class="cov7" title="11">{
         // Verify right Content-Type
-        <span class="cov7" title="10">if req.Method == http.MethodPost &amp;&amp; req.Header.Get("Content-Type") != "application/json" </span><span class="cov1" title="1">{
+        if req.Method == http.MethodPost &amp;&amp; req.Header.Get("Content-Type") != "application/json" </span><span class="cov1" title="1">{
                 slog.Debug("Received request with wrong Content-Type", "Content-Type", req.Header.Get("Content-Type"))
                 rw.WriteHeader(http.StatusUnsupportedMediaType)
                 sendResponse(rw, MESSAGE_WRONG_CONTENT_TYPE, false)
@@ -1472,8 +1461,8 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span
         }</span>
 
         // Parse parameters
-        <span class="cov7" title="9">params := RequestParams{Proxy: true}
-        if req.Method == http.MethodPost </span><span class="cov7" title="8">{
+        <span class="cov7" title="10">params := RequestParams{Proxy: true}
+        if req.Method == http.MethodPost </span><span class="cov6" title="8">{
                 err := json.NewDecoder(req.Body).Decode(&amp;params)
                 if err != nil </span><span class="cov1" title="1">{
                         slog.Info("Failed to parse request from json", "err", err)
@@ -1481,7 +1470,7 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span
                         sendResponse(rw, MESSAGE_REQUEST_PARSING_FAILED, false)
                         return
                 }</span>
-        } else<span class="cov1" title="1"> {
+        } else<span class="cov2" title="2"> {
                 err := parseURLParams(req.URL, &amp;params)
                 if err != nil </span><span class="cov1" title="1">{
                         slog.Info("Failed to parse request from url parameters", "err", err)
@@ -1491,7 +1480,7 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span
                 }</span>
         }
 
-        <span class="cov6" title="7">if !s.verifyAllowedDomains(params.Domains) </span><span class="cov1" title="1">{
+        <span class="cov6" title="8">if !s.verifyAllowedDomains(params.Domains) </span><span class="cov1" title="1">{
                 slog.Info("Request contained domain(s) not on the whitelist")
                 rw.WriteHeader(http.StatusForbidden)
                 sendResponse(rw, MESSAGE_DOMAINS_FORBIDDEN, false)
@@ -1499,32 +1488,32 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span
         }</span>
 
         // Create client
-        <span class="cov6" title="6">c, err := s.createClient(params.Token, params.Proxy)
+        <span class="cov6" title="7">c, err := s.createClient(params.Token, params.Proxy)
         if err != nil </span><span class="cov1" title="1">{
                 slog.Info("Failed to create client", "err", err)
                 rw.WriteHeader(http.StatusUnauthorized)
                 sendResponse(rw, MESSAGE_UNAUTHORIZED, false)
                 return
         }</span>
-        <span class="cov5" title="5">err = c.Data().SetIPv4(params.IPv4)
+        <span class="cov6" title="6">err = c.Data().SetIPv4(params.IPv4)
         if err != nil </span><span class="cov1" title="1">{
                 slog.Info("Failed to set IPv4 for client", "err", err)
                 rw.WriteHeader(http.StatusBadRequest)
                 sendResponse(rw, MESSAGE_INVALID_IP, false)
                 return
         }</span>
-        <span class="cov5" title="4">err = c.Data().SetIPv6(params.IPv6)
+        <span class="cov5" title="5">err = c.Data().SetIPv6(params.IPv6)
         if err != nil </span><span class="cov1" title="1">{
                 slog.Info("Failed to set IPv6 for client", "err", err)
                 rw.WriteHeader(http.StatusBadRequest)
                 sendResponse(rw, MESSAGE_INVALID_IP, false)
                 return
         }</span>
-        <span class="cov4" title="3">c.Data().SetDomains(params.Domains)
+        <span class="cov4" title="4">c.Data().SetDomains(params.Domains)
 
         // Update records
         err = c.Update()
-        if err != nil </span><span class="cov3" title="2">{
+        if err != nil </span><span class="cov2" title="2">{
                 switch err.(type) </span>{
                 case dyndns.ErrNoIP:<span class="cov1" title="1">
                         slog.Info("Received request with no IP")
@@ -1548,7 +1537,7 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span
                         return</span>
                 }
         }
-        <span class="cov1" title="1">slog.Info("Successfully update record with the following request", slog.Group("req",
+        <span class="cov2" title="2">slog.Info("Successfully update record with the following request", slog.Group("req",
                 slog.String("domains", fmt.Sprintf("%v", params.Domains)),
                 slog.String("ipv4", params.IPv4),
                 slog.String("ipv6", params.IPv6),
@@ -1557,15 +1546,27 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span
         sendResponse(rw, MESSAGE_SUCCESS, true)</span>
 }
 
+// Create a new router to handle http traffic
+func (s *Server) router() *http.ServeMux <span class="cov7" title="11">{
+        router := http.NewServeMux()
+        router.HandleFunc(http.MethodGet+" /{$}", s.requestHandler)
+        router.HandleFunc(http.MethodPost+" /{$}", s.requestHandler)
+
+        return router
+}</span>
+
 // Starts the server and exits with error if that fails
 func (s *Server) Run() error <span class="cov0" title="0">{
-        http.HandleFunc("/", s.requestHandler)
+        server := http.Server{
+                Addr:    s.Addr,
+                Handler: middleware.Logging(s.router()),
+        }
 
         var err error
         if s.SSL.Enabled </span><span class="cov0" title="0">{
-                err = http.ListenAndServeTLS(s.Addr, s.SSL.Cert, s.SSL.Key, nil)
+                err = server.ListenAndServeTLS(s.SSL.Cert, s.SSL.Key)
         }</span> else<span class="cov0" title="0"> {
-                err = http.ListenAndServe(s.Addr, nil)
+                err = server.ListenAndServe()
         }</span>
         // This just means the server was closed after running
         <span class="cov0" title="0">if errors.Is(err, http.ErrServerClosed) </span><span class="cov0" title="0">{
@@ -1612,29 +1613,29 @@ func sendResponse(rw http.ResponseWriter, msg string, success bool) <span class=
 }
 
 // Parse the url parameters into the struct RequestParams
-func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8" title="8">{
+func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8" title="9">{
         params := url.Query()
         if params.Has("token") </span><span class="cov7" title="7">{
                 result.Token = params.Get("token")
-        }</span> else<span class="cov1" title="1"> {
+        }</span> else<span class="cov3" title="2"> {
                 // Compatibility for https://github.com/1rfsNet/Fritz-Box-Cloudflare-DynDNS
                 result.Token = params.Get("cf_key")
         }</span>
-        <span class="cov8" title="8">var s string
-        if params.Has("domains") </span><span class="cov7" title="7">{
+        <span class="cov8" title="9">var s string
+        if params.Has("domains") </span><span class="cov8" title="8">{
                 s = params.Get("domains")
         }</span> else<span class="cov1" title="1"> {
                 // Compatibility for https://github.com/1rfsNet/Fritz-Box-Cloudflare-DynDNS
                 s = params.Get("domain")
         }</span>
-        <span class="cov8" title="8">result.Domains = strings.Split(s, ",")
-        if params.Has("ipv4") </span><span class="cov7" title="7">{
+        <span class="cov8" title="9">result.Domains = strings.Split(s, ",")
+        if params.Has("ipv4") </span><span class="cov8" title="8">{
                 result.IPv4 = params.Get("ipv4")
         }</span>
-        <span class="cov8" title="8">if params.Has("ipv6") </span><span class="cov7" title="7">{
+        <span class="cov8" title="9">if params.Has("ipv6") </span><span class="cov8" title="8">{
                 result.IPv6 = params.Get("ipv6")
         }</span>
-        <span class="cov8" title="8">if params.Has("proxy") </span><span class="cov7" title="7">{
+        <span class="cov8" title="9">if params.Has("proxy") </span><span class="cov7" title="7">{
                 s = params.Get("proxy")
                 var err error
                 result.Proxy, err = strconv.ParseBool(s)
@@ -1642,7 +1643,7 @@ func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8
                         return err
                 }</span>
         }
-        <span class="cov7" title="7">return nil</span>
+        <span class="cov8" title="8">return nil</span>
 }
 </pre>
 		
