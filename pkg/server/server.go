@@ -12,6 +12,7 @@ import (
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/client"
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/config"
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+	"github.com/heathcliff26/simple-fileserver/pkg/middleware"
 )
 
 type Server struct {
@@ -31,7 +32,6 @@ type RequestParams struct {
 }
 
 const (
-	MESSAGE_WRONG_METHOD           = "Wrong Method, expected GET or POST"
 	MESSAGE_WRONG_CONTENT_TYPE     = "Wrong Content-Type, expected application/json"
 	MESSAGE_REQUEST_PARSING_FAILED = "Failed to parse the request, received wrong or malformed parameters"
 	MESSAGE_UNAUTHORIZED           = "Failed to authenticate to cloudflare"
@@ -90,17 +90,6 @@ func (s *Server) verifyAllowedDomains(domains []string) bool {
 
 // Main function of the server, used to server requests from clients
 func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) {
-	if strings.Split(req.URL.String(), "?")[0] != "/" {
-		rw.WriteHeader(http.StatusNotFound)
-		return
-	}
-	// Verify right method
-	if req.Method != http.MethodGet && req.Method != http.MethodPost {
-		slog.Debug("Received request with wrong method type", "method", req.Method)
-		rw.WriteHeader(http.StatusMethodNotAllowed)
-		sendResponse(rw, MESSAGE_WRONG_METHOD, false)
-		return
-	}
 	// Verify right Content-Type
 	if req.Method == http.MethodPost && req.Header.Get("Content-Type") != "application/json" {
 		slog.Debug("Received request with wrong Content-Type", "Content-Type", req.Header.Get("Content-Type"))
@@ -195,15 +184,27 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) {
 	sendResponse(rw, MESSAGE_SUCCESS, true)
 }
 
+// Create a new router to handle http traffic
+func (s *Server) router() *http.ServeMux {
+	router := http.NewServeMux()
+	router.HandleFunc(http.MethodGet+" /{$}", s.requestHandler)
+	router.HandleFunc(http.MethodPost+" /{$}", s.requestHandler)
+
+	return router
+}
+
 // Starts the server and exits with error if that fails
 func (s *Server) Run() error {
-	http.HandleFunc("/", s.requestHandler)
+	server := http.Server{
+		Addr:    s.Addr,
+		Handler: middleware.Logging(s.router()),
+	}
 
 	var err error
 	if s.SSL.Enabled {
-		err = http.ListenAndServeTLS(s.Addr, s.SSL.Cert, s.SSL.Key, nil)
+		err = server.ListenAndServeTLS(s.SSL.Cert, s.SSL.Key)
 	} else {
-		err = http.ListenAndServe(s.Addr, nil)
+		err = server.ListenAndServe()
 	}
 	// This just means the server was closed after running
 	if errors.Is(err, http.ErrServerClosed) {

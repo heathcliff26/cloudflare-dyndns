@@ -80,10 +80,6 @@ func TestRequestHandler(t *testing.T) {
 			Method: http.MethodPut,
 			Target: "/",
 			Status: http.StatusMethodNotAllowed,
-			Response: Response{
-				Message: MESSAGE_WRONG_METHOD,
-				Success: false,
-			},
 		},
 		{
 			Name:   "ParseErrorGet",
@@ -178,7 +174,17 @@ func TestRequestHandler(t *testing.T) {
 			},
 		},
 		{
-			Name:   "Success",
+			Name:   "GetSuccess",
+			Method: http.MethodGet,
+			Target: "/?cf_key=testtoken&domains=foo.example.org&ipv4=100.100.100.100&ipv6=fd00::dead",
+			Status: http.StatusOK,
+			Response: Response{
+				Message: MESSAGE_SUCCESS,
+				Success: true,
+			},
+		},
+		{
+			Name:   "PostSuccess",
 			Method: http.MethodPost,
 			Target: "/",
 			Request: RequestParams{
@@ -209,21 +215,21 @@ func TestRequestHandler(t *testing.T) {
 			req.Header.Set("Content-Type", "application/json")
 			rr := httptest.NewRecorder()
 
-			s.requestHandler(rr, req)
+			s.router().ServeHTTP(rr, req)
 
 			assert := assert.New(t)
 
 			res := rr.Result()
 			assert.Equal(tCase.Status, res.StatusCode)
-			if res.StatusCode == http.StatusNotFound {
+			if tCase.Response == (Response{}) {
 				// There is no body in this case, end test here
 				return
 			}
 
 			var response Response
 			err := json.NewDecoder(res.Body).Decode(&response)
-			if !assert.Nil(err) {
-				t.Fatalf("Failed to decode response: %v", err)
+			if !assert.NoError(err) {
+				t.FailNow()
 			}
 			assert.Equal(tCase.Response, response)
 		})
