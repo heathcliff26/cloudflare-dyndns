@@ -9,7 +9,7 @@ import (
 
 // Validate if a string is a valid ip
 func validIP(ip string) bool {
-	return !(net.ParseIP(ip) == nil)
+	return net.ParseIP(ip) != nil
 }
 
 // Validate if a string is an IPv4

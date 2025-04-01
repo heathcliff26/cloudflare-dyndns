@@ -141,10 +141,12 @@ func (c *cloudflareClient) updateRecord(zone string, domain string, recordType s
 		method = http.MethodPut
 		url = url + "/" + recordId
 	}
+
 	var ip string
-	if recordType == "A" {
+	switch recordType {
+	case "A":
 		ip = c.Data().IPv4()
-	} else if recordType == "AAAA" {
+	case "AAAA":
 		ip = c.Data().IPv6()
 	}
 
@@ -195,7 +197,7 @@ func (c *cloudflareClient) Update() error {
 		}
 
 		// Iterate over all records and update the A and AAAA record if necessary
-		var v4, v6 bool = false, false
+		var v4, v6 = false, false
 		for _, record := range records {
 			slog.Debug("Received record",
 				slog.String("domain", domain),
