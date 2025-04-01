@@ -3,8 +3,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/heathcliff26/simple-fileserver v1.2.2 h1:tSWjVerIeoV2wZyaqeZmOriM6BuhNlBTNzdfNutM+zk=
-github.com/heathcliff26/simple-fileserver v1.2.2/go.mod h1:euvfoiR9oRRu4I9AsHYhMPZ2a0EkRyTggecN9Z4tHJ4=
+github.com/heathcliff26/simple-fileserver v1.2.3 h1:wzQXxn0JXTlC754J1QtNU086s3lpdW59Mn7B7DlDlwc=
+github.com/heathcliff26/simple-fileserver v1.2.3/go.mod h1:euvfoiR9oRRu4I9AsHYhMPZ2a0EkRyTggecN9Z4tHJ4=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
