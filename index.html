@@ -57,7 +57,7 @@
 				
 				<option value="file0">github.com/heathcliff26/cloudflare-dyndns/cmd/main.go (0.0%)</option>
 				
-				<option value="file1">github.com/heathcliff26/cloudflare-dyndns/pkg/client/client.go (77.5%)</option>
+				<option value="file1">github.com/heathcliff26/cloudflare-dyndns/pkg/client/client.go (77.3%)</option>
 				
 				<option value="file2">github.com/heathcliff26/cloudflare-dyndns/pkg/client/cmd.go (0.0%)</option>
 				
@@ -266,12 +266,14 @@ func (c *cloudflareClient) updateRecord(zone string, domain string, recordType s
                 method = http.MethodPut
                 url = url + "/" + recordId
         }</span>
+
         <span class="cov6" title="18">var ip string
-        if recordType == "A" </span><span class="cov5" title="9">{
-                ip = c.Data().IPv4()
-        }</span> else<span class="cov5" title="9"> if recordType == "AAAA" </span><span class="cov5" title="9">{
-                ip = c.Data().IPv6()
-        }</span>
+        switch recordType </span>{
+        case "A":<span class="cov5" title="9">
+                ip = c.Data().IPv4()</span>
+        case "AAAA":<span class="cov5" title="9">
+                ip = c.Data().IPv6()</span>
+        }
 
         <span class="cov6" title="18">record := cloudflareRecord{
                 Content: ip,
@@ -320,7 +322,7 @@ func (c *cloudflareClient) Update() error <span class="cov6" title="16">{
                 }</span>
 
                 // Iterate over all records and update the A and AAAA record if necessary
-                <span class="cov6" title="15">var v4, v6 bool = false, false
+                <span class="cov6" title="15">var v4, v6 = false, false
                 for _, record := range records </span><span class="cov6" title="18">{
                         slog.Debug("Received record",
                                 slog.String("domain", domain),
@@ -1062,7 +1064,7 @@ func (c *testClient) Update() error <span class="cov3" title="3">{
                 return err
         }</span>
         <span class="cov3" title="3">if c.FailUpdate </span><span class="cov1" title="1">{
-                return fmt.Errorf("I'm instructed to throw an error")
+                return fmt.Errorf("i'm instructed to throw an error")
         }</span>
         <span class="cov2" title="2">c.UpdateCount++
 
@@ -1081,7 +1083,7 @@ import (
 
 // Validate if a string is a valid ip
 func validIP(ip string) bool <span class="cov10" title="21">{
-        return !(net.ParseIP(ip) == nil)
+        return net.ParseIP(ip) != nil
 }</span>
 
 // Validate if a string is an IPv4
