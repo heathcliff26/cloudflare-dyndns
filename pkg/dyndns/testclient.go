@@ -33,7 +33,7 @@ func (c *testClient) Update() error {
 		return err
 	}
 	if c.FailUpdate {
-		return fmt.Errorf("I'm instructed to throw an error")
+		return fmt.Errorf("i'm instructed to throw an error")
 	}
 	c.UpdateCount++
 
