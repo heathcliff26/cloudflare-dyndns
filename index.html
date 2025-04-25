@@ -658,6 +658,7 @@ func LoadConfig(path string, mode string, env bool) (Config, error) <span class=
                 return c, nil
         }</span>
 
+        // #nosec G304 -- Local users can decide on their file path themselves.
         <span class="cov9" title="23">f, err := os.ReadFile(path)
         if err != nil </span><span class="cov1" title="1">{
                 return Config{}, err
@@ -1102,7 +1103,7 @@ func HasIPv6Support() bool <span class="cov5" title="5">{
         if err != nil </span><span class="cov5" title="5">{
                 return false
         }</span>
-        <span class="cov0" title="0">conn.Close()
+        <span class="cov0" title="0">defer conn.Close()
         return true</span>
 }
 
@@ -1372,6 +1373,7 @@ import (
         "net/http"
         "strconv"
         "strings"
+        "time"
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/client"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
@@ -1560,8 +1562,10 @@ func (s *Server) router() *http.ServeMux <span class="cov7" title="11">{
 // Starts the server and exits with error if that fails
 func (s *Server) Run() error <span class="cov0" title="0">{
         server := http.Server{
-                Addr:    s.Addr,
-                Handler: middleware.Logging(s.router()),
+                Addr:         s.Addr,
+                Handler:      middleware.Logging(s.router()),
+                ReadTimeout:  10 * time.Second,
+                WriteTimeout: 10 * time.Second,
         }
 
         var err error
