@@ -28,7 +28,7 @@ func HasIPv6Support() bool {
 	if err != nil {
 		return false
 	}
-	conn.Close()
+	defer conn.Close()
 	return true
 }
 
