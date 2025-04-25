@@ -31,6 +31,9 @@ validate: ## Validate that all generated files are up to date
 package-openwrt: ## Build Package for OpenWRT
 	hack/build-package-openwrt.sh
 
+gosec: ## Scan code for vulnerabilities using gosec
+	gosec ./...
+
 clean: ## Clean build artifacts
 	rm -rf bin coverprofiles coverprofile.out packages/openwrt/*.tar.gz packages/openwrt/control/control
 
@@ -51,6 +54,7 @@ help: ## Show this help message
 	fmt \
 	validate \
 	package-openwrt \
+	gosec \
 	clean \
 	help \
 	$(NULL)
