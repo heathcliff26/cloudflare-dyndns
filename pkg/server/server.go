@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/client"
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/config"
@@ -196,8 +197,10 @@ func (s *Server) router() *http.ServeMux {
 // Starts the server and exits with error if that fails
 func (s *Server) Run() error {
 	server := http.Server{
-		Addr:    s.Addr,
-		Handler: middleware.Logging(s.router()),
+		Addr:         s.Addr,
+		Handler:      middleware.Logging(s.router()),
+		ReadTimeout:  10 * time.Second,
+		WriteTimeout: 10 * time.Second,
 	}
 
 	var err error
