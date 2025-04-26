@@ -4,42 +4,55 @@ REPOSITORY ?= localhost
 CONTAINER_NAME ?= cloudflare-dyndns
 TAG ?= latest
 
-build: ## Build the binary
+# Build the binary
+build:
 	hack/build.sh
 
-image: ## Build the container image
+# Build the container image
+image:
 	podman build -t $(REPOSITORY)/$(CONTAINER_NAME):$(TAG) .
 
-test: ## Run unit-tests
+# Run unit-tests
+test:
 	go test -v -race -coverprofile=coverprofile.out ./...
 
-update-deps: ## Update dependencies
+# Update dependencies
+update-deps:
 	hack/update-deps.sh
 
-coverprofile: ## Generate cover profile
+# Generate cover profile
+coverprofile:
 	hack/coverprofile.sh
 
-lint: ## Run linter
+# Run linter
+lint:
 	golangci-lint run -v
 
-fmt: ## Format code
+# Format code
+fmt:
 	gofmt -s -w ./cmd ./pkg
 
-validate: ## Validate that all generated files are up to date
+# Validate that all generated files are up to date
+validate:
 	hack/validate.sh
 
-package-openwrt: ## Build Package for OpenWRT
+# Build Package for OpenWRT
+package-openwrt:
 	hack/build-package-openwrt.sh
 
-gosec: ## Scan code for vulnerabilities using gosec
+# Scan code for vulnerabilities using gosec
+gosec:
 	gosec ./...
 
-clean: ## Clean build artifacts
+# Clean build artifacts
+clean:
 	rm -rf bin coverprofiles coverprofile.out packages/openwrt/*.tar.gz packages/openwrt/control/control
 
-help: ## Show this help message
+# Show this help message
+help:
 	@echo "Available targets:"
-	@grep -E '^[a-zA-Z_-]+:.*?##' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "%-20s %s\n", $$1, $$2}'
+	@echo ""
+	@awk '/^#/{c=substr($$0,3);next}c&&/^[[:alpha:]][[:alnum:]_-]+:/{print substr($$1,1,index($$1,":")),c}1{c=0}' $(MAKEFILE_LIST) | column -s: -t
 	@echo ""
 	@echo "Run 'make <target>' to execute a specific target."
 
