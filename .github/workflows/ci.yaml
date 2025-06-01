@@ -83,19 +83,11 @@ jobs:
       - unit-tests
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-          - arch: arm64
     with:
       release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
-      goos: "linux"
-      goarch: "${{ matrix.arch }}"
-      artifact: "bin/cloudflare-dyndns-${{ matrix.arch }}"
-      artifact-name: "cloudflare-dyndns-${{ matrix.arch }}"
-      cmd: "hack/build.sh cloudflare-dyndns-${{ matrix.arch }}"
+      artifact: "bin/cloudflare-dyndns-*"
+      artifact-name: "cloudflare-dyndns"
+      cmd: "make build-all"
     secrets: inherit
 
   build-image:
