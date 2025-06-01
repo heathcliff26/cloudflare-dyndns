@@ -2,16 +2,15 @@
 
 set -e
 
-base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
+base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 pkg_dir="${base_dir}/packages/openwrt"
 
-export GOOS=linux
 export RELEASE_VERSION="${RELEASE_VERSION:-devel}"
 
 build_package() {
-    export GOARCH="${1}"
+    arch="${1}"
 
-    case "${GOARCH}" in
+    case "${arch}" in
     "amd64")
         export PKG_ARCH="x86_64"
         ;;
@@ -19,13 +18,9 @@ build_package() {
         export PKG_ARCH="aarch64"
         ;;
     *)
-        echo "Unsupported GOARCH ${GOARCH}"
-        exit 1
+        export PKG_ARCH="${arch}"
         ;;
     esac
-
-    echo "Building binary for ${GOARCH}"
-    "${base_dir}"/hack/build.sh "cloudflare-dyndns-${GOARCH}"
 
     echo "Creating control file from template"
     envsubst <"${pkg_dir}/control.template" >"${pkg_dir}/control/control"
@@ -37,7 +32,7 @@ build_package() {
 
     echo "Bundling data folder"
     mkdir -p "${pkg_dir}/data/usr/sbin"
-    cp "${base_dir}/bin/cloudflare-dyndns-${GOARCH}" "${pkg_dir}/data/usr/sbin/cloudflare-dyndns"
+    cp "${base_dir}/bin/cloudflare-dyndns-${arch}-compressed" "${pkg_dir}/data/usr/sbin/cloudflare-dyndns"
     pushd "${pkg_dir}/data" >/dev/null
     tar --numeric-owner --group=0 --owner=0 -czf ../data.tar.gz ./*
     popd >/dev/null
@@ -47,6 +42,9 @@ build_package() {
     popd >/dev/null
 }
 
-for arch in "amd64" "arm64"; do
+# shellcheck source=build-all.sh
+source "${base_dir}"/hack/build-all.sh
+
+for arch in "${BUILD_ARCHS[@]}"; do
     build_package "${arch}"
 done

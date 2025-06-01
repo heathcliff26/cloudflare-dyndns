@@ -8,6 +8,10 @@ TAG ?= latest
 build:
 	hack/build.sh
 
+# Build the binary
+build-all:
+	hack/build-all.sh
+
 # Build the container image
 image:
 	podman build -t $(REPOSITORY)/$(CONTAINER_NAME):$(TAG) .
@@ -59,6 +63,7 @@ help:
 .PHONY: \
 	default \
 	build \
+	build-all \
 	image \
 	test \
 	update-deps \
