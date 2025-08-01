@@ -3,10 +3,10 @@ module github.com/heathcliff26/cloudflare-dyndns
 go 1.24.0
 
 require (
-	github.com/heathcliff26/simple-fileserver v1.2.6
+	github.com/heathcliff26/simple-fileserver v1.2.7
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
-	sigs.k8s.io/yaml v1.5.0
+	sigs.k8s.io/yaml v1.6.0
 )
 
 require (
