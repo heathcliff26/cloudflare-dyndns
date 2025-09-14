@@ -4,7 +4,7 @@ set -e
 
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
 
-folders=("bin" "coverprofiles" "tmp" "x86_64" "aarch64")
+folders=("bin" "coverprofiles" "tmp" "x86_64" "aarch64" "packages/openwrt/data/usr/sbin")
 files=("coverprofile.out" "packages/openwrt/control/control")
 
 for folder in "${folders[@]}"; do
