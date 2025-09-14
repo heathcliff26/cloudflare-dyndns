@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="service">
+    <id>io.github.heathcliff26.cloudflare-dyndns</id>
+
+    <name>cloudflare-dyndns</name>
+    <summary>DynDNS client or relay server for cloudflare</summary>
+
+    <metadata_license>MIT</metadata_license>
+    <project_license>Apache-2.0</project_license>
+
+    <description>
+        <p>
+            DynDNS client or relay server for cloudflare, implemented in golang.
+        </p>
+    </description>
+
+    <url type="homepage">https://github.com/heathcliff26/cloudflare-dyndns</url>
+    <developer id="io.github.heathcliff26">
+        <name>Heathcliff</name>
+    </developer>
+
+    <launchable type="service">cloudflare-dyndns-client.service</launchable>
+    <launchable type="service">cloudflare-dyndns-relay.service</launchable>
+    <launchable type="service">cloudflare-dyndns-server.service</launchable>
+
+    <categories>
+        <category>Network</category>
+        <category>Utility</category>
+    </categories>
+</component>

@@ -1,0 +1,12 @@
+[Unit]
+Description=DynDNS client or relay server for cloudflare, implemented in golang
+After=network.target
+Wants=network-online.target
+
+[Service]
+Restart=always
+Type=simple
+ExecStart=/usr/bin/cloudflare-dyndns client --config /etc/cloudflare-dyndns/config.yaml
+
+[Install]
+WantedBy=multi-user.target

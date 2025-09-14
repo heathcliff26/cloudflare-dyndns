@@ -40,6 +40,10 @@ fmt:
 validate:
 	hack/validate.sh
 
+# Validate the appstream metainfo file
+validate-metainfo:
+	appstreamcli validate io.github.heathcliff26.cloudflare-dyndns.metainfo.xml
+
 # Build Package for OpenWRT
 package-openwrt:
 	hack/build-package-openwrt.sh
@@ -48,9 +52,18 @@ package-openwrt:
 gosec:
 	gosec ./...
 
+# Build rpm with code in current workdir using packit
+packit:
+	packit build locally
+
+# Build rpm of upstream code using packit + mock
+packit-mock:
+	packit build in-mock --resultdir tmp
+	rm *.src.rpm
+
 # Clean build artifacts
 clean:
-	rm -rf bin coverprofiles coverprofile.out packages/openwrt/*.tar.gz packages/openwrt/control/control
+	hack/clean.sh
 
 # Show this help message
 help:
@@ -71,8 +84,11 @@ help:
 	lint \
 	fmt \
 	validate \
+	validate-metainfo \
 	package-openwrt \
 	gosec \
+	packit \
+	packit-mock \
 	clean \
 	help \
 	$(NULL)
