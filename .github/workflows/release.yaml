@@ -59,3 +59,4 @@ jobs:
       release-artifacts: "release/*"
       artifacts: "{cloudflare-dyndns,cloudflare-dyndns-openwrt}"
       prerelease: ${{ inputs.prerelease }}
+    secrets: inherit
