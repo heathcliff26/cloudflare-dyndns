@@ -30,3 +30,14 @@ client:
   interval: "5m"
   # Endpoint to call when using relay mode
   endpoint: ""
+
+# Config for exposing app metrics
+metrics:
+  # Enable metrics collection and serving. Default: false
+  enabled: false
+  # Port to serve metrics on. Metrics will be served on /metrics endpoint. Default: 9090
+  port: 9090
+  # Enable Go runtime metrics. Default: true
+  goCollector: true
+  # Enable process metrics. Default: true
+  processCollector: true

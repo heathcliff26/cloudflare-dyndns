@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 	"sigs.k8s.io/yaml"
 )
 
@@ -34,9 +35,10 @@ func init() {
 }
 
 type Config struct {
-	LogLevel string       `json:"logLevel,omitempty"`
-	Server   ServerConfig `json:"server,omitempty"`
-	Client   ClientConfig `json:"client,omitempty"`
+	LogLevel string                 `json:"logLevel,omitempty"`
+	Server   ServerConfig           `json:"server,omitempty"`
+	Client   ClientConfig           `json:"client,omitempty"`
+	Metrics  metrics.MetricsOptions `json:"metrics,omitempty"`
 }
 
 // Yaml configuration for dyndns server
@@ -109,6 +111,7 @@ func DefaultConfig() Config {
 			Proxy:    true,
 			Interval: DEFAULT_CLIENT_INTERVAL,
 		},
+		Metrics: metrics.DefaultMetricsOptions(),
 	}
 }
 

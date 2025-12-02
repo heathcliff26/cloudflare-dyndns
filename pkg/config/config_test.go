@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -24,6 +25,12 @@ func TestValidConfigs(t *testing.T) {
 			Interval: Duration(5 * time.Minute),
 			Endpoint: "dyndns.example.org",
 		},
+		Metrics: metrics.MetricsOptions{
+			Enabled:          true,
+			Port:             12345,
+			GoCollector:      false,
+			ProcessCollector: false,
+		},
 	}
 	c2 := Config{
 		LogLevel: "debug",
@@ -38,6 +45,7 @@ func TestValidConfigs(t *testing.T) {
 			Interval: Duration(10 * time.Minute),
 			Endpoint: "dyndns.example.net",
 		},
+		Metrics: metrics.DefaultMetricsOptions(),
 	}
 	ssl := DefaultConfig()
 	ssl.Server.Port = 443
@@ -224,6 +232,7 @@ func TestEnvSubstitution(t *testing.T) {
 			Interval: Duration(15 * time.Minute),
 			Endpoint: "dyndns.example.org",
 		},
+		Metrics: metrics.DefaultMetricsOptions(),
 	}
 	t.Setenv("DYNDNS_TEST_LOG_LEVEL", c.LogLevel)
 	t.Setenv("DYNDNS_TEST_SERVER_PORT", strconv.Itoa(c.Server.Port))
