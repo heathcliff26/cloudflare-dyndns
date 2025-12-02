@@ -79,17 +79,19 @@
 				
 				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
 				
-				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/cmd.go (0.0%)</option>
+				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/metrics/metrics.go (88.9%)</option>
 				
-				<option value="file13">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
+				<option value="file13">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/cmd.go (0.0%)</option>
 				
-				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
+				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
 				
-				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.1%)</option>
+				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
 				
-				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
+				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.1%)</option>
 				
-				<option value="file17">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (90.0%)</option>
+				<option value="file17">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (83.3%)</option>
+				
+				<option value="file18">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (90.0%)</option>
 				
 				</select>
 			</div>
@@ -386,6 +388,7 @@ import (
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
         "github.com/spf13/cobra"
 )
 
@@ -436,7 +439,9 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
                 os.Exit(1)
         }</span>
 
-        <span class="cov0" title="0">c, err := NewCloudflareClient(cfg.Client.Token, cfg.Client.Proxy)
+        <span class="cov0" title="0">metrics.InitMetricsAndServe(cfg.Metrics)
+
+        c, err := NewCloudflareClient(cfg.Client.Token, cfg.Client.Proxy)
         if err != nil </span><span class="cov0" title="0">{
                 slog.Error("Could not create new client", "err", err)
                 os.Exit(1)
@@ -540,6 +545,7 @@ import (
         "time"
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
         "sigs.k8s.io/yaml"
 )
 
@@ -566,9 +572,10 @@ func init() <span class="cov1" title="1">{
 }</span>
 
 type Config struct {
-        LogLevel string       `json:"logLevel,omitempty"`
-        Server   ServerConfig `json:"server,omitempty"`
-        Client   ClientConfig `json:"client,omitempty"`
+        LogLevel string                 `json:"logLevel,omitempty"`
+        Server   ServerConfig           `json:"server,omitempty"`
+        Client   ClientConfig           `json:"client,omitempty"`
+        Metrics  metrics.MetricsOptions `json:"metrics,omitempty"`
 }
 
 // Yaml configuration for dyndns server
@@ -641,6 +648,7 @@ func DefaultConfig() Config <span class="cov9" title="26">{
                         Proxy:    true,
                         Interval: DEFAULT_CLIENT_INTERVAL,
                 },
+                Metrics: metrics.DefaultMetricsOptions(),
         }
 }</span>
 
@@ -1143,7 +1151,112 @@ func GetPublicIPv6() (string, error) <span class="cov5" title="4">{
 }
 </pre>
 		
-		<pre class="file" id="file12" style="display: none">package relay
+		<pre class="file" id="file12" style="display: none">package metrics
+
+import (
+        "context"
+        "errors"
+        "fmt"
+        "log/slog"
+        "net/http"
+        "os"
+        "time"
+
+        "github.com/prometheus/client_golang/prometheus"
+        "github.com/prometheus/client_golang/prometheus/collectors"
+        "github.com/prometheus/client_golang/prometheus/promhttp"
+)
+
+const DefaultMetricServerPort = 9090
+
+// The internal instance for metrics server
+var ms *metricsServer
+
+type metricsServer struct {
+        port     int
+        registry *prometheus.Registry
+        server   *http.Server
+}
+
+type MetricsOptions struct {
+        // Enable determines if metrics should be collected and served
+        Enabled bool `json:"enabled,omitempty"`
+        // The port to serve metrics on. Metrics will be served on /metrics endpoint
+        Port int `json:"port,omitempty"`
+        // Enable Go runtime metrics
+        GoCollector bool `json:"goCollector,omitempty"`
+        // Enable process metrics
+        ProcessCollector bool `json:"processCollector,omitempty"`
+}
+
+func DefaultMetricsOptions() MetricsOptions <span class="cov0" title="0">{
+        return MetricsOptions{
+                Enabled:          false,
+                Port:             DefaultMetricServerPort,
+                GoCollector:      true,
+                ProcessCollector: true,
+        }
+}</span>
+
+// Initialize the metrics package to enable collecting and serving metrics.
+// Will call os.Exit(1) if the server fails to start.
+func InitMetricsAndServe(opts MetricsOptions) <span class="cov9" title="5">{
+        if !opts.Enabled </span><span class="cov1" title="1">{
+                slog.Debug("Metrics are disabled")
+                return
+        }</span>
+
+        <span class="cov7" title="4">reg := prometheus.NewRegistry()
+
+        if opts.GoCollector </span><span class="cov4" title="2">{
+                slog.Debug("Enabling Go runtime metrics collector")
+                reg.MustRegister(collectors.NewGoCollector())
+        }</span>
+
+        <span class="cov7" title="4">if opts.ProcessCollector </span><span class="cov4" title="2">{
+                slog.Debug("Enabling process metrics collector")
+                reg.MustRegister(collectors.NewProcessCollector(collectors.ProcessCollectorOpts{}))
+        }</span>
+
+        <span class="cov7" title="4">ms = &amp;metricsServer{
+                port:     opts.Port,
+                registry: reg,
+        }
+
+        go serve()</span>
+}
+
+func serve() <span class="cov7" title="4">{
+        ms.server = &amp;http.Server{
+                Addr:         fmt.Sprintf(":%d", ms.port),
+                Handler:      promhttp.HandlerFor(ms.registry, promhttp.HandlerOpts{Registry: ms.registry}),
+                ReadTimeout:  10 * time.Second,
+                WriteTimeout: 10 * time.Second,
+        }
+
+        slog.Info("Starting metrics server", slog.String("addr", ms.server.Addr))
+        err := ms.server.ListenAndServe()
+        if err != nil &amp;&amp; !errors.Is(err, http.ErrServerClosed) </span><span class="cov0" title="0">{
+                slog.Error("Failed to start metrics server", "err", err)
+                os.Exit(1)
+        }</span>
+}
+
+// Shutdown metric server gracefully and set the instance to nil
+func Close() error <span class="cov10" title="6">{
+        if ms == nil </span><span class="cov1" title="1">{
+                return nil
+        }</span>
+        <span class="cov9" title="5">if ms.server == nil </span><span class="cov1" title="1">{
+                ms = nil
+                return nil
+        }</span>
+        <span class="cov7" title="4">defer func() </span><span class="cov7" title="4">{ ms = nil }</span>()
+        <span class="cov7" title="4">return ms.server.Shutdown(context.Background())</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package relay
 
 import (
         "log/slog"
@@ -1152,6 +1265,7 @@ import (
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
         "github.com/spf13/cobra"
 )
 
@@ -1202,7 +1316,9 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
                 os.Exit(1)
         }</span>
 
-        <span class="cov0" title="0">r, err := NewRelay(cfg.Client.Token, cfg.Client.Proxy, cfg.Client.Endpoint)
+        <span class="cov0" title="0">metrics.InitMetricsAndServe(cfg.Metrics)
+
+        r, err := NewRelay(cfg.Client.Token, cfg.Client.Proxy, cfg.Client.Endpoint)
         if err != nil </span><span class="cov0" title="0">{
                 slog.Error("Could not create new client", "err", err)
                 os.Exit(1)
@@ -1212,7 +1328,7 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">package relay
+		<pre class="file" id="file14" style="display: none">package relay
 
 import (
         "bytes"
@@ -1301,13 +1417,14 @@ func (r *relay) Update() error <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">package server
+		<pre class="file" id="file15" style="display: none">package server
 
 import (
         "log/slog"
         "os"
 
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
         "github.com/spf13/cobra"
 )
 
@@ -1354,7 +1471,9 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
                 os.Exit(1)
         }</span>
 
-        <span class="cov0" title="0">s := NewServer(cfg.Server)
+        <span class="cov0" title="0">metrics.InitMetricsAndServe(cfg.Metrics)
+
+        s := NewServer(cfg.Server)
         err = s.Run()
         if err != nil </span><span class="cov0" title="0">{
                 slog.Error("Failed to start the server", "err", err)
@@ -1363,7 +1482,7 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file15" style="display: none">package server
+		<pre class="file" id="file16" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1583,7 +1702,7 @@ func (s *Server) Run() error <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file16" style="display: none">package server
+		<pre class="file" id="file17" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1653,7 +1772,7 @@ func parseURLParams(url *url.URL, result *RequestParams) error <span class="cov8
 }
 </pre>
 		
-		<pre class="file" id="file17" style="display: none">package version
+		<pre class="file" id="file18" style="display: none">package version
 
 import (
         "runtime"
