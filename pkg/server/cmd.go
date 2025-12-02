@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/config"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 	"github.com/spf13/cobra"
 )
 
@@ -50,6 +51,8 @@ func run(configPath string, env bool) {
 		slog.Error("Could not load configuration", slog.String("path", configPath), slog.String("err", err.Error()))
 		os.Exit(1)
 	}
+
+	metrics.InitMetricsAndServe(cfg.Metrics)
 
 	s := NewServer(cfg.Server)
 	err = s.Run()
