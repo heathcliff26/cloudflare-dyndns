@@ -71,7 +71,7 @@
 				
 				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
 				
-				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (60.9%)</option>
+				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (63.9%)</option>
 				
 				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
 				
@@ -932,20 +932,17 @@ func Run(c Client, interval time.Duration) <span class="cov0" title="0">{
         signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
         var updated bool
+        ticker := time.NewTicker(interval)
+        defer ticker.Stop()
+
         for </span><span class="cov0" title="0">{
                 runUpdate(c, &amp;updated)
 
-                var elapsedTime time.Duration = 0
-                for elapsedTime &lt; interval </span><span class="cov0" title="0">{
-                        timer := time.NewTimer(1 * time.Second)
-                        select </span>{
-                        case &lt;-timer.C:<span class="cov0" title="0">
-                                elapsedTime += time.Duration(1 * time.Second)</span>
-                        case &lt;-quit:<span class="cov0" title="0">
-                                timer.Stop()
-                                slog.Info("Received SIGTERM, shutting down client")
-                                return</span>
-                        }
+                select </span>{
+                case &lt;-ticker.C:<span class="cov0" title="0"></span>
+                case &lt;-quit:<span class="cov0" title="0">
+                        slog.Info("Received SIGTERM, shutting down client")
+                        return</span>
                 }
         }
 }
