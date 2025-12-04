@@ -66,3 +66,12 @@ func parseURLParams(url *url.URL, result *RequestParams) error {
 	}
 	return nil
 }
+
+// Simple handler sending a basic response to indicate the server is running
+func healthCheckHandler(rw http.ResponseWriter, _ *http.Request) {
+	rw.Header().Set("Content-Type", "text/plain")
+	_, err := rw.Write([]byte("Ok"))
+	if err != nil {
+		slog.Error("Failed to send health check response", "err", err)
+	}
+}
