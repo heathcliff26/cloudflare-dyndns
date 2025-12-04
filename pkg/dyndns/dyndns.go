@@ -148,20 +148,17 @@ func Run(c Client, interval time.Duration) {
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
 
 	var updated bool
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
 	for {
 		runUpdate(c, &updated)
 
-		var elapsedTime time.Duration = 0
-		for elapsedTime < interval {
-			timer := time.NewTimer(1 * time.Second)
-			select {
-			case <-timer.C:
-				elapsedTime += time.Duration(1 * time.Second)
-			case <-quit:
-				timer.Stop()
-				slog.Info("Received SIGTERM, shutting down client")
-				return
-			}
+		select {
+		case <-ticker.C:
+		case <-quit:
+			slog.Info("Received SIGTERM, shutting down client")
+			return
 		}
 	}
 }
