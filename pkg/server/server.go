@@ -187,9 +187,13 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) {
 
 // Create a new router to handle http traffic
 func (s *Server) router() *http.ServeMux {
+	workRouter := http.NewServeMux()
+	workRouter.HandleFunc(http.MethodGet+" /{$}", s.requestHandler)
+	workRouter.HandleFunc(http.MethodPost+" /{$}", s.requestHandler)
+
 	router := http.NewServeMux()
-	router.HandleFunc(http.MethodGet+" /{$}", s.requestHandler)
-	router.HandleFunc(http.MethodPost+" /{$}", s.requestHandler)
+	router.Handle("/{$}", middleware.Logging(workRouter))
+	router.HandleFunc("/healthz", healthCheckHandler)
 
 	return router
 }
@@ -198,7 +202,7 @@ func (s *Server) router() *http.ServeMux {
 func (s *Server) Run() error {
 	server := http.Server{
 		Addr:         s.Addr,
-		Handler:      middleware.Logging(s.router()),
+		Handler:      s.router(),
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}

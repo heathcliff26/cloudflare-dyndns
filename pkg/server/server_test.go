@@ -9,6 +9,7 @@ import (
 
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestVerifyAllowedDomains(t *testing.T) {
@@ -219,18 +220,15 @@ func TestRequestHandler(t *testing.T) {
 
 			assert := assert.New(t)
 
-			res := rr.Result()
-			assert.Equal(tCase.Status, res.StatusCode)
+			assert.Equal(tCase.Status, rr.Code)
 			if tCase.Response == (Response{}) {
 				// There is no body in this case, end test here
 				return
 			}
 
 			var response Response
-			err := json.NewDecoder(res.Body).Decode(&response)
-			if !assert.NoError(err) {
-				t.FailNow()
-			}
+			err := json.NewDecoder(rr.Body).Decode(&response)
+			require.NoError(t, err, "Should decode response")
 			assert.Equal(tCase.Response, response)
 		})
 	}
@@ -243,14 +241,11 @@ func TestRequestHandler(t *testing.T) {
 
 		assert := assert.New(t)
 
-		res := rr.Result()
-		assert.Equal(http.StatusUnsupportedMediaType, res.StatusCode)
+		assert.Equal(http.StatusUnsupportedMediaType, rr.Code)
 
 		var response Response
-		err := json.NewDecoder(res.Body).Decode(&response)
-		if !assert.Nil(err) {
-			t.Fatalf("Failed to decode response: %v", err)
-		}
+		err := json.NewDecoder(rr.Body).Decode(&response)
+		require.NoError(t, err, "Should decode response")
 		assert.Equal(Response{MESSAGE_WRONG_CONTENT_TYPE, false}, response)
 	})
 
@@ -263,14 +258,25 @@ func TestRequestHandler(t *testing.T) {
 
 		assert := assert.New(t)
 
-		res := rr.Result()
-		assert.Equal(http.StatusBadRequest, res.StatusCode)
+		assert.Equal(http.StatusBadRequest, rr.Code)
 
 		var response Response
-		err := json.NewDecoder(res.Body).Decode(&response)
-		if !assert.Nil(err) {
-			t.Fatalf("Failed to decode response: %v", err)
-		}
+		err := json.NewDecoder(rr.Body).Decode(&response)
+		require.NoError(t, err, "Should decode response")
 		assert.Equal(Response{MESSAGE_REQUEST_PARSING_FAILED, false}, response)
+	})
+
+	t.Run("HealthCheck", func(t *testing.T) {
+		req := httptest.NewRequest(http.MethodGet, "/healthz", nil)
+		rr := httptest.NewRecorder()
+
+		s.router().ServeHTTP(rr, req)
+
+		assert := assert.New(t)
+
+		assert.Equal(http.StatusOK, rr.Code, "Should return status 200 OK")
+
+		assert.Equal("Ok", rr.Body.String(), "Health check response should be 'Ok'")
+		assert.Equal("text/plain", rr.Header().Get("Content-Type"), "Health check response should have Content-Type 'text/plain'")
 	})
 }
