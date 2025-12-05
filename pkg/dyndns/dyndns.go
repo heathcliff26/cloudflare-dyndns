@@ -6,6 +6,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 )
 
 type Client interface {
@@ -107,6 +109,7 @@ func runUpdate(c Client, updated *bool) {
 
 	changed := ipv4 != c.Data().IPv4() || ipv6 != c.Data().IPv6()
 	if changed && ipv4 != c.Data().IPv4() {
+		metrics.ChangedIPv4(c.Data().Domains())
 		err = c.Data().SetIPv4(ipv4)
 		if err != nil {
 			slog.Error("Failed to set new IPv4, abort update", "err", err)
@@ -114,6 +117,7 @@ func runUpdate(c Client, updated *bool) {
 		}
 	}
 	if changed && ipv6 != c.Data().IPv6() {
+		metrics.ChangedIPv6(c.Data().Domains())
 		err = c.Data().SetIPv6(ipv6)
 		if err != nil {
 			slog.Error("Failed to set new IPv6, abort update", "err", err)

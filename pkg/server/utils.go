@@ -7,6 +7,9 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 )
 
 type Response struct {
@@ -73,5 +76,15 @@ func healthCheckHandler(rw http.ResponseWriter, _ *http.Request) {
 	_, err := rw.Write([]byte("Ok"))
 	if err != nil {
 		slog.Error("Failed to send health check response", "err", err)
+	}
+}
+
+// Increment the changed IP metrics based on the provided ClientData
+func incrementIPMetricFromData(data *dyndns.ClientData) {
+	if data.IPv4() != "" {
+		metrics.ChangedIPv4(data.Domains())
+	}
+	if data.IPv6() != "" {
+		metrics.ChangedIPv6(data.Domains())
 	}
 }
