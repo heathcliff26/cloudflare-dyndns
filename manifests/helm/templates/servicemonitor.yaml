@@ -21,6 +21,17 @@ spec:
         - replacement: "cloudflare-dyndns"
           action: replace
           targetLabel: job
+        {{- if eq .Values.type "server" }}
+        - action: replace
+          sourceLabels:
+            - __meta_kubernetes_pod_name
+          targetLabel: instance
+        {{- else }}
+        - action: replace
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
+          targetLabel: instance
+        {{- end }}
         {{- end }}
   namespaceSelector:
     matchNames:
