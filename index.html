@@ -71,7 +71,7 @@
 				
 				<option value="file7">github.com/heathcliff26/cloudflare-dyndns/pkg/config/errors.go (0.0%)</option>
 				
-				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (63.9%)</option>
+				<option value="file8">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/dyndns.go (63.5%)</option>
 				
 				<option value="file9">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/errors.go (52.6%)</option>
 				
@@ -79,19 +79,23 @@
 				
 				<option value="file11">github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns/utils.go (70.8%)</option>
 				
-				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/metrics/metrics.go (88.9%)</option>
+				<option value="file12">github.com/heathcliff26/cloudflare-dyndns/pkg/metrics/collector.go (100.0%)</option>
 				
-				<option value="file13">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/cmd.go (0.0%)</option>
+				<option value="file13">github.com/heathcliff26/cloudflare-dyndns/pkg/metrics/metrics.go (89.7%)</option>
 				
-				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
+				<option value="file14">github.com/heathcliff26/cloudflare-dyndns/pkg/metrics/utils.go (0.0%)</option>
 				
-				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
+				<option value="file15">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/cmd.go (0.0%)</option>
 				
-				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.6%)</option>
+				<option value="file16">github.com/heathcliff26/cloudflare-dyndns/pkg/relay/relay.go (75.0%)</option>
 				
-				<option value="file17">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (82.4%)</option>
+				<option value="file17">github.com/heathcliff26/cloudflare-dyndns/pkg/server/cmd.go (0.0%)</option>
 				
-				<option value="file18">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (90.0%)</option>
+				<option value="file18">github.com/heathcliff26/cloudflare-dyndns/pkg/server/server.go (85.7%)</option>
+				
+				<option value="file19">github.com/heathcliff26/cloudflare-dyndns/pkg/server/utils.go (84.2%)</option>
+				
+				<option value="file20">github.com/heathcliff26/cloudflare-dyndns/pkg/version/version.go (90.0%)</option>
 				
 				</select>
 			</div>
@@ -790,6 +794,8 @@ import (
         "os/signal"
         "syscall"
         "time"
+
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 )
 
 type Client interface {
@@ -813,7 +819,7 @@ func (d *ClientData) Proxy() bool <span class="cov3" title="2">{
         return d.proxy
 }</span>
 
-func (d *ClientData) Domains() []string <span class="cov8" title="13">{
+func (d *ClientData) Domains() []string <span class="cov9" title="15">{
         return d.domains
 }</span>
 
@@ -891,6 +897,7 @@ func runUpdate(c Client, updated *bool) <span class="cov5" title="4">{
 
         <span class="cov5" title="4">changed := ipv4 != c.Data().IPv4() || ipv6 != c.Data().IPv6()
         if changed &amp;&amp; ipv4 != c.Data().IPv4() </span><span class="cov3" title="2">{
+                metrics.ChangedIPv4(c.Data().Domains())
                 err = c.Data().SetIPv4(ipv4)
                 if err != nil </span><span class="cov0" title="0">{
                         slog.Error("Failed to set new IPv4, abort update", "err", err)
@@ -898,6 +905,7 @@ func runUpdate(c Client, updated *bool) <span class="cov5" title="4">{
                 }</span>
         }
         <span class="cov5" title="4">if changed &amp;&amp; ipv6 != c.Data().IPv6() </span><span class="cov0" title="0">{
+                metrics.ChangedIPv6(c.Data().Domains())
                 err = c.Data().SetIPv6(ipv6)
                 if err != nil </span><span class="cov0" title="0">{
                         slog.Error("Failed to set new IPv6, abort update", "err", err)
@@ -1059,7 +1067,7 @@ func NewTestClient(token string, proxy bool) (Client, error) <span class="cov2" 
 }
 
 // Give Access to ClientData
-func (c *testClient) Data() *ClientData <span class="cov10" title="28">{
+func (c *testClient) Data() *ClientData <span class="cov10" title="30">{
         return c.data
 }</span>
 
@@ -1151,6 +1159,98 @@ func GetPublicIPv6() (string, error) <span class="cov5" title="4">{
 		<pre class="file" id="file12" style="display: none">package metrics
 
 import (
+        "log/slog"
+        "net/http"
+        "strconv"
+        "strings"
+
+        "github.com/prometheus/client_golang/prometheus"
+)
+
+type collector struct {
+        ipv4Counter    *prometheus.CounterVec
+        ipv6Counter    *prometheus.CounterVec
+        requestCounter *prometheus.CounterVec
+}
+
+// Create a new collector with the metrics initialized
+func NewCollector() *collector <span class="cov8" title="8">{
+        return &amp;collector{
+                ipv4Counter: prometheus.NewCounterVec(prometheus.CounterOpts{
+                        Name: "dyndns_changed_ipv4_total",
+                        Help: "Total number of times the IPv4 address has changed",
+                }, []string{"domains"}),
+                ipv6Counter: prometheus.NewCounterVec(prometheus.CounterOpts{
+                        Name: "dyndns_changed_ipv6_total",
+                        Help: "Total number of times the IPv6 address has changed",
+                }, []string{"domains"}),
+                requestCounter: prometheus.NewCounterVec(prometheus.CounterOpts{
+                        Name: "dyndns_requests_total",
+                        Help: "Total number of requests made to update the DNS records",
+                }, []string{"method", "status"}),
+        }
+}</span>
+
+// Implements the Describe function for prometheus.Collector
+func (c *collector) Describe(ch chan&lt;- *prometheus.Desc) <span class="cov6" title="4">{
+        c.ipv4Counter.Describe(ch)
+        c.ipv6Counter.Describe(ch)
+        c.requestCounter.Describe(ch)
+}</span>
+
+// Implements the Collect function for prometheus.Collector
+func (c *collector) Collect(ch chan&lt;- prometheus.Metric) <span class="cov10" title="11">{
+        slog.Debug("Starting collection of metrics for cloudflare-dyndns")
+        c.ipv4Counter.Collect(ch)
+        c.ipv6Counter.Collect(ch)
+        c.requestCounter.Collect(ch)
+}</span>
+
+// Increment the IPv4 changed counter for the given domains
+func ChangedIPv4(domains []string) <span class="cov3" title="2">{
+        if ms == nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+        <span class="cov1" title="1">ms.collector.ipv4Counter.WithLabelValues(domainsToString(domains)).Inc()</span>
+}
+
+// Increment the IPv6 changed counter for the given domains
+func ChangedIPv6(domains []string) <span class="cov3" title="2">{
+        if ms == nil </span><span class="cov1" title="1">{
+                return
+        }</span>
+        <span class="cov1" title="1">ms.collector.ipv6Counter.WithLabelValues(domainsToString(domains)).Inc()</span>
+}
+
+// Convert a list of domains to a semicolon-separated string
+func domainsToString(domains []string) string <span class="cov7" title="5">{
+        return strings.Join(domains, ";")
+}</span>
+
+// MetricWrapper is an HTTP middleware that wraps the given handler to collect metrics about incoming requests.
+func MetricWrapper(next http.Handler) http.Handler <span class="cov1" title="1">{
+        return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) </span><span class="cov3" title="2">{
+                if ms == nil </span><span class="cov1" title="1">{
+                        next.ServeHTTP(res, req)
+                        return
+                }</span>
+
+                // Wrap the ResponseWriter to capture the status code
+                <span class="cov1" title="1">wrapped := &amp;responseWrapper{
+                        ResponseWriter: res,
+                        statusCode:     http.StatusOK,
+                }
+
+                next.ServeHTTP(wrapped, req)
+
+                ms.collector.requestCounter.WithLabelValues(req.Method, strconv.Itoa(wrapped.statusCode)).Inc()</span>
+        })
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package metrics
+
+import (
         "context"
         "errors"
         "fmt"
@@ -1170,9 +1270,10 @@ const DefaultMetricServerPort = 9090
 var ms *metricsServer
 
 type metricsServer struct {
-        port     int
-        registry *prometheus.Registry
-        server   *http.Server
+        port      int
+        registry  *prometheus.Registry
+        server    *http.Server
+        collector *collector
 }
 
 type MetricsOptions struct {
@@ -1205,6 +1306,9 @@ func InitMetricsAndServe(opts MetricsOptions) <span class="cov9" title="5">{
 
         <span class="cov7" title="4">reg := prometheus.NewRegistry()
 
+        c := NewCollector()
+        reg.MustRegister(c)
+
         if opts.GoCollector </span><span class="cov4" title="2">{
                 slog.Debug("Enabling Go runtime metrics collector")
                 reg.MustRegister(collectors.NewGoCollector())
@@ -1216,8 +1320,9 @@ func InitMetricsAndServe(opts MetricsOptions) <span class="cov9" title="5">{
         }</span>
 
         <span class="cov7" title="4">ms = &amp;metricsServer{
-                port:     opts.Port,
-                registry: reg,
+                port:      opts.Port,
+                registry:  reg,
+                collector: c,
         }
 
         go serve()</span>
@@ -1253,7 +1358,24 @@ func Close() error <span class="cov10" title="6">{
 }
 </pre>
 		
-		<pre class="file" id="file13" style="display: none">package relay
+		<pre class="file" id="file14" style="display: none">package metrics
+
+import "net/http"
+
+// Wrapper around ResponseWriter to ensure the status code is saved for later usage
+type responseWrapper struct {
+        http.ResponseWriter
+        statusCode int
+}
+
+// Save the written code locally after writing it to the actual ResponseWriter
+func (res *responseWrapper) WriteHeader(statusCode int) <span class="cov0" title="0">{
+        res.ResponseWriter.WriteHeader(statusCode)
+        res.statusCode = statusCode
+}</span>
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package relay
 
 import (
         "log/slog"
@@ -1325,7 +1447,7 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file14" style="display: none">package relay
+		<pre class="file" id="file16" style="display: none">package relay
 
 import (
         "bytes"
@@ -1414,7 +1536,7 @@ func (r *relay) Update() error <span class="cov1" title="1">{
 }
 </pre>
 		
-		<pre class="file" id="file15" style="display: none">package server
+		<pre class="file" id="file17" style="display: none">package server
 
 import (
         "log/slog"
@@ -1479,7 +1601,7 @@ func run(configPath string, env bool) <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file16" style="display: none">package server
+		<pre class="file" id="file18" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1494,6 +1616,7 @@ import (
         "github.com/heathcliff26/cloudflare-dyndns/pkg/client"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/config"
         "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
         "github.com/heathcliff26/simple-fileserver/pkg/middleware"
 )
 
@@ -1631,6 +1754,8 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) <span
         }</span>
         <span class="cov4" title="4">c.Data().SetDomains(params.Domains)
 
+        incrementIPMetricFromData(c.Data())
+
         // Update records
         err = c.Update()
         if err != nil </span><span class="cov2" title="2">{
@@ -1673,7 +1798,7 @@ func (s *Server) router() *http.ServeMux <span class="cov8" title="12">{
         workRouter.HandleFunc(http.MethodPost+" /{$}", s.requestHandler)
 
         router := http.NewServeMux()
-        router.Handle("/{$}", middleware.Logging(workRouter))
+        router.Handle("/{$}", middleware.Logging(metrics.MetricWrapper(workRouter)))
         router.HandleFunc("/healthz", healthCheckHandler)
 
         return router
@@ -1703,7 +1828,7 @@ func (s *Server) Run() error <span class="cov0" title="0">{
 }
 </pre>
 		
-		<pre class="file" id="file17" style="display: none">package server
+		<pre class="file" id="file19" style="display: none">package server
 
 import (
         "encoding/json"
@@ -1712,6 +1837,9 @@ import (
         "net/url"
         "strconv"
         "strings"
+
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+        "github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 )
 
 type Response struct {
@@ -1780,9 +1908,19 @@ func healthCheckHandler(rw http.ResponseWriter, _ *http.Request) <span class="co
                 slog.Error("Failed to send health check response", "err", err)
         }</span>
 }
+
+// Increment the changed IP metrics based on the provided ClientData
+func incrementIPMetricFromData(data *dyndns.ClientData) <span class="cov5" title="4">{
+        if data.IPv4() != "" </span><span class="cov4" title="3">{
+                metrics.ChangedIPv4(data.Domains())
+        }</span>
+        <span class="cov5" title="4">if data.IPv6() != "" </span><span class="cov4" title="3">{
+                metrics.ChangedIPv6(data.Domains())
+        }</span>
+}
 </pre>
 		
-		<pre class="file" id="file18" style="display: none">package version
+		<pre class="file" id="file20" style="display: none">package version
 
 import (
         "runtime"
