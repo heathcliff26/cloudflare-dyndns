@@ -1,0 +1,17 @@
+apiVersion: v2
+name: cloudflare-dyndns
+description: A Helm chart for cloudflare-dyndns - DynDNS client or relay server for cloudflare
+type: application
+version: 0.1.0
+appVersion: "v0.0.0"
+home: https://github.com/heathcliff26/cloudflare-dyndns
+maintainers:
+  - name: heathcliff26
+    email: heathcliff@heathcliff.eu
+keywords:
+  - cloudflare-dyndns
+  - cloudflare
+  - dns
+  - dyndns
+sources:
+  - https://github.com/heathcliff26/cloudflare-dyndns

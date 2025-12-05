@@ -1,0 +1,31 @@
+{{- if .Values.servicemonitor.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "cloudflare-dyndns.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- with .Values.servicemonitor.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+    {{- include "cloudflare-dyndns.labels" . | nindent 4 }}
+spec:
+  endpoints:
+    - port: metrics
+      scrapeTimeout: {{ .Values.servicemonitor.scrapeTimeout }}
+      interval: {{ .Values.servicemonitor.interval }}
+      relabelings:
+        {{- if .Values.servicemonitor.relabelings }}
+        {{- toYaml .Values.servicemonitor.relabelings | nindent 8 }}
+        {{- else }}
+        - replacement: "cloudflare-dyndns"
+          action: replace
+          targetLabel: job
+        {{- end }}
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      {{- include "cloudflare-dyndns.selectorLabels" . | nindent 6 }}
+{{- end }}

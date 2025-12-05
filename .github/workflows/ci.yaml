@@ -95,6 +95,8 @@ jobs:
     needs:
       - lint
       - unit-tests
+      - validate
+      - gosec
     permissions:
       contents: read
       packages: write
@@ -118,4 +120,20 @@ jobs:
       artifact: "bin/cloudflare-dyndns_*.ipk"
       artifact-name: "cloudflare-dyndns-openwrt"
       cmd: "make package-openwrt"
+    secrets: inherit
+
+  push-helm:
+    uses: heathcliff26/ci/.github/workflows/push-helm-chart.yaml@main
+    if: ${{ inputs.tag != '' && inputs.tag != 'rolling' }}
+    needs:
+      - lint
+      - unit-tests
+      - validate
+      - gosec
+    permissions:
+      contents: read
+      packages: write
+    with:
+      tag: "${{ inputs.tag }}"
+      dry-run: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || inputs.dry-run == 'true' }}
     secrets: inherit

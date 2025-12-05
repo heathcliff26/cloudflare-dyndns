@@ -1,0 +1,14 @@
+type: server
+config:
+  server:
+    domains:
+      - example.org
+      - example.net
+replicaCount: 1
+ingress:
+  enabled: true
+  hosts:
+    - host: cloudflare-dyndns.example.org
+      paths:
+        - path: /
+          pathType: Prefix
