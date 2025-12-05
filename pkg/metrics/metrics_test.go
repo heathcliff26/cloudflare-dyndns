@@ -53,6 +53,7 @@ func TestInitMetricsAndServe(t *testing.T) {
 			})
 
 			assert.NotNil(ms, "Metrics server instance should not be nil")
+			assert.NotNil(ms.collector, "Should initialize a collector")
 
 			require.Eventually(t, func() bool {
 				req, _ := http.NewRequest(http.MethodGet, fmt.Sprintf("http://localhost:%d/metrics", opts.Port), nil)

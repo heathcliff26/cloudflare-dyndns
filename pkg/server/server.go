@@ -13,6 +13,7 @@ import (
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/client"
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/config"
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
+	"github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
 	"github.com/heathcliff26/simple-fileserver/pkg/middleware"
 )
 
@@ -150,6 +151,8 @@ func (s *Server) requestHandler(rw http.ResponseWriter, req *http.Request) {
 	}
 	c.Data().SetDomains(params.Domains)
 
+	incrementIPMetricFromData(c.Data())
+
 	// Update records
 	err = c.Update()
 	if err != nil {
@@ -192,7 +195,7 @@ func (s *Server) router() *http.ServeMux {
 	workRouter.HandleFunc(http.MethodPost+" /{$}", s.requestHandler)
 
 	router := http.NewServeMux()
-	router.Handle("/{$}", middleware.Logging(workRouter))
+	router.Handle("/{$}", middleware.Logging(metrics.MetricWrapper(workRouter)))
 	router.HandleFunc("/healthz", healthCheckHandler)
 
 	return router

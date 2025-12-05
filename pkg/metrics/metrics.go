@@ -20,9 +20,10 @@ const DefaultMetricServerPort = 9090
 var ms *metricsServer
 
 type metricsServer struct {
-	port     int
-	registry *prometheus.Registry
-	server   *http.Server
+	port      int
+	registry  *prometheus.Registry
+	server    *http.Server
+	collector *collector
 }
 
 type MetricsOptions struct {
@@ -55,6 +56,9 @@ func InitMetricsAndServe(opts MetricsOptions) {
 
 	reg := prometheus.NewRegistry()
 
+	c := NewCollector()
+	reg.MustRegister(c)
+
 	if opts.GoCollector {
 		slog.Debug("Enabling Go runtime metrics collector")
 		reg.MustRegister(collectors.NewGoCollector())
@@ -66,8 +70,9 @@ func InitMetricsAndServe(opts MetricsOptions) {
 	}
 
 	ms = &metricsServer{
-		port:     opts.Port,
-		registry: reg,
+		port:      opts.Port,
+		registry:  reg,
+		collector: c,
 	}
 
 	go serve()
