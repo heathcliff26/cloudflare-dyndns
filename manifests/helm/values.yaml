@@ -1,0 +1,176 @@
+# Default values for cloudflare-dyndns.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Configure which type to deploy.
+# Options are "client", "server" and "relay"
+type: server
+
+# Configure cloudflare-dyndns
+config:
+  # Log level of the application
+  logLevel: "info"
+
+  # Config for running in server mode
+  server:
+    # Port to listen on.
+    port: 8080
+    # List of root domains that are allowed to be updated. Allows all when empty.
+    domains: []
+      # - example.org
+      # - example.net
+    # SSL config, default is no ssl
+    ssl:
+      enabled: false
+      # SSL certificate, needs to contain the whole chain
+      cert: ""
+      # SSL private key
+      key: ""
+
+  # Config for running in client/relay mode
+  client:
+    # Token for accessing the cloudflare api
+    token: ""
+    # Indicate if entries should be proxied by cloudflare.
+    proxy: true
+    # List of domains to update
+    domains: []
+      # - foo.example.org
+    # Interval in which the client should check for ip changes.
+    interval: "5m"
+    # Endpoint to call when using relay mode
+    endpoint: ""
+
+  # Config for exposing app metrics
+  metrics:
+    # Enable metrics collection and serving.
+    enabled: false
+    # Port to serve metrics on. Metrics will be served on /metrics endpoint.
+    port: 9090
+    # Enable Go runtime metrics.
+    goCollector: true
+    # Enable process metrics.
+    processCollector: true
+
+# Container image configuration
+image:
+  repository: ghcr.io/heathcliff26/cloudflare-dyndns
+  tag: ""
+  pullPolicy: IfNotPresent
+
+# This is for setting the number of replicas when running in server mode
+replicaCount: 1
+
+# This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+imagePullSecrets: []
+# This is to override the chart name.
+nameOverride: ""
+fullnameOverride: ""
+
+# Annotations for the deployment/daemonset
+annotations: {}
+
+# This is for setting Kubernetes Annotations to a Pod.
+podAnnotations: {}
+# This is for setting Kubernetes Labels to a Pod.
+podLabels: {}
+
+# This is for setting the pod security context.
+podSecurityContext: {}
+  # fsGroup: 2000
+
+# This is for setting the container security context.
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# The service for exposing the server
+service:
+  # This sets the service type.
+  type: ClusterIP
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv4
+    - IPv6
+
+# The service for exposing the metrics server
+metricsService:
+  # This sets the service type.
+  type: ClusterIP
+  ipFamilyPolicy: PreferDualStack
+  ipFamilies:
+    - IPv4
+    - IPv6
+
+# This is for setting up a ServiceMonitor for Prometheus Operator
+servicemonitor:
+  enabled: false
+  # Additional labels for the ServiceMonitor
+  labels:
+    release: monitoring
+  # Scrape interval
+  interval: 1m
+  # Scrape timeout
+  scrapeTimeout: 5s
+  # Relabelings for the ServiceMonitor
+  relabelings: []
+    ## By default, these relabelings are configured.
+    # - replacement: "cloudflare-dyndns"
+    #   action: replace
+    #   targetLabel: job
+
+# This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: cloudflare-dyndns.example.org
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: cloudflare-dyndns-tls
+  #    hosts:
+  #      - cloudflare-dyndns.example.org
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+# This is to setup the liveness and readiness probes more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
+livenessProbe:
+  enabled: true
+  initialDelaySeconds: 10
+  periodSeconds: 5
+  failureThreshold: 3
+  timeoutSeconds: 1
+readinessProbe:
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 1
+
+nodeSelector: {}
+
+tolerations: []
+  # For type "client" and "relay", it might be useful to tolerate control-plane nodes
+  # - key: "node-role.kubernetes.io/control-plane"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+
+affinity: {}

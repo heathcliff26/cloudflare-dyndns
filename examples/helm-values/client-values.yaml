@@ -1,0 +1,14 @@
+type: client
+config:
+  client:
+    token: "secret-token"
+    proxy: true
+    domains:
+      - "${NODE_NAME}.heathcliff26.net"
+    interval: "5m"
+  metrics:
+    enabled: true
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"

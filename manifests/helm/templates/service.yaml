@@ -1,0 +1,23 @@
+{{- if eq .Values.type "server" }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloudflare-dyndns.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cloudflare-dyndns.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ipFamilyPolicy: {{ .Values.service.ipFamilyPolicy }}
+  {{- with .Values.service.ipFamilies }}
+  ipFamilies:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.config.server.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "cloudflare-dyndns.selectorLabels" . | nindent 4 }}
+{{- end }}

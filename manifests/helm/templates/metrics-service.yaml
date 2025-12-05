@@ -1,0 +1,23 @@
+{{- if .Values.config.metrics.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "cloudflare-dyndns.fullname" . }}-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cloudflare-dyndns.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.metricsService.type }}
+  ipFamilyPolicy: {{ .Values.metricsService.ipFamilyPolicy }}
+  {{- with .Values.metricsService.ipFamilies }}
+  ipFamilies:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.config.metrics.port }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    {{- include "cloudflare-dyndns.selectorLabels" . | nindent 4 }}
+{{- end }}

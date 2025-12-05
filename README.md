@@ -78,6 +78,12 @@ The container image can be deployed as part of a daemonset, to ensure all nodes 
 
 An example daemonset using the relay mode can be found [here](examples/example-relay-daemonset.yaml).
 
+Alternatively Helm charts are released via oci repos and can be installed with:
+```
+helm install cloudflare-dyndns oci://ghcr.io/heathcliff26/manifests/cloudflare-dyndns --version <version>
+```
+Please use the latest version from the releases page.
+
 ## API (Server Mode)
 
 | Parameter        | Description                                                                    |
