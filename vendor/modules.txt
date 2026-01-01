@@ -7,7 +7,7 @@ github.com/cespare/xxhash/v2
 # github.com/davecgh/go-spew v1.1.1
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/heathcliff26/simple-fileserver v1.2.15
+# github.com/heathcliff26/simple-fileserver v1.2.16
 ## explicit; go 1.24.0
 github.com/heathcliff26/simple-fileserver/pkg/middleware
 # github.com/inconshreveable/mousetrap v1.1.0
