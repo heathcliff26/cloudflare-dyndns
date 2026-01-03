@@ -3,7 +3,6 @@ package client
 import (
 	"log/slog"
 	"os"
-	"time"
 
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/config"
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
@@ -66,5 +65,5 @@ func run(configPath string, env bool) {
 		os.Exit(1)
 	}
 	c.Data().SetDomains(cfg.Client.Domains)
-	dyndns.Run(c, time.Duration(cfg.Client.Interval))
+	dyndns.Run(c, cfg.Client.Interval)
 }

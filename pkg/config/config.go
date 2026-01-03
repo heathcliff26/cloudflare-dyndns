@@ -9,13 +9,13 @@ import (
 
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/dyndns"
 	"github.com/heathcliff26/cloudflare-dyndns/pkg/metrics"
-	"sigs.k8s.io/yaml"
+	"go.yaml.in/yaml/v3"
 )
 
 const (
 	DEFAULT_LOG_LEVEL       = "info"
 	DEFAULT_SERVER_PORT     = 8080
-	DEFAULT_CLIENT_INTERVAL = Duration(5 * time.Minute)
+	DEFAULT_CLIENT_INTERVAL = 5 * time.Minute
 
 	MODE_SERVER = "server"
 	MODE_CLIENT = "client"
@@ -35,32 +35,32 @@ func init() {
 }
 
 type Config struct {
-	LogLevel string                 `json:"logLevel,omitempty"`
-	Server   ServerConfig           `json:"server,omitempty"`
-	Client   ClientConfig           `json:"client,omitempty"`
-	Metrics  metrics.MetricsOptions `json:"metrics,omitempty"`
+	LogLevel string                 `yaml:"logLevel,omitempty"`
+	Server   ServerConfig           `yaml:"server,omitempty"`
+	Client   ClientConfig           `yaml:"client,omitempty"`
+	Metrics  metrics.MetricsOptions `yaml:"metrics,omitempty"`
 }
 
 // Yaml configuration for dyndns server
 type ServerConfig struct {
-	Port    int       `json:"port"`
-	Domains []string  `json:"domains,omitempty"`
-	SSL     SSLConfig `json:"ssl,omitempty"`
+	Port    int       `yaml:"port"`
+	Domains []string  `yaml:"domains,omitempty"`
+	SSL     SSLConfig `yaml:"ssl,omitempty"`
 }
 
 type SSLConfig struct {
-	Enabled bool   `json:"enabled,omitempty"`
-	Cert    string `json:"cert,omitempty"`
-	Key     string `json:"key,omitempty"`
+	Enabled bool   `yaml:"enabled,omitempty"`
+	Cert    string `yaml:"cert,omitempty"`
+	Key     string `yaml:"key,omitempty"`
 }
 
 // Yaml configuration for dyndns client
 type ClientConfig struct {
-	Token    string   `json:"token"`
-	Proxy    bool     `json:"proxy,omitempty"`
-	Domains  []string `json:"domains"`
-	Interval Duration `json:"interval,omitempty"`
-	Endpoint string   `json:"endpoint,omitempty"`
+	Token    string        `yaml:"token"`
+	Proxy    bool          `yaml:"proxy,omitempty"`
+	Domains  []string      `yaml:"domains"`
+	Interval time.Duration `yaml:"interval,omitempty"`
+	Endpoint string        `yaml:"endpoint,omitempty"`
 }
 
 // Validate the server part of the config
@@ -88,7 +88,7 @@ func (c *Config) validateClient() error {
 		return dyndns.ErrNoDomain{}
 	}
 
-	if c.Client.Interval < Duration(30*time.Second) {
+	if c.Client.Interval < 30*time.Second {
 		return &ErrInvalidInterval{c.Client.Interval}
 	}
 

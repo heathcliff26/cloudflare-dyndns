@@ -28,13 +28,13 @@ type metricsServer struct {
 
 type MetricsOptions struct {
 	// Enable determines if metrics should be collected and served
-	Enabled bool `json:"enabled,omitempty"`
+	Enabled bool `yaml:"enabled,omitempty"`
 	// The port to serve metrics on. Metrics will be served on /metrics endpoint
-	Port int `json:"port,omitempty"`
+	Port int `yaml:"port,omitempty"`
 	// Enable Go runtime metrics
-	GoCollector bool `json:"goCollector,omitempty"`
+	GoCollector bool `yaml:"goCollector,omitempty"`
 	// Enable process metrics
-	ProcessCollector bool `json:"processCollector,omitempty"`
+	ProcessCollector bool `yaml:"processCollector,omitempty"`
 }
 
 func DefaultMetricsOptions() MetricsOptions {
