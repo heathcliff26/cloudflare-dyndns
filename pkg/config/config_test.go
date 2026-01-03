@@ -22,7 +22,7 @@ func TestValidConfigs(t *testing.T) {
 			Token:    "test-token-1",
 			Proxy:    true,
 			Domains:  []string{"foo.example.org"},
-			Interval: Duration(5 * time.Minute),
+			Interval: 5 * time.Minute,
 			Endpoint: "dyndns.example.org",
 		},
 		Metrics: metrics.MetricsOptions{
@@ -42,7 +42,7 @@ func TestValidConfigs(t *testing.T) {
 			Token:    "test-token-2",
 			Proxy:    false,
 			Domains:  []string{"bar.example.net"},
-			Interval: Duration(10 * time.Minute),
+			Interval: 10 * time.Minute,
 			Endpoint: "dyndns.example.net",
 		},
 		Metrics: metrics.DefaultMetricsOptions(),
@@ -134,7 +134,7 @@ func TestInvalidConfig(t *testing.T) {
 		{
 			Name:  "NotYaml",
 			Path:  "testdata/not-a-config.txt",
-			Error: "*fmt.wrapError",
+			Error: "*yaml.TypeError",
 		},
 		{
 			Name:  "ClientMissingToken",
@@ -152,7 +152,7 @@ func TestInvalidConfig(t *testing.T) {
 			Name:  "ClientWrongInterval",
 			Mode:  MODE_CLIENT,
 			Path:  "testdata/invalid-config-3.yaml",
-			Error: "*fmt.wrapError",
+			Error: "*yaml.TypeError",
 		},
 		{
 			Name:  "ClientInvalidInterval",
@@ -176,7 +176,7 @@ func TestInvalidConfig(t *testing.T) {
 			Name:  "RelayWrongInterval",
 			Mode:  MODE_RELAY,
 			Path:  "testdata/invalid-config-3.yaml",
-			Error: "*fmt.wrapError",
+			Error: "*yaml.TypeError",
 		},
 		{
 			Name:  "RelayMissingEndpoint",
@@ -229,7 +229,7 @@ func TestEnvSubstitution(t *testing.T) {
 			Token:    "token-from-env",
 			Proxy:    true,
 			Domains:  []string{"foo.example.org"},
-			Interval: Duration(15 * time.Minute),
+			Interval: 15 * time.Minute,
 			Endpoint: "dyndns.example.org",
 		},
 		Metrics: metrics.DefaultMetricsOptions(),

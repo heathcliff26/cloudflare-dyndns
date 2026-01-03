@@ -7,7 +7,7 @@ require (
 	github.com/prometheus/client_golang v1.23.2
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.11.1
-	sigs.k8s.io/yaml v1.6.0
+	go.yaml.in/yaml/v3 v3.0.4
 )
 
 require (
