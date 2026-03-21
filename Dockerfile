@@ -25,7 +25,7 @@ WORKDIR /
 
 COPY --from=build-stage /app/bin/cloudflare-dyndns /
 
-USER 1001
+USER nobody:nobody
 
 ENTRYPOINT ["/cloudflare-dyndns"]
 
