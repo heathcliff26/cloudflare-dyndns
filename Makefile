@@ -49,8 +49,15 @@ validate-metainfo:
 	appstreamcli validate io.github.heathcliff26.cloudflare-dyndns.metainfo.xml
 
 # Build Package for OpenWRT
-package-openwrt:
+package-openwrt: package-openwrt package-openwrt-apk
+
+# Build Package for OpenWRT opkg
+package-openwrt-opkg:
 	hack/build-package-openwrt.sh
+
+# Build Package for OpenWRT apk
+package-openwrt-apk:
+	hack/build-package-openwrt-apk.sh
 
 # Scan code for vulnerabilities using gosec
 gosec:
@@ -91,6 +98,8 @@ help:
 	validate \
 	validate-metainfo \
 	package-openwrt \
+	package-openwrt-opkg \
+	package-openwrt-apk \
 	gosec \
 	packit \
 	packit-mock \

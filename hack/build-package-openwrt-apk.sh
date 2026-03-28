@@ -38,7 +38,6 @@ build_package() {
     podman run --rm --name cloudflare-dyndns-openwrt-apk-builder \
         -v "${pkg_dir}:/build:z" \
         -v "${pkg_dir}/dst:/root/packages:z" \
-        -w /build \
         -e "PACKAGER_PRIVKEY=/build/abuild.rsa" \
         localhost/alpine-builder:latest \
         abuild -r -F checksum validate clean fetch rootpkg
@@ -53,6 +52,6 @@ build_package() {
 # shellcheck source=build-all.sh
 source "${base_dir}"/hack/build-all.sh
 
-for arch in "${BUILD_ARCHS[@]}"; do
+for arch in ${BUILD_ARCHS}; do
     build_package "${arch}"
 done
