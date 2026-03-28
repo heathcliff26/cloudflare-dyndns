@@ -7,51 +7,61 @@ pkg_dir="${base_dir}/packages/openwrt-apk"
 
 export RELEASE_VERSION="${RELEASE_VERSION:-v0.0.0_alpha}"
 
-build_package() {
-    arch="${1}"
+arch="${1}"
+case "$(uname -m)" in
+"amd64"|"x86_64")
+    export PKG_ARCH="x86_64"
+    export arch="amd64"
+    ;;
+"arm64"|"aarch64")
+    export PKG_ARCH="aarch64"
+    export arch="arm64"
+    ;;
+*)
+    # shellcheck disable=SC2155
+    export PKG_ARCH="$(uname -m)"
+    # shellcheck disable=SC2155
+    export arch="$(uname -m)"
+    ;;
+esac
 
-    case "${arch}" in
-    "amd64")
-        export PKG_ARCH="x86_64"
-        ;;
-    "arm64")
-        export PKG_ARCH="aarch64"
-        ;;
-    *)
-        export PKG_ARCH="${arch}"
-        ;;
-    esac
+echo "Building package for ${PKG_ARCH} (${arch})"
 
-    echo "Building package for ${PKG_ARCH}"
+export BUILD_ARCHS="${arch}"
+"${base_dir}"/hack/build-all.sh
 
-    echo "Creating APKBUILD file from template"
-    sed "${pkg_dir}/APKBUILD.template" \
-        -e "s/RELEASE_VERSION/${RELEASE_VERSION#v}/g" \
-        -e "s/PKG_ARCH/${PKG_ARCH}/g" \
-        >"${pkg_dir}/APKBUILD"
+case "${arch}" in
+"amd64")
+    export PKG_ARCH="x86_64"
+    ;;
+"arm64")
+    export PKG_ARCH="aarch64"
+    ;;
+*)
+    export PKG_ARCH="${arch}"
+    ;;
+esac
 
-    echo "Moving binary to build folder"
-    cp "${base_dir}/bin/cloudflare-dyndns-${arch}-compressed" "${pkg_dir}/cloudflare-dyndns"
+echo "Creating APKBUILD file from template"
+sed "${pkg_dir}/APKBUILD.template" \
+    -e "s/RELEASE_VERSION/${RELEASE_VERSION#v}/g" \
+    -e "s/PKG_ARCH/${PKG_ARCH}/g" \
+    >"${pkg_dir}/APKBUILD"
 
-    echo "Running package build in container"
-    mkdir -p "${pkg_dir}/dst"
-    podman run --rm --name cloudflare-dyndns-openwrt-apk-builder \
-        -v "${pkg_dir}:/build:z" \
-        -v "${pkg_dir}/dst:/root/packages:z" \
-        -e "PACKAGER_PRIVKEY=/build/abuild.rsa" \
-        localhost/alpine-builder:latest \
-        abuild -r -F checksum validate clean fetch rootpkg
+echo "Moving binary to build folder"
+cp "${base_dir}/bin/cloudflare-dyndns-${arch}-compressed" "${pkg_dir}/cloudflare-dyndns"
 
-    echo "Moving package to bin folder"
-    mv "${pkg_dir}/dst/${PKG_ARCH}/cloudflare-dyndns-${RELEASE_VERSION#v}-r0.apk" "${base_dir}/bin/cloudflare-dyndns_${RELEASE_VERSION}_openwrt-${PKG_ARCH}.apk"
+echo "Running package build in container"
+mkdir -p "${pkg_dir}/dst"
+podman run --rm --name cloudflare-dyndns-openwrt-apk-builder \
+    -v "${pkg_dir}:/build:z" \
+    -v "${pkg_dir}/dst:/root/packages:z" \
+    -e "PACKAGER_PRIVKEY=/build/abuild.rsa" \
+    localhost/alpine-builder:latest \
+    abuild -r -F checksum prepare validate clean fetch rootpkg
 
-    echo "Cleaning up build files"
-    rm -rf "${pkg_dir}/APKBUILD" "${pkg_dir}/cloudflare-dyndns" "${pkg_dir}/dst" "${pkg_dir}/src" "${pkg_dir}/pkg"
-}
+echo "Moving package to bin folder"
+mv "${pkg_dir}/dst/${PKG_ARCH}/cloudflare-dyndns-${RELEASE_VERSION#v}-r0.apk" "${base_dir}/bin/cloudflare-dyndns_${RELEASE_VERSION}_openwrt-${PKG_ARCH}.apk"
 
-# shellcheck source=build-all.sh
-source "${base_dir}"/hack/build-all.sh
-
-for arch in ${BUILD_ARCHS}; do
-    build_package "${arch}"
-done
+echo "Cleaning up build files"
+rm -rf "${pkg_dir}/APKBUILD" "${pkg_dir}/cloudflare-dyndns" "${pkg_dir}/dst" "${pkg_dir}/src" "${pkg_dir}/pkg"
