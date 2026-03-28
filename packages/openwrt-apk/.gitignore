@@ -1,0 +1,9 @@
+# Ignore temporary build outputs
+APKBUILD
+cloudflare-dyndns
+pkg/
+src/
+dst/
+
+# Ignore signing keys
+abuild.rsa
