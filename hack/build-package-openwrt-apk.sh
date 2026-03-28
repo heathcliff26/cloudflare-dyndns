@@ -7,6 +7,11 @@ pkg_dir="${base_dir}/packages/openwrt-apk"
 
 export RELEASE_VERSION="${RELEASE_VERSION:-v0.0.0_alpha}"
 
+if [ "${RELEASE_VERSION}" = "devel" ] || [ "${RELEASE_VERSION}" = "rolling" ]; then
+    echo "Release version is set to '${RELEASE_VERSION}', overriding to accepted versioning for APKBUILD"
+    export RELEASE_VERSION="v0.0.0_alpha"
+fi
+
 arch="${1}"
 case "$(uname -m)" in
 "amd64"|"x86_64")

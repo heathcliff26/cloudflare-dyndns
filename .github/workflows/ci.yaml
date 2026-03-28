@@ -119,7 +119,32 @@ jobs:
       goos: "linux"
       artifact: "bin/cloudflare-dyndns_*.ipk"
       artifact-name: "cloudflare-dyndns-openwrt"
-      cmd: "make package-openwrt"
+      cmd: "make package-openwrt-opkg"
+    secrets: inherit
+
+  build-packages-apk:
+    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+    needs:
+      - lint
+      - unit-tests
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+          - arch: arm64
+    with:
+      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
+      goos: "linux"
+      artifact: "bin/cloudflare-dyndns_*.apk"
+      artifact-name: "cloudflare-dyndns-openwrt-apk"
+      cmd: |
+        export ABUILD_RSA="${{ secrets.ABUILD_RSA }}"
+        echo "${ABUILD_RSA}" > packages/openwrt-apk/abuild.rsa
+        make package-openwrt-apk
+      architecture: "${{ matrix.arch }}"
     secrets: inherit
 
   push-helm:
