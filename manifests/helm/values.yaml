@@ -75,19 +75,6 @@ podAnnotations: {}
 # This is for setting Kubernetes Labels to a Pod.
 podLabels: {}
 
-# This is for setting the pod security context.
-podSecurityContext: {}
-  # fsGroup: 2000
-
-# This is for setting the container security context.
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
 # The service for exposing the server
 service:
   # This sets the service type.
