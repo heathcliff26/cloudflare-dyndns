@@ -49,6 +49,9 @@ on:
   merge_group:
     branches: ["main"]
 
+env:
+  ABUILD_RSA: "${{ secrets.ABUILD_RSA }}"
+
 jobs:
   lint:
     uses: heathcliff26/ci/.github/workflows/golang-lint.yaml@main
@@ -139,9 +142,9 @@ jobs:
       release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
       goos: "linux"
       artifact: "bin/cloudflare-dyndns_*.apk"
-      artifact-name: "cloudflare-dyndns-openwrt-apk"
+      artifact-name: "cloudflare-dyndns-openwrt-apk-${{ matrix.arch }}"
       cmd: |
-        export ABUILD_RSA="${{ secrets.ABUILD_RSA }}"
+        export ABUILD_RSA="${{ vars.ABUILD_RSA }}"
         echo "${ABUILD_RSA}" > packages/openwrt-apk/abuild.rsa
         make package-openwrt-apk
       architecture: "${{ matrix.arch }}"
