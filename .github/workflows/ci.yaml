@@ -125,11 +125,22 @@ jobs:
       cmd: "make package-openwrt-opkg"
     secrets: inherit
 
+  prepare-apk-build:
+    name: Prepare APK build
+    runs-on: ubuntu-latest
+    outputs:
+      abuild-rsa: ${{ steps.set-abuild-rsa.outputs.abuild-rsa }}
+    steps:
+      - name: Set ABUILD_RSA
+        id: set-abuild-rsa
+        run: echo "abuild-rsa=${{ secrets.ABUILD_RSA }}" >> "$GITHUB_OUTPUT"
+
   build-packages-apk:
     uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
     needs:
       - lint
       - unit-tests
+      - prepare-apk-build
     permissions:
       contents: read
     strategy:
@@ -144,7 +155,7 @@ jobs:
       artifact: "bin/cloudflare-dyndns_*.apk"
       artifact-name: "cloudflare-dyndns-openwrt-apk-${{ matrix.arch }}"
       cmd: |
-        export ABUILD_RSA="${{ vars.ABUILD_RSA }}"
+        export ABUILD_RSA="${{ needs.prepare-apk-build.outputs.abuild-rsa }}"
         echo "${ABUILD_RSA}" > packages/openwrt-apk/abuild.rsa
         make package-openwrt-apk
       architecture: "${{ matrix.arch }}"

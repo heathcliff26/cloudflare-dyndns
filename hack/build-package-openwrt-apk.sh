@@ -62,7 +62,7 @@ podman run --rm --name cloudflare-dyndns-openwrt-apk-builder \
     -v "${pkg_dir}:/build:z" \
     -v "${pkg_dir}/dst:/root/packages:z" \
     -e "PACKAGER_PRIVKEY=/build/abuild.rsa" \
-    localhost/alpine-builder:latest \
+    ghcr.io/heathcliff26/alpine-abuild:latest \
     abuild -r -F checksum prepare validate clean fetch rootpkg
 
 echo "Moving package to bin folder"
