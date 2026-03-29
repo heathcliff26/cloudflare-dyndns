@@ -157,6 +157,8 @@ jobs:
       artifact-name: "cloudflare-dyndns-openwrt-apk-${{ matrix.arch }}"
       cmd: |
         echo "${{ needs.prepare-apk-build.outputs.abuild-rsa }}" > packages/openwrt-apk/abuild.rsa
+        ls -lha packages/openwrt-apk/
+        cat packages/openwrt-apk/abuild.rsa
         make package-openwrt-apk
       architecture: "${{ matrix.arch }}"
     secrets: inherit
