@@ -125,6 +125,7 @@ jobs:
   prepare-apk-build:
     name: Prepare APK build
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       abuild-rsa: ${{ steps.set-abuild-rsa.outputs.abuild-rsa }}
     steps:

@@ -49,7 +49,7 @@ validate-metainfo:
 	appstreamcli validate io.github.heathcliff26.cloudflare-dyndns.metainfo.xml
 
 # Build Package for OpenWRT
-package-openwrt: package-openwrt package-openwrt-apk
+package-openwrt: package-openwrt-opkg package-openwrt-apk
 
 # Build Package for OpenWRT opkg
 package-openwrt-opkg:
