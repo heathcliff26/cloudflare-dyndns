@@ -131,7 +131,9 @@ jobs:
       - name: Set ABUILD_RSA
         id: set-abuild-rsa
         run: |
-          echo "abuild-rsa=${{ secrets.ABUILD_RSA }}" >> "$GITHUB_OUTPUT"
+          echo "abuild-rsa<<EOF" >> "$GITHUB_OUTPUT"
+          echo "${{ secrets.ABUILD_RSA }}" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
 
   build-packages-apk:
     uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
@@ -153,7 +155,7 @@ jobs:
       artifact: "bin/cloudflare-dyndns_*.apk"
       artifact-name: "cloudflare-dyndns-openwrt-apk-${{ matrix.arch }}"
       cmd: |
-        echo "${{ needs.prepare-apk-build.outputs.abuild-rsa }}" | base64 -d > packages/openwrt-apk/abuild.rsa
+        echo "${{ needs.prepare-apk-build.outputs.abuild-rsa }}" > packages/openwrt-apk/abuild.rsa
         make package-openwrt-apk
       architecture: "${{ matrix.arch }}"
     secrets: inherit
