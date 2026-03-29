@@ -1,0 +1,36 @@
+# Contributor: Heathcliff <heathcliff@heathcliff.eu>
+# Maintainer: Heathcliff <heathcliff@heathcliff.eu>
+pkgname=cloudflare-dyndns
+pkgver=RELEASE_VERSION
+pkgrel=0
+pkgdesc="DDNS client for cloudflare"
+url="https://github.com/heathcliff26/cloudflare-dyndns"
+arch="PKG_ARCH"
+license="Apache 2.0"
+depends=""
+makedepends=""
+checkdepends=""
+install="$pkgname.post-install $pkgname.pre-deinstall"
+subpackages=""
+source="
+	cloudflare-dyndns.initd.sh
+	cloudflare-dyndns.confd
+	config.yaml
+	cloudflare-dyndns
+	"
+builddir="$srcdir/"
+options="!check !strip"
+
+package() {
+	# Replace with proper package command(s)
+	:
+
+	install -m755 -D "$srcdir/$pkgname.initd.sh" \
+		"$pkgdir/etc/init.d/$pkgname"
+	install -m644 -D "$srcdir/$pkgname.confd" \
+		"$pkgdir/etc/config/$pkgname"
+	install -m644 -D "$srcdir/config.yaml" \
+		"$pkgdir/etc/$pkgname/config.yaml"
+	install -m755 -D "$srcdir/$pkgname" \
+		"$pkgdir/usr/sbin/$pkgname"
+}

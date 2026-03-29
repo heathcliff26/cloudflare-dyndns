@@ -1,0 +1,16 @@
+# Log level of the application
+logLevel: "${CLOUDFLARE_DYNDNS_LOG_LEVEL}"
+
+# Config for running in client/relay mode
+client:
+  # Token for accessing the cloudflare api
+  token: "${CLOUDFLARE_DYNDNS_TOKEN}"
+  # Indicate if entries should be proxied by cloudflare. Default: true
+  proxy: ${CLOUDFLARE_DYNDNS_PROXY}
+  # List of domains to update
+  domains:
+    - ${CLOUDFLARE_DYNDNS_DOMAIN}
+  # Interval in which the client should check for ip changes. Default: 5m
+  interval: "${CLOUDFLARE_DYNDNS_INTERVAL}"
+  # Endpoint to call when using relay mode
+  endpoint: "${CLOUDFLARE_DYNDNS_RELAY_ENDPOINT}"

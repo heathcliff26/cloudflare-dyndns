@@ -4,8 +4,8 @@ set -e
 
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
 
-folders=("bin" "coverprofiles" "tmp" "x86_64" "aarch64" "packages/openwrt/data/usr/sbin")
-files=("coverprofile.out" "packages/openwrt/control/control")
+folders=("bin" "coverprofiles" "tmp" "x86_64" "aarch64" "packages/openwrt/data/usr/sbin" "packages/openwrt-apk/dst" "packages/openwrt-apk/pkg" "packages/openwrt-apk/src")
+files=("coverprofile.out" "packages/openwrt/control/control" "packages/openwrt-apk/APKBUILD" "packages/openwrt-apk/cloudflare-dyndns")
 
 for folder in "${folders[@]}"; do
     if ! [ -e "${base_dir}/${folder}" ]; then

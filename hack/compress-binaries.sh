@@ -20,6 +20,8 @@ for file in *; do
     [[ "${file}" = *"${file_ending}" ]] && continue
     # Skip openwrt packages
     [[ "${file}" = *.ipk ]] && continue
+    # Skip openwrt packages
+    [[ "${file}" = *.apk ]] && continue
 
     output="${file}${file_ending}"
     echo "Compressing ${file} to ${output}"

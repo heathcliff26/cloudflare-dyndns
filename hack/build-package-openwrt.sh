@@ -45,6 +45,6 @@ build_package() {
 # shellcheck source=build-all.sh
 source "${base_dir}"/hack/build-all.sh
 
-for arch in "${BUILD_ARCHS[@]}"; do
+for arch in ${BUILD_ARCHS}; do
     build_package "${arch}"
 done
