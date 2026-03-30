@@ -57,6 +57,6 @@ jobs:
       update: ${{ inputs.update }}
       tag: ${{ inputs.tag }}
       release-artifacts: "release/*"
-      artifacts: "{cloudflare-dyndns,cloudflare-dyndns-openwrt}"
+      artifacts: "cloudflare-dyndns"
       prerelease: ${{ inputs.prerelease }}
     secrets: inherit

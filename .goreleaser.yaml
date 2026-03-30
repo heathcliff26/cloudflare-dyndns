@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://goreleaser.com/static/schema.json
+
+version: 2
+
+project_name: cloudflare-dyndns
+
+env:
+  - CGO_ENABLED=0
+  - RELEASE_VERSION={{ if index .Env "RELEASE_VERSION"  }}{{ .Env.RELEASE_VERSION }}{{ else }}devel{{ end }}
+
+builds:
+  - id: binary
+    binary: cloudflare-dyndns
+    main: ./cmd/main.go
+    goos:
+      - linux
+    goarch:
+      - arm64
+      - amd64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitVersion={{ .Env.RELEASE_VERSION }} -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitCommit={{ .Commit }}
+  - id: compressed
+    binary: cloudflare-dyndns
+    main: ./cmd/main.go
+    goos:
+      - linux
+    goarch:
+      - arm64
+      - amd64
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitVersion={{ .Env.RELEASE_VERSION }} -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitCommit={{ .Commit }}
+
+upx:
+  - enabled: true
+    ids:
+      - compressed
+    compress: "9"
+
+archives:
+  - formats: ["binary"]
+
+nfpms:
+  - id: openwrt
+    file_name_template: "{{ .PackageName }}_v{{ .Version }}_openwrt-{{ .Arch }}"
+    ids:
+      - compressed
+    maintainer: Heathcliff <heathcliff@heathcliff.eu>
+    description: DDNS client for cloudflare
+    license: Apache 2.0
+    formats:
+      - ipk
+    dependencies:
+      - ca-bundle
+    bindir: /usr/sbin
+    contents:
+      - src: packages/openwrt/etc-config
+        dst: /etc/config/cloudflare-dyndns
+      - src: packages/openwrt/init-d.sh
+        dst: /etc/init.d/cloudflare-dyndns
+        file_info:
+          mode: 0755
+      - src: packages/openwrt/config.yaml
+        dst: /etc/cloudflare-dyndns/config.yaml
+    scripts:
+      postinstall: packages/openwrt/postinstall.sh
+      preremove: packages/openwrt/preremove.sh
+
+changelog:
+  disable: true
+release:
+  disable: true

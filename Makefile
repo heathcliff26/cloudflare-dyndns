@@ -8,9 +8,9 @@ TAG ?= latest
 build:
 	hack/build.sh
 
-# Build the binary
-build-all:
-	hack/build-all.sh
+# Build all artifacts used for release, except the container images
+release:
+	hack/release.sh
 
 # Build the container image
 image:
@@ -48,10 +48,6 @@ validate:
 validate-metainfo:
 	appstreamcli validate io.github.heathcliff26.cloudflare-dyndns.metainfo.xml
 
-# Build Package for OpenWRT
-package-openwrt:
-	hack/build-package-openwrt.sh
-
 # Scan code for vulnerabilities using gosec
 gosec:
 	gosec ./...
@@ -80,7 +76,7 @@ help:
 .PHONY: \
 	default \
 	build \
-	build-all \
+	release \
 	image \
 	test \
 	update-deps \
@@ -90,7 +86,6 @@ help:
 	fmt \
 	validate \
 	validate-metainfo \
-	package-openwrt \
 	gosec \
 	packit \
 	packit-mock \

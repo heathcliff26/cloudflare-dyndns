@@ -12,3 +12,9 @@ coverprofile.out
 /tmp
 /x86_64
 /aarch64
+
+# Added by goreleaser init:
+dist/
+
+# Private keys used for signing
+apk.rsa

@@ -76,7 +76,7 @@ jobs:
       cache: false
       cmd: "make validate"
 
-  build-binary:
+  build-artifacts:
     uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
     needs:
       - lint
@@ -85,9 +85,9 @@ jobs:
       contents: read
     with:
       release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
-      artifact: "bin/cloudflare-dyndns-*"
+      artifact: "dist/*"
       artifact-name: "cloudflare-dyndns"
-      cmd: "make build-all"
+      cmd: "make release"
     secrets: inherit
 
   build-image:
@@ -105,21 +105,6 @@ jobs:
       tag: "${{ inputs.tag == '' && 'rolling' || inputs.tag }}"
       tags: "${{ inputs.latest == true && 'type=raw,value=latest' || '' }}"
       dry-run: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || inputs.dry-run == 'true' }}
-    secrets: inherit
-
-  build-packages:
-    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
-    needs:
-      - lint
-      - unit-tests
-    permissions:
-      contents: read
-    with:
-      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
-      goos: "linux"
-      artifact: "bin/cloudflare-dyndns_*.ipk"
-      artifact-name: "cloudflare-dyndns-openwrt"
-      cmd: "make package-openwrt"
     secrets: inherit
 
   push-helm:

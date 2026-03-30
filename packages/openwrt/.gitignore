@@ -1,4 +1,0 @@
-# Ignore temporary build outputs
-/control/control
-/*.tar.gz
-/data/usr/sbin/cloudflare-dyndns
