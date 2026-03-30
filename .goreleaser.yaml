@@ -54,6 +54,7 @@ nfpms:
     license: Apache 2.0
     formats:
       - ipk
+      - apk
     dependencies:
       - ca-bundle
     bindir: /usr/sbin

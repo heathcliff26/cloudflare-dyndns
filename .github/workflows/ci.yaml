@@ -78,9 +78,6 @@ jobs:
 
   build-artifacts:
     uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
-    needs:
-      - lint
-      - unit-tests
     permissions:
       contents: read
     with:
@@ -97,6 +94,7 @@ jobs:
       - unit-tests
       - validate
       - gosec
+      - build-artifacts
     permissions:
       contents: read
       packages: write
