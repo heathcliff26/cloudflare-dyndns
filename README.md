@@ -21,6 +21,7 @@ The client package can also be used as a golang API, should you want to build yo
     - [Tags](#tags)
   - [Usage](#usage)
     - [Kubernetes](#kubernetes)
+  - [OpenWrt](#openwrt)
   - [API (Server Mode)](#api-server-mode)
     - [Examples](#examples)
 
@@ -83,6 +84,11 @@ Alternatively Helm charts are released via oci repos and can be installed with:
 helm install cloudflare-dyndns oci://ghcr.io/heathcliff26/manifests/cloudflare-dyndns --version <version>
 ```
 Please use the latest version from the releases page.
+
+## OpenWrt
+
+When installing the arm64 package on OpenWrt 24.10 or older, you need to enable arm64 as an architecture in your opkg.conf.
+This is caused by goreleaser not using aarch64 as architecture string for .ipk packages.
 
 ## API (Server Mode)
 
