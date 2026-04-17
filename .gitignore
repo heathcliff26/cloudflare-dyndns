@@ -15,3 +15,6 @@ coverprofile.out
 
 # Added by goreleaser init:
 dist/
+
+# Rust build artifacts
+/rust/target/

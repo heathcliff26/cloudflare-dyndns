@@ -1,0 +1,38 @@
+[package]
+name = "cloudflare-dyndns"
+version = "0.1.0"
+edition = "2024"
+description = "DynDNS client for Cloudflare"
+license = "Apache-2.0"
+
+[dependencies]
+# CLI argument parsing
+clap = { version = "4.6", features = ["derive"] }
+
+# Serialization / config
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yml = "0.0.12"
+
+# HTTP client (async)
+reqwest = { version = "0.13", features = ["json"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Logging / tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+
+# Duration parsing from human-readable strings like "5m", "30s"
+humantime-serde = "1.1"
+
+# Prometheus metrics
+prometheus = "0.14"
+
+# Minimal HTTP server for metrics endpoint
+axum = "0.8"
+
+# Error handling
+anyhow = "1"
+thiserror = "2"
