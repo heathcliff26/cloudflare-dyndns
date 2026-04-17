@@ -338,7 +338,7 @@ pub async fn run(mut client: CloudflareClient, interval: std::time::Duration) {
 
 /// Extract the base domain from a FQDN (e.g. `foo.example.org` → `example.org`).
 fn get_base_domain(domain: &str) -> &str {
-    let parts: Vec<&str> = domain.splitn(usize::MAX, '.').collect();
+    let parts: Vec<&str> = domain.split('.').collect();
     let n = parts.len();
     if n < 2 {
         return "";
