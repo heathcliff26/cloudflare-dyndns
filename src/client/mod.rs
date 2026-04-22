@@ -201,11 +201,11 @@ impl DynDnsClient for Client {
         self.data().check().context("Invalid client data")?;
         for domain in self.data().domains.iter() {
             let zone_id = self
-                .get_zone_id(&http_client, domain)
+                .get_zone_id(http_client, domain)
                 .await
                 .context(format!("Failed to get zone for '{domain}'"))?;
             let records = self
-                .get_records(&http_client, &zone_id, domain)
+                .get_records(http_client, &zone_id, domain)
                 .await
                 .context(format!("Failed to list dns records for '{domain}'"))?;
 
@@ -233,7 +233,7 @@ impl DynDnsClient for Client {
                             self.data().ipv4()
                         );
                         self.update_record(
-                            &http_client,
+                            http_client,
                             &zone_id,
                             domain,
                             &record.id,
@@ -261,7 +261,7 @@ impl DynDnsClient for Client {
                             self.data().ipv6()
                         );
                         self.update_record(
-                            &http_client,
+                            http_client,
                             &zone_id,
                             domain,
                             &record.id,
@@ -281,7 +281,7 @@ impl DynDnsClient for Client {
                     "Creating A record for '{domain}' with ip '{}'",
                     self.data().ipv4()
                 );
-                self.create_record(&http_client, &zone_id, domain, cloudflare::RecordType::A)
+                self.create_record(http_client, &zone_id, domain, cloudflare::RecordType::A)
                     .await
                     .context(format!("Failed to create A record for '{domain}'"))?;
             }
@@ -291,7 +291,7 @@ impl DynDnsClient for Client {
                     "Creating AAAA record for '{domain}' with ip '{}'",
                     self.data().ipv6()
                 );
-                self.create_record(&http_client, &zone_id, domain, cloudflare::RecordType::AAAA)
+                self.create_record(http_client, &zone_id, domain, cloudflare::RecordType::AAAA)
                     .await
                     .context(format!("Failed to create AAAA record for '{domain}'"))?;
             }

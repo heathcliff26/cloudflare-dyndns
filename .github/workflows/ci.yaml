@@ -4,10 +4,10 @@ name: CI
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: "Use to set tag, default: rolling"
-        type: string
-        default: "rolling"
+      release:
+        description: "Release build"
+        type: boolean
+        default: false
         required: false
       dry-run:
         description: "Do not push image"
@@ -21,10 +21,10 @@ on:
         required: false
   workflow_call:
     inputs:
-      tag:
-        description: "Use to set tag, default: rolling"
-        type: string
-        default: "rolling"
+      release:
+        description: "Release build"
+        type: boolean
+        default: false
         required: false
       dry-run:
         description: "Do not push image"
@@ -39,10 +39,10 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "go.mod"
-      - "go.sum"
-      - "*.go"
-      - "**/*.go"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "src/**"
+      - "tests/**"
       - "Dockerfile"
   pull_request:
     branches: ["main"]
@@ -50,73 +50,108 @@ on:
     branches: ["main"]
 
 jobs:
-  lint:
-    uses: heathcliff26/ci/.github/workflows/golang-lint.yaml@main
+  extract-version:
+    uses: heathcliff26/ci/.github/workflows/cargo-version.yaml@main
     permissions:
       contents: read
 
-  gosec:
-    uses: heathcliff26/ci/.github/workflows/golang-gosec.yaml@main
-    permissions:
-      contents: read
-      security-events: write
-
-  unit-tests:
-    uses: heathcliff26/ci/.github/workflows/golang-unit-tests.yaml@main
+  doc:
+    uses: heathcliff26/ci/.github/workflows/run-script.yaml@main
     permissions:
       contents: read
     with:
-      coveralls: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' }}
+      cmd: "make doc"
+
+  lint:
+    uses: heathcliff26/ci/.github/workflows/run-script.yaml@main
+    permissions:
+      contents: read
+    with:
+      cmd: "make lint"
+
+  test:
+    uses: heathcliff26/ci/.github/workflows/run-script.yaml@main
+    permissions:
+      contents: read
+    with:
+      cmd: "make test"
 
   validate:
-    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+    uses: heathcliff26/ci/.github/workflows/run-script.yaml@main
     permissions:
       contents: read
     with:
-      cache: false
       cmd: "make validate"
 
-  build-artifacts:
-    uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+  e2e:
+    uses: heathcliff26/ci/.github/workflows/run-script.yaml@main
     permissions:
       contents: read
     with:
-      release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
-      artifact: "dist/*"
-      artifact-name: "cloudflare-dyndns"
-      cmd: "make release"
-    secrets: inherit
+      cmd: "make test-e2e"
+
+  # TODO: Replace with proper build-artifacts
+  build-binary:
+    uses: heathcliff26/ci/.github/workflows/run-script.yaml@main
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+          - arch: arm64
+    with:
+      cmd: "make build"
+      artifact: "bin/cloudflare-dyndns"
+      artifact-name: "cloudflare-dyndns-${{ matrix.arch }}"
+      architecture: "${{ matrix.arch }}"
+  # build-artifacts:
+  #   uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
+  #   permissions:
+  #     contents: read
+  #   with:
+  #     release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
+  #     artifact: "dist/*"
+  #     artifact-name: "cloudflare-dyndns"
+  #     cmd: "make release"
+  #   secrets: inherit
 
   build-image:
     uses: heathcliff26/ci/.github/workflows/build-container.yaml@main
     needs:
+      - extract-version
+      - doc
       - lint
-      - unit-tests
+      - test
       - validate
-      - gosec
-      - build-artifacts
+      - e2e
+      # TODO: - build-artifacts
     permissions:
       contents: read
       packages: write
     with:
       dockerfile: Dockerfile
-      tag: "${{ inputs.tag == '' && 'rolling' || inputs.tag }}"
+      tag: "${{ inputs.release && needs.extract-version.outputs.version || 'rolling' }}"
       tags: "${{ inputs.latest == true && 'type=raw,value=latest' || '' }}"
       dry-run: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || inputs.dry-run == 'true' }}
     secrets: inherit
 
   push-helm:
     uses: heathcliff26/ci/.github/workflows/push-helm-chart.yaml@main
-    if: ${{ inputs.tag != '' && inputs.tag != 'rolling' }}
+    if: ${{ inputs.release }}
     needs:
+      - extract-version
+      - doc
       - lint
-      - unit-tests
+      - test
       - validate
-      - gosec
+      - e2e
+      # TODO: - build-artifacts
     permissions:
       contents: read
       packages: write
     with:
-      tag: "${{ inputs.tag }}"
+      tag: "${{ inputs.release && needs.extract-version.outputs.version || 'rolling' }}"
       dry-run: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || inputs.dry-run == 'true' }}
     secrets: inherit

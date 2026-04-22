@@ -40,7 +40,7 @@ pub struct ServerConfig {
     pub ssl: SSLConfig,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SSLConfig {
     /// Enable SSL. Default: false
@@ -86,16 +86,6 @@ impl Default for ServerConfig {
     }
 }
 
-impl Default for SSLConfig {
-    fn default() -> Self {
-        Self {
-            enabled: false,
-            cert: String::new(),
-            key: String::new(),
-        }
-    }
-}
-
 impl Default for ClientConfig {
     fn default() -> Self {
         Self {
@@ -111,10 +101,9 @@ impl Default for ClientConfig {
 impl Config {
     /// Loads config from file, returns error if config is invalid
     /// Arguments:
-    ///
-    ///	path: Path to config file
-    ///	mode: Mode used, determines how the config will be validated and which values will be processed
-    ///	env: Determines if environment variables in the file will be expanded before decoding
+    ///     path: Path to config file
+    ///     mode: Mode used, determines how the config will be validated and which values will be processed
+    ///     env: Determines if environment variables in the file will be expanded before decoding
     pub fn from_file(path: &str, mode: Mode, expand_env: bool) -> Result<Self> {
         if path.is_empty() && mode == Mode::Server {
             set_log_level(DEFAULT_LOG_LEVEL)?;

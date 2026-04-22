@@ -5,27 +5,13 @@ set -e
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 
 bin_dir="${base_dir}/bin"
+name="$(yq -r '.package.name' "${base_dir}/Cargo.toml")"
 
-GOOS="${GOOS:-$(go env GOOS)}"
-GOARCH="${GOARCH:-$(go env GOARCH)}"
+[ -d "${bin_dir}" ] || mkdir -p "${bin_dir}"
 
-GO_LD_FLAGS="${GO_LD_FLAGS:-"-s"}"
+CI_COMMIT_SHA="$(git rev-parse HEAD)"
+export CI_COMMIT_SHA
 
-if [ "${RELEASE_VERSION}" != "" ]; then
-    echo "Building release version ${RELEASE_VERSION}"
-    GO_LD_FLAGS+=" -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitVersion=${RELEASE_VERSION}"
-fi
+cargo build --release
 
-output_name="${bin_dir}/cloudflare-dyndns"
-if [ "${1}" != "" ]; then
-    output_name="${bin_dir}/${1}"
-fi
-
-if [ "${GOOS}" == "windows" ]; then
-    output_name="${output_name}.exe"
-fi
-
-pushd "${base_dir}" >/dev/null
-
-echo "Building $(basename "${output_name}")"
-GOOS="${GOOS}" GOARCH="${GOARCH}" CGO_ENABLED=0 go build -trimpath -ldflags="${GO_LD_FLAGS}" -o "${output_name}" ./cmd/...
+mv "${base_dir}/target/release/${name}" "${bin_dir}/${name}"

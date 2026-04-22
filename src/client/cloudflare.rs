@@ -56,5 +56,6 @@ pub struct Record {
 /// Record type, either A or AAAA
 pub enum RecordType {
     A,
+    #[allow(clippy::upper_case_acronyms)]
     AAAA,
 }

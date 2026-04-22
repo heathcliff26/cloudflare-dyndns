@@ -14,31 +14,35 @@ release:
 
 # Build the container image
 image:
-	podman build -t $(REPOSITORY)/$(CONTAINER_NAME):$(TAG) .
+	podman build --build-arg="CI_COMMIT_SHA=$$(git rev-parse HEAD)" -t $(REPOSITORY)/$(CONTAINER_NAME):$(TAG) .
 
-# Run unit-tests
+# Run cargo test
 test:
-	go test -v -race -coverprofile=coverprofile.out ./...
+	cargo test
 
-# Update dependencies
-update-deps:
-	hack/update-deps.sh
+# Run e2e tests
+test-e2e:
+	cargo test --features e2e --test e2e-testsuite
 
 # Generate cover profile
 coverprofile:
 	hack/coverprofile.sh
 
-# Run linter
+# Build the docs, fail on warnings
+doc:
+	RUSTDOCFLAGS='--deny warnings' cargo doc --no-deps
+
+# Run linter (clippy)
 lint:
-	golangci-lint run -v
+	cargo clippy -- --deny warnings
 
 # Lint the helm charts
 lint-helm:
 	helm lint manifests/helm/
 
-# Format code
+# Format the code
 fmt:
-	gofmt -s -w ./cmd ./pkg
+	cargo fmt
 
 # Validate that all generated files are up to date
 validate:
@@ -47,10 +51,6 @@ validate:
 # Validate the appstream metainfo file
 validate-metainfo:
 	appstreamcli validate io.github.heathcliff26.cloudflare-dyndns.metainfo.xml
-
-# Scan code for vulnerabilities using gosec
-gosec:
-	gosec ./...
 
 # Build rpm with code in current workdir using packit
 packit:
@@ -74,19 +74,18 @@ help:
 	@echo "Run 'make <target>' to execute a specific target."
 
 .PHONY: \
-	default \
 	build \
 	release \
 	image \
 	test \
-	update-deps \
+	test-e2e \
 	coverprofile \
+	doc \
 	lint \
 	lint-helm \
 	fmt \
 	validate \
 	validate-metainfo \
-	gosec \
 	packit \
 	packit-mock \
 	clean \
