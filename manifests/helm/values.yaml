@@ -36,21 +36,10 @@ config:
     # List of domains to update
     domains: []
       # - foo.example.org
-    # Interval in which the client should check for ip changes.
-    interval: "5m"
+    # Interval in seconds in which the client should check for ip changes. Default: 300 (5m)
+    interval: 300
     # Endpoint to call when using relay mode
     endpoint: ""
-
-  # Config for exposing app metrics
-  metrics:
-    # Enable metrics collection and serving.
-    enabled: false
-    # Port to serve metrics on. Metrics will be served on /metrics endpoint.
-    port: 9090
-    # Enable Go runtime metrics.
-    goCollector: true
-    # Enable process metrics.
-    processCollector: true
 
 # Container image configuration
 image:
@@ -83,32 +72,6 @@ service:
   ipFamilies:
     - IPv4
     - IPv6
-
-# The service for exposing the metrics server
-metricsService:
-  # This sets the service type.
-  type: ClusterIP
-  ipFamilyPolicy: PreferDualStack
-  ipFamilies:
-    - IPv4
-    - IPv6
-
-# This is for setting up a ServiceMonitor for Prometheus Operator
-servicemonitor:
-  enabled: false
-  # Additional labels for the ServiceMonitor
-  labels:
-    release: monitoring
-  # Scrape interval
-  interval: 1m
-  # Scrape timeout
-  scrapeTimeout: 5s
-  # Relabelings for the ServiceMonitor
-  relabelings: []
-    ## By default, these relabelings are configured.
-    # - replacement: "cloudflare-dyndns"
-    #   action: replace
-    #   targetLabel: job
 
 # This block is for setting up the ingress for more information can be found here: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:

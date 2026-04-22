@@ -55,12 +55,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
-          {{- if .Values.config.metrics.enabled }}
-          ports:
-            - name: metrics
-              containerPort: {{ .Values.config.metrics.port }}
-              protocol: TCP
-          {{- end }}
           {{- with .Values.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
