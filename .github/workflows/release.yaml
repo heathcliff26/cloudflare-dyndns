@@ -7,15 +7,11 @@ on:
       draft:
         description: "Create draft release"
         type: boolean
-        default: true
+        default: false
       update:
         description: "Update existing release"
         type: boolean
         default: false
-      tag:
-        description: "Release tag to use"
-        type: string
-        required: true
       latest:
         description: "Tag container as latest"
         type: boolean
@@ -26,12 +22,18 @@ on:
         default: false
 
 jobs:
+  extract-version:
+    uses: heathcliff26/ci/.github/workflows/cargo-version.yaml@main
+    permissions:
+      contents: read
+
   tag:
     uses: heathcliff26/ci/.github/workflows/tag.yaml@main
+    needs: extract-version
     permissions:
       contents: write
     with:
-      tag: ${{ inputs.tag }}
+      tag: ${{ needs.extract-version.outputs.version }}
       overwrite: ${{ inputs.update }}
     secrets: inherit
 
@@ -43,20 +45,30 @@ jobs:
       packages: write
       security-events: write
     with:
-      tag: ${{ inputs.tag }}
+      release: true
       latest: ${{ inputs.latest }}
     secrets: inherit
 
   release:
     uses: heathcliff26/ci/.github/workflows/release.yaml@main
-    needs: build
+    needs:
+      - build
+      - extract-version
     permissions:
       contents: write
     with:
       draft: ${{ inputs.draft }}
       update: ${{ inputs.update }}
-      tag: ${{ inputs.tag }}
+      tag: ${{ needs.extract-version.outputs.version }}
       release-artifacts: "release/*"
       artifacts: "cloudflare-dyndns"
       prerelease: ${{ inputs.prerelease }}
+    secrets: inherit
+
+  publish-crate:
+    uses: heathcliff26/ci/.github/workflows/cargo-release.yaml@main
+    if: ${{ inputs.draft == false && inputs.update == false }}
+    needs: build
+    permissions:
+      contents: read
     secrets: inherit

@@ -1,22 +1,17 @@
 # Cargo build directory
 /target
 
-# TODO: Check ignored files
-
 # Ignore binaries
 /bin
+/dist
 
 # Ignore files created for testing
 test-config.yaml
-
-# Generated go-test coverage reports
-coverprofiles/
-coverprofile.out
 
 # Packit RPM builds
 /tmp
 /x86_64
 /aarch64
 
-# Added by goreleaser init:
-dist/
+# Test coverage report
+/*.profraw
