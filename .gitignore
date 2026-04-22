@@ -1,3 +1,17 @@
-# Generated go-test coverage reports
-coverprofiles/
-coverprofile.out
+# Cargo build directory
+/target
+
+# Ignore binaries
+/bin
+/dist
+
+# Ignore files created for testing
+test-config.yaml
+
+# Packit RPM builds
+/tmp
+/x86_64
+/aarch64
+
+# Test coverage report
+/*.profraw
