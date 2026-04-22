@@ -35,7 +35,6 @@ See [values.yaml](./values.yaml) for all available configuration options.
 | `image.repository`       | Container image repository                               | `ghcr.io/heathcliff26/cloudflare-dyndns` |
 | `image.tag`              | Container image tag                                      | Same as chart version                    |
 | `ingress.enabled`        | Enable ingress                                           | `false`                                  |
-| `servicemonitor.enabled` | Create a ServiceMonitor for the Prometheus Operator      | `false`                                  |
 
 ## Support
 
