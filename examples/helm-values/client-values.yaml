@@ -5,9 +5,7 @@ config:
     proxy: true
     domains:
       - "${NODE_NAME}.heathcliff26.net"
-    interval: "5m"
-  metrics:
-    enabled: true
+    interval: 300
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"

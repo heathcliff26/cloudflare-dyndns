@@ -10,7 +10,7 @@
 
     <description>
         <p>
-            DynDNS client or relay server for cloudflare, implemented in golang.
+            DynDNS client or relay server for cloudflare, implemented in rust.
         </p>
     </description>
 

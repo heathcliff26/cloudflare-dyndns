@@ -19,11 +19,13 @@ jobs:
     targets:
       - fedora-all-x86_64
       - fedora-all-aarch64
+    enable_net: true
 
   - job: copr_build
     trigger: release
     targets:
       - fedora-all-x86_64
       - fedora-all-aarch64
+    enable_net: true
     owner: heathcliff26
     project: cli

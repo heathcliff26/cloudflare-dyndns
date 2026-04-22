@@ -10,7 +10,7 @@ data:
       proxy: true
       domains:
         - "${NODE_NAME}.example.com"
-      interval: "5m"
+      interval: 300
       endpoint: "https://dyndns.example.com/"
 ---
 apiVersion: v1
