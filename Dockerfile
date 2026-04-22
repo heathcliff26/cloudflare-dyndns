@@ -1,16 +1,24 @@
 ###############################################################################
 # BEGIN build-stage
 # Compile the binary
-FROM --platform=$BUILDPLATFORM docker.io/library/golang:1.26.1 AS build-stage
-
-ARG BUILDPLATFORM
-ARG TARGETARCH
+FROM docker.io/library/rust:1.95.0-alpine AS build-stage
 
 WORKDIR /app
 
-COPY . ./
+RUN apk add --no-cache \
+    musl-dev \
+    openssl-dev \
+    openssl-libs-static
 
-RUN GOOS=linux GOARCH="${TARGETARCH}" hack/build.sh
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+
+# Needed as we include it for docs.
+RUN touch README.md
+
+ARG CI_COMMIT_SHA=unknown
+
+RUN cargo build --release
 
 #
 # END build-stage
@@ -23,11 +31,11 @@ FROM docker.io/library/alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9
 
 WORKDIR /
 
-COPY --from=build-stage /app/bin/cloudflare-dyndns /
+COPY --from=build-stage /app/target/release/cloudflare-dyndns /usr/local/bin/cloudflare-dyndns
 
 USER nobody:nobody
 
-ENTRYPOINT ["/cloudflare-dyndns"]
+ENTRYPOINT ["cloudflare-dyndns"]
 
 #
 # END final-stage

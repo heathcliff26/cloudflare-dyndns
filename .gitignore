@@ -1,3 +1,8 @@
+# Cargo build directory
+/target
+
+# TODO: Check ignored files
+
 # Ignore binaries
 /bin
 

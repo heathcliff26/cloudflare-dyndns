@@ -1,0 +1,14 @@
+logLevel: "debug"
+
+server:
+  port: 80
+  domains:
+    - example.com
+
+client:
+  token: "test-token-2"
+  proxy: false
+  domains:
+    - bar.example.net
+  interval: 600
+  endpoint: "dyndns.example.net"
