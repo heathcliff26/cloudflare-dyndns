@@ -1,0 +1,84 @@
+[package]
+name = "cloudflare-dyndns"
+version = "2.0.0-alpha.0"
+authors = ["Heathcliff <heathcliff@heathcliff.eu>"]
+edition = "2024"
+description = "DynDNS client or relay server for cloudflare"
+readme = "README.md"
+repository = "https://github.com/heathcliff26/cloudflare-dyndns"
+license = "Apache-2.0"
+categories = [
+    "cloudflare",
+    "dns",
+    "dynamic-dns",
+    "dyndns",
+    "openwrt",
+    "router",
+    "networking",
+]
+# TODO: Add excludes
+exclude = [
+    ".github",
+    ".vscode",
+    "hack",
+    "tools",
+    ".editorconfig",
+    ".goreleaser.yaml",
+    ".packit.yaml",
+    ".sourcery.yaml",
+    "Makefile",
+]
+
+# TODO: Check features and dependencies
+[dependencies]
+anyhow = "1.0.102"
+axum = { version = "0.8.9", default-features = false, features = [
+    "http2",
+    "json",
+    "tokio",
+    "tracing",
+] }
+clap = { version = "4.6.1", features = ["derive"] }
+reqwest = { version = "0.13.2", default-features = false, features = [
+    "http2",
+    "native-tls",
+    "json",
+] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_qs = { version = "1.1.1", features = ["axum"] }
+serde_yaml = "0.9.34"
+shellexpand = { version = "3.1.2", default-features = false, features = [
+    "base-0",
+] }
+tokio = { version = "1.52.1", features = [
+    "rt-multi-thread",
+    "net",
+    "macros",
+    "sync",
+    "signal",
+] }
+tokio-native-tls = "0.3.1"
+tracing = { version = "0.1.44", features = [
+    "max_level_debug",
+    "release_max_level_debug",
+] }
+tracing-subscriber = { version = "0.3.23", default-features = false, features = [
+    "std",
+    "env-filter",
+    "registry",
+    "fmt",
+] }
+
+[dev-dependencies]
+mockito = "1.7.2"
+
+[profile.release]
+strip = "symbols"
+lto = true
+codegen-units = 1
+opt-level = "z"
+panic = "abort"
+
+[features]
+default = []
+e2e = []
