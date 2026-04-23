@@ -89,7 +89,6 @@ impl Cli {
     }
 }
 
-// TODO: Consider moving the cli options into the specific modules.
 /// cloudflare-dyndns provides DynDNS functionality for cloudflare.
 #[derive(Subcommand)]
 enum Command {

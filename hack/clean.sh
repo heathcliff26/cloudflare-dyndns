@@ -4,9 +4,8 @@ set -e
 
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath)/.."
 
-# TODO: Update folders and files to be removed, same as .gitignore
-folders=("target" "bin" "dist" "coverprofiles" "tmp" "x86_64" "aarch64")
-files=("coverprofile.out")
+folders=("target" "bin" "dist" "tmp" "x86_64" "aarch64")
+files=()
 
 for folder in "${folders[@]}"; do
     if ! [ -e "${base_dir}/${folder}" ]; then
@@ -23,5 +22,3 @@ for file in "${files[@]}"; do
     echo "Removing ${file}"
     rm "${base_dir:-.}/${file}"
 done
-
-rm -f "${base_dir:-.}"/packages/openwrt/*.tar.gz
