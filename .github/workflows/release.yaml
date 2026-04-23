@@ -64,11 +64,3 @@ jobs:
       artifacts: "cloudflare-dyndns"
       prerelease: ${{ inputs.prerelease }}
     secrets: inherit
-
-  publish-crate:
-    uses: heathcliff26/ci/.github/workflows/cargo-release.yaml@main
-    if: ${{ inputs.draft == false && inputs.update == false }}
-    needs: build
-    permissions:
-      contents: read
-    secrets: inherit
