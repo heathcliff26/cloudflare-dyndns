@@ -9,6 +9,9 @@ LABEL   org.opencontainers.image.authors="heathcliff@heathcliff.eu" \
 # renovate: datasource=github-releases depName=goreleaser/goreleaser extractVersion=^(?<version>.*)$
 ARG GORELEASER_VERSION=v2.15.2
 
+# renovate: datasource=github-releases depName=dyne/musl extractVersion=^(?<version>.*)$
+ARG DYNE_MUSL_VERSION=2.1.5
+
 COPY install-deps.sh .
 RUN ./install-deps.sh
 

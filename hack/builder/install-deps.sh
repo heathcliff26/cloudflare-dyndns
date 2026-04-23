@@ -2,24 +2,11 @@
 
 set -ex
 
-arches="amd64 arm64"
-
-case "$(uname -m)" in
-    x86_64|amd64)
-        current_arch="amd64"
-        ;;
-    aarch64|arm64)
-        current_arch="arm64"
-        ;;
-    *)
-        current_arch="$(uname -m)"
-esac
+arches="arm64"
 
 for arch in ${arches}; do
-    if [ "${arch}" != "${current_arch}" ]; then
-        echo "Adding architecture ${arch}"
-        dpkg --add-architecture "${arch}"
-    fi
+    echo "Adding architecture ${arch}"
+    dpkg --add-architecture "${arch}"
 done
 
 echo "Updating package lists"
@@ -30,33 +17,22 @@ apt-get install -y --no-install-recommends --no-install-suggests \
         musl-tools \
         upx
 
+echo "Adding rust target for architecture x86_64"
+rustup target add "x86_64-unknown-linux-gnu" "x86_64-unknown-linux-musl"
+
 for arch in ${arches}; do
     case "${arch}" in
-        amd64)
-            pkg_arch="x86-64"
-            rust_target="x86_64-unknown-linux-gnu"
-            musl_target="x86_64-unknown-linux-musl"
-            musl_toolchain="x86_64-linux-musl-cross.tgz"
-            ;;
         arm64)
             pkg_arch="aarch64"
-            rust_target="aarch64-unknown-linux-gnu"
-            musl_target="aarch64-unknown-linux-musl"
-            musl_toolchain="aarch64-linux-musl-cross.tgz"
+            musl_arch="arm_64"
             ;;
         *)
             pkg_arch="${arch}"
-            rust_target="${arch}-unknown-linux-gnu"
-            musl_target="${arch}-unknown-linux-musl"
-            musl_toolchain="${arch}-linux-musl-cross.tgz"
+            musl_arch="${arch}"
     esac
 
     echo "Adding rust target for architecture ${arch}"
-    rustup target add "${rust_target}" "${musl_target}"
-
-    if [ "${arch}" == "${current_arch}" ]; then
-        continue
-    fi
+    rustup target add "${pkg_arch}-unknown-linux-gnu" "${pkg_arch}-unknown-linux-musl"
 
     echo "Installing dependencies for architecture ${arch}"
     apt-get install -y --no-install-recommends --no-install-suggests \
@@ -65,17 +41,13 @@ for arch in ${arches}; do
         "libssl-dev:${arch}"
 
     echo "Installing musl cross compile toolchain for architecture ${arch}"
-    curl -SL -o musl-toolchain.tar.gz "https://musl.cc/${musl_toolchain}"
-    tar -xzf musl-toolchain.tar.gz -C /usr --strip-components=1
-    rm musl-toolchain.tar.gz
+    curl -SL -o musl-toolchain.tar.xz "https://github.com/dyne/musl/releases/download/${DYNE_MUSL_VERSION}/dyne-gcc-musl-${musl_arch}.tar.xz"
+    tar -xJf musl-toolchain.tar.xz -C /opt
+    rm musl-toolchain.tar.xz
 done
 
 echo "Installing goreleaser"
-arch=$(uname -m)
-if [ "${arch}" == "aarch64" ]; then
-    arch="arm64"
-fi
-curl -SL -o goreleaser.tar.gz "https://github.com/goreleaser/goreleaser/releases/download/${GORELEASER_VERSION}/goreleaser_Linux_${arch}.tar.gz"
+curl -SL -o goreleaser.tar.gz "https://github.com/goreleaser/goreleaser/releases/download/${GORELEASER_VERSION}/goreleaser_Linux_x86_64.tar.gz"
 tar -xzf goreleaser.tar.gz -C "/usr/local/bin" goreleaser
 rm goreleaser.tar.gz
 goreleaser --version
