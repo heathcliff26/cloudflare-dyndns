@@ -89,7 +89,7 @@ impl Cli {
     }
 }
 
-/// cloudflare-dyndns provides DynDNS functionality for cloudflare.
+/// cloudflare-dyndns provides DynDNS functionality for Cloudflare.
 #[derive(Subcommand)]
 enum Command {
     /// Run a server for relay clients
@@ -97,7 +97,7 @@ enum Command {
         #[clap(flatten)]
         cli_opts: ServerOptions,
     },
-    /// Update DDNS Records by calling the cloudflare API
+    /// Update DDNS Records by calling the Cloudflare API
     Client {
         #[clap(flatten)]
         cli_opts: ClientOptions,

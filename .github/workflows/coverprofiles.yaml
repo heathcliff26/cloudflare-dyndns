@@ -1,5 +1,5 @@
 ---
-name: "Generate test cover report"
+name: "Coverprofiles"
 
 on:
   workflow_dispatch:
