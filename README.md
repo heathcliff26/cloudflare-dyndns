@@ -1,16 +1,17 @@
 [![CI](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/ci.yaml/badge.svg?event=push)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/ci.yaml)
 [![Coverage Status](https://coveralls.io/repos/github/heathcliff26/cloudflare-dyndns/badge.svg)](https://coveralls.io/github/heathcliff26/cloudflare-dyndns)
 [![Editorconfig Check](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/editorconfig-check.yaml/badge.svg?event=push)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/editorconfig-check.yaml)
-[![Generate go test cover report](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/go-testcover-report.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/go-testcover-report.yaml)
+[![Coverprofiles](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/coverprofiles.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/coverprofiles.yaml)
 [![Renovate](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/renovate.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/renovate.yaml)
+[![Builder Image](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/build-builder.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/build-builder.yaml)
 
 # cloudflare-dyndns
 
-Implements the API from [Fritz!Box DynDNS Script for Cloudflare](https://github.com/1rfsNet/Fritz-Box-Cloudflare-DynDNS), but can also be used as a standalone client.
+Standalone binary for dynamically updating your home IP on your Cloudflare-managed DNS domain.
 
-Additionally to consuming less resources and being a smaller image, it also implements POST in addition to GET requests, meaning no longer does the token need to be included in the url.
+All domains whose DNS is managed by Cloudflare can be updated with this.
 
-The client package can also be used as a golang API, should you want to build your application with included cloudflare dyndns capabilities.
+It implements both POST and GET endpoints to support a wide variety of devices.
 
 ## Table of Contents
 
@@ -31,8 +32,9 @@ The client package can also be used as a golang API, should you want to build yo
 
 | Container Registry                                                                                     | Image                                      |
 | ------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| [Github Container](https://github.com/users/heathcliff26/packages/container/package/cloudflare-dyndns) | `ghcr.io/heathcliff26/cloudflare-dyndns`   |
-| [Docker Hub](https://hub.docker.com/r/heathcliff26/cloudflare-dyndns)                  | `docker.io/heathcliff26/cloudflare-dyndns` |
+| [GitHub Container](https://github.com/users/heathcliff26/packages/container/package/cloudflare-dyndns) | `ghcr.io/heathcliff26/cloudflare-dyndns`   |
+| [Docker Hub](https://hub.docker.com/r/heathcliff26/cloudflare-dyndns)                                  | `docker.io/heathcliff26/cloudflare-dyndns` |
+| [Quay](https://quay.io/repository/heathcliff26/cloudflare-dyndns)                                      | `quay.io/heathcliff26/cloudflare-dyndns`   |
 
 ### Tags
 
@@ -48,28 +50,23 @@ There are different flavors of the image:
 
 The binary can be run either as a server, a standalone client or in relay mode where it will call a server.
 
-The main use case for relay mode would be when you want to restrict your cloudflare API key to a static IP.
+The main use case for relay mode would be when you want to restrict your Cloudflare API key to a static IP.
 
 Output of `cloudflare-dyndns help`
-```
-cloudflare-dyndns provides DynDNS functionality for cloudflare.
+```bash
+cloudflare-dyndns provides DynDNS functionality for Cloudflare
 
-Usage:
-  cloudflare-dyndns [flags]
-  cloudflare-dyndns [command]
+Usage: cloudflare-dyndns <COMMAND>
 
-Available Commands:
-  client      Update DDNS Records by calling the cloudflare API
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  relay       Update DDNS Records but relay the calls through a server
-  server      Run a server for relay clients
-  version     Print version information and exit
+Commands:
+  server   Run a server for relay clients
+  client   Update DDNS Records by calling the Cloudflare API
+  relay    Update DDNS Records but relay the calls through a server
+  version  Print version information and exit
+  help     Print this message or the help of the given subcommand(s)
 
-Flags:
-  -h, --help   help for cloudflare-dyndns
-
-Use "cloudflare-dyndns [command] --help" for more information about a command.
+Options:
+  -h, --help  Print help
 ```
 An example config can be found [here](examples/example-config.yaml).
 
@@ -92,26 +89,23 @@ This is caused by goreleaser not using aarch64 as architecture string for .ipk p
 
 ## API (Server Mode)
 
-| Parameter        | Description                                                                    |
-| ---------------- | ------------------------------------------------------------------------------ |
-| token (cf_key)   | Token needed for accessing cloudflare api                                      |
-| domains (domain) | The domain to update, parsed from comma (,) separated string, needs at least 1 |
-| ipv4             | IPv4 Address, optional, when IPv6 set                                          |
-| ipv6             | IPv6 Address, optional, when IPv4 set                                          |
-| proxy            | Indicate if domain should be proxied, defaults to true                         |
+| Parameter | Description                                            |
+| --------- | ------------------------------------------------------ |
+| token     | Token needed for accessing Cloudflare API              |
+| domains   | The domain to update, can be specified multiple times  |
+| ipv4      | IPv4 Address, optional, when IPv6 set                  |
+| ipv6      | IPv6 Address, optional, when IPv4 set                  |
+| proxy     | Indicate if domain should be proxied, defaults to true |
 
 ### Examples
 
 Here is an example GET request:
+```text
+https://dyndns.example.com/?token=testtoken&domains=foo.example.net&domains=bar.example.org&domains=example.net&ipv4=100.100.100.100&ipv6=fd00::dead&proxy=true
 ```
-https://dyndns.example.com/?token=testtoken&domains=foo.example.net,bar.example.org,example.net&ipv4=100.100.100.100&ipv6=fd00::dead&proxy=true
-```
-or alternatively in the format [Fritz!Box DynDNS Script for Cloudflare](https://github.com/1rfsNet/Fritz-Box-Cloudflare-DynDNS) from :
-```
-http://example.org/?cf_key=testtoken&domain=foo.example.net&ipv4=100.100.100.100&ipv6=fd00::dead&proxy=true
-```
+
 When using POST the format is:
-```
+```json
 {
   "token": "",
   "domains": [
