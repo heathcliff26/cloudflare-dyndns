@@ -81,4 +81,5 @@ panic = "abort"
 
 [features]
 default = []
+native-tls-vendored = ["tokio-native-tls/vendored", "reqwest/native-tls-vendored"]
 e2e = []

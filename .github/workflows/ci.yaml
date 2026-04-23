@@ -90,32 +90,15 @@ jobs:
     with:
       cmd: "make test-e2e"
 
-  # TODO: Replace with proper build-artifacts
-  build-binary:
+  build-artifacts:
     uses: heathcliff26/ci/.github/workflows/run-script.yaml@main
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - arch: amd64
-          - arch: arm64
     with:
-      cmd: "make build"
-      artifact: "bin/cloudflare-dyndns"
-      artifact-name: "cloudflare-dyndns-${{ matrix.arch }}"
-      architecture: "${{ matrix.arch }}"
-  # build-artifacts:
-  #   uses: heathcliff26/ci/.github/workflows/golang-build.yaml@main
-  #   permissions:
-  #     contents: read
-  #   with:
-  #     release: "${{ github.event_name == 'pull_request' && 'devel' || inputs.tag == '' && 'rolling' || inputs.tag }}"
-  #     artifact: "dist/*"
-  #     artifact-name: "cloudflare-dyndns"
-  #     cmd: "make release"
-  #   secrets: inherit
+      cmd: "make release"
+      artifact: "dist/*"
+      artifact-name: "cloudflare-dyndns"
+    secrets: inherit
 
   build-image:
     uses: heathcliff26/ci/.github/workflows/build-container.yaml@main
@@ -126,7 +109,7 @@ jobs:
       - test
       - validate
       - e2e
-      # TODO: - build-artifacts
+      - build-artifacts
     permissions:
       contents: read
       packages: write
@@ -147,7 +130,7 @@ jobs:
       - test
       - validate
       - e2e
-      # TODO: - build-artifacts
+      - build-artifacts
     permissions:
       contents: read
       packages: write

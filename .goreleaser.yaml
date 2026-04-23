@@ -6,34 +6,73 @@ version: 2
 project_name: cloudflare-dyndns
 
 env:
-  - CGO_ENABLED=0
-  - RELEASE_VERSION={{ if index .Env "RELEASE_VERSION"  }}{{ .Env.RELEASE_VERSION }}{{ else }}devel{{ end }}
+  - CI_COMMIT_SHA={{ .FullCommit }}
+  - CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=/usr/bin/x86_64-linux-gnu-gcc
+  - CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=/usr/bin/aarch64-linux-gnu-gcc
+  - CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=/usr/bin/x86_64-linux-musl-gcc
+  - CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER=/usr/bin/aarch64-linux-musl-gcc
+  - PKG_CONFIG_ALLOW_CROSS=true
+
+before:
+  hooks:
+    - cargo fetch --locked
 
 builds:
-  - id: binary
+  - id: dynamic
+    builder: rust
     binary: cloudflare-dyndns
-    main: ./cmd/main.go
-    goos:
-      - linux
-    goarch:
-      - arm64
-      - amd64
+    tool: cargo
+    command: build
     flags:
-      - -trimpath
-    ldflags:
-      - -s -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitVersion={{ .Env.RELEASE_VERSION }} -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitCommit={{ .Commit }}
+      - --release
+    targets:
+      - x86_64-unknown-linux-gnu
+      - aarch64-unknown-linux-gnu
+    env:
+      - >-
+        {{- if eq .Target "aarch64-unknown-linux-gnu" }}
+          PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-gnu/pkgconfig
+        {{- else if eq .Target "x86_64-unknown-linux-gnu" }}
+          PKG_CONFIG_LIBDIR=/usr/lib/x86_64-linux-gnu/pkgconfig
+        {{- end }}
+  - id: static
+    builder: rust
+    binary: cloudflare-dyndns
+    tool: cargo
+    command: build
+    flags:
+      - --release
+      - --features=native-tls-vendored
+    targets:
+      - x86_64-unknown-linux-musl
+      - aarch64-unknown-linux-musl
+    env:
+      - RUSTFLAGS=-C target-feature=+crt-static
+      - >-
+        {{- if eq .Target "aarch64-unknown-linux-musl" }}
+          PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-musl/pkgconfig
+        {{- else if eq .Target "x86_64-unknown-linux-musl" }}
+          PKG_CONFIG_LIBDIR=/usr/lib/x86_64-linux-musl/pkgconfig
+        {{- end }}
   - id: compressed
+    builder: rust
     binary: cloudflare-dyndns
-    main: ./cmd/main.go
-    goos:
-      - linux
-    goarch:
-      - arm64
-      - amd64
+    tool: cargo
+    command: build
     flags:
-      - -trimpath
-    ldflags:
-      - -s -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitVersion={{ .Env.RELEASE_VERSION }} -X github.com/heathcliff26/cloudflare-dyndns/pkg/version.gitCommit={{ .Commit }}
+      - --release
+      - --features=native-tls-vendored
+    targets:
+      - x86_64-unknown-linux-musl
+      - aarch64-unknown-linux-musl
+    env:
+      - RUSTFLAGS=-C target-feature=+crt-static
+      - >-
+        {{- if eq .Target "aarch64-unknown-linux-musl" }}
+          PKG_CONFIG_LIBDIR=/usr/lib/aarch64-linux-musl/pkgconfig
+        {{- else if eq .Target "x86_64-unknown-linux-musl" }}
+          PKG_CONFIG_LIBDIR=/usr/lib/x86_64-linux-musl/pkgconfig
+        {{- end }}
 
 upx:
   - enabled: true
@@ -47,6 +86,31 @@ archives:
 nfpms:
   - id: openwrt
     file_name_template: "{{ .PackageName }}_v{{ .Version }}_openwrt-{{ .Arch }}"
+    ids:
+      - static
+    maintainer: Heathcliff <heathcliff@heathcliff.eu>
+    description: DDNS client for cloudflare
+    license: Apache 2.0
+    formats:
+      - ipk
+      - apk
+    dependencies:
+      - ca-bundle
+    bindir: /usr/sbin
+    contents:
+      - src: packages/openwrt/etc-config
+        dst: /etc/config/cloudflare-dyndns
+      - src: packages/openwrt/init-d.sh
+        dst: /etc/init.d/cloudflare-dyndns
+        file_info:
+          mode: 0755
+      - src: packages/openwrt/config.yaml
+        dst: /etc/cloudflare-dyndns/config.yaml
+    scripts:
+      postinstall: packages/openwrt/postinstall.sh
+      preremove: packages/openwrt/preremove.sh
+  - id: openwrt-compressed
+    file_name_template: "{{ .PackageName }}-compressed_v{{ .Version }}_openwrt-{{ .Arch }}"
     ids:
       - compressed
     maintainer: Heathcliff <heathcliff@heathcliff.eu>
