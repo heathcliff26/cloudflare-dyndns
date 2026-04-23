@@ -8,18 +8,22 @@ readme = "README.md"
 repository = "https://github.com/heathcliff26/cloudflare-dyndns"
 license = "Apache-2.0"
 categories = [
+    "command-line-utilities",
+    "network-programming",
+]
+keywords = [
     "cloudflare",
     "dns",
-    "dynamic-dns",
     "dyndns",
-    "openwrt",
     "router",
     "networking",
 ]
-# TODO: Add excludes
 exclude = [
     ".github",
     ".vscode",
+    "examples/helm-values",
+    "manifests",
+    "packages",
     "hack",
     "tools",
     ".editorconfig",
@@ -29,7 +33,6 @@ exclude = [
     "Makefile",
 ]
 
-# TODO: Check features and dependencies
 [dependencies]
 anyhow = "1.0.102"
 axum = { version = "0.8.9", default-features = false, features = [
