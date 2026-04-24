@@ -25,7 +25,7 @@ start_service() {
     config_get token "main" token ""
     config_get_bool proxy "main" proxy "1"
     config_get domain "main" domain ""
-    config_get interval "main" interval "5m"
+    config_get interval "main" interval "300"
     config_get relay_endpoint "main" relay_endpoint ""
 
     if [ "$enabled" = "1" ]; then
