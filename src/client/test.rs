@@ -15,6 +15,91 @@ fn test_from_config() {
 }
 
 #[tokio::test]
+async fn test_verify_token_success() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let token_mock = server
+        .mock("GET", "/user/tokens/verify")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(r#"{"success":true,"errors":[],"messages":[], "result": {"status": "active", "id": "testid"}}"#)
+        .create();
+
+    client
+        .verify_token(&http_client)
+        .await
+        .expect("Should verify token");
+
+    token_mock.assert();
+}
+
+#[tokio::test]
+async fn test_verify_token_empty_token() {
+    let data = ClientData::new(true, vec!["example.com".to_string()]);
+    let client = Client {
+        api_url: "http://localhost".to_string(),
+        token: "".to_string(),
+        data,
+    };
+
+    let e = client
+        .verify_token(&HttpClient::new())
+        .await
+        .expect_err("Should fail with empty token");
+    assert!(
+        e.to_string().contains("Missing cloudflare api token"),
+        "Expected error about missing token but got: {e:#}"
+    );
+}
+
+#[tokio::test]
+async fn test_verify_token_inactive() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let token_mock = server
+        .mock("GET", "/user/tokens/verify")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(r#"{"success":true,"errors":[],"messages":[], "result": {"status": "inactive", "id": "testid"}}"#)
+        .create();
+
+    let e = client
+        .verify_token(&http_client)
+        .await
+        .expect_err("Should fail with inactive token");
+    assert!(
+        e.to_string().contains("Token is not active"),
+        "Expected error about inactive token but got: {e}"
+    );
+
+    token_mock.assert();
+}
+
+#[tokio::test]
+async fn test_verify_token_api_error() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let token_mock = server
+        .mock("GET", "/user/tokens/verify")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(r#"{"success":false,"errors":[],"messages":[]}"#)
+        .create();
+
+    let e = client
+        .verify_token(&http_client)
+        .await
+        .expect_err("Should fail with API error");
+    let error_msg = e.to_string();
+    assert!(
+        error_msg.contains("Failed to verify token"),
+        "Expected verify token error but got: {error_msg}"
+    );
+
+    token_mock.assert();
+}
+
+#[tokio::test]
 async fn test_get_zone_id() {
     let (client, http_client, mut server) = new_test_client().await;
 

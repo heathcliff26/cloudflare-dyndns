@@ -43,8 +43,7 @@ impl Cli {
                     runtime::multi_threaded_runtime().context("Failed to create tokio runtime")?;
                 rt.block_on(async {
                     if let Err(e) = server.run(None).await {
-                        eprintln!("Error: {e:#}");
-                        std::process::exit(1);
+                        exit_with_error(e);
                     }
                 })
             }
@@ -136,6 +135,6 @@ struct ServerOptions {
 
 /// Exit the program with an error message and a non-zero exit code.
 fn exit_with_error(e: Error) -> ! {
-    eprintln!("Error: {e:#}");
+    eprintln!("Fatal: {e:#}");
     std::process::exit(1);
 }
