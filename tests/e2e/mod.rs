@@ -6,12 +6,12 @@ static CONTAINER_BUILD: Once = Once::new();
 static CONTAINER_IMAGE: &str = "localhost/cloudflare-dyndns:e2e-test";
 
 #[tokio::test]
-async fn container_image_healthcheck_http() {
+async fn server_healthcheck_http() {
     let _container = RunningContainer::setup(
         "cloudflare-dyndns-http",
-        "8080:8080",
         "./tests/e2e/testdata/http/",
         "server",
+        "",
     )
     .await;
 
@@ -30,13 +30,13 @@ async fn container_image_healthcheck_http() {
 }
 
 #[tokio::test]
-async fn container_image_healthcheck_https() {
+async fn server_healthcheck_https() {
     let server_cert = TlsCertificate::create("tests/e2e/testdata/https/server");
     let _container = RunningContainer::setup(
         "cloudflare-dyndns-https",
-        "8443:8443",
         "./tests/e2e/testdata/https/",
         "server",
+        "",
     )
     .await;
 
@@ -56,6 +56,28 @@ async fn container_image_healthcheck_https() {
         "Health check failed: {}",
         response.status()
     );
+}
+
+#[tokio::test]
+async fn relay_update() {
+    let mut server = mockito::Server::new_async().await;
+    let update_mock = server
+        .mock("POST", "/")
+        .expect(1)
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(r#"{"msg": "Updated dyndns records","success": true}"#)
+        .create();
+
+    let _container = RunningContainer::setup(
+        "cloudflare-dyndns-relay",
+        "./tests/e2e/testdata/relay/",
+        "relay",
+        &server.url(),
+    )
+    .await;
+
+    update_mock.assert();
 }
 
 fn build_image() {
@@ -86,7 +108,7 @@ struct RunningContainer {
 
 impl RunningContainer {
     /// Start a container
-    async fn setup(name: &str, port_binding: &str, config_dir: &str, mode: &str) -> Self {
+    async fn setup(name: &str, config_dir: &str, mode: &str, relay_endpoint: &str) -> Self {
         build_image();
 
         println!("Starting container: {}", name);
@@ -94,16 +116,19 @@ impl RunningContainer {
             .args([
                 "run",
                 "-d",
-                "-p",
-                port_binding,
+                "--net",
+                "host",
                 "--name",
                 name,
+                "-e",
+                format!("E2E_RELAY_ENDPOINT={relay_endpoint}").as_str(),
                 "-v",
                 format!("{config_dir}:/config:z").as_str(),
                 CONTAINER_IMAGE,
                 mode,
                 "--config",
                 "/config/config.yaml",
+                "--env",
             ])
             .output()
             .expect("Failed to execute podman run command");

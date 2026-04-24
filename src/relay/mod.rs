@@ -8,6 +8,10 @@ use reqwest::{
     Client,
     header::{self, HeaderMap, HeaderValue},
 };
+use tracing::debug;
+
+#[cfg(test)]
+mod test;
 
 /// Dyndns client using the server mode as relay for updating records.
 /// Will determine the public ip's and send them to the relay server.
@@ -20,6 +24,7 @@ pub struct Relay {
 impl Relay {
     /// Create a new Relay instance from the client config.
     pub fn from_config(config: ClientConfig) -> Self {
+        debug!("Creating a new relay using endpoint '{}'", config.endpoint);
         Self {
             endpoint: config.endpoint,
             token: config.token,
