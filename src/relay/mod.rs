@@ -8,7 +8,7 @@ use reqwest::{
     Client,
     header::{self, HeaderMap, HeaderValue},
 };
-use tracing::debug;
+use tracing::info;
 
 #[cfg(test)]
 mod test;
@@ -24,7 +24,13 @@ pub struct Relay {
 impl Relay {
     /// Create a new Relay instance from the client config.
     pub fn from_config(config: ClientConfig) -> Self {
-        debug!("Creating a new relay using endpoint '{}'", config.endpoint);
+        info!(
+            "Creating a new relay using endpoint '{}', proxy='{}', domains='{}', interval='{}s'",
+            config.endpoint,
+            config.proxy,
+            config.domains.join(","),
+            config.interval,
+        );
         Self {
             endpoint: config.endpoint,
             token: config.token,
