@@ -1,8 +1,7 @@
 #![doc = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/README.md"))]
+use crate::dyndns::DynDnsClient;
 use anyhow::{Context, Error, Result};
 use clap::{Args, Parser, Subcommand};
-
-use crate::dyndns::DynDnsClient;
 
 mod client;
 mod config;

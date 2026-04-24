@@ -1,0 +1,9 @@
+---
+logLevel: "debug"
+client:
+  token: "testtoken"
+  proxy: false
+  domains:
+    - foo.example.org
+  interval: 30
+  endpoint: "${E2E_RELAY_ENDPOINT}"
