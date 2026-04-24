@@ -19,7 +19,7 @@ use std::{
     sync::{Arc, atomic::AtomicU16},
 };
 use tokio::{net::TcpListener, sync::watch};
-use tracing::info;
+use tracing::{debug, info, warn};
 
 #[cfg(test)]
 mod test;
@@ -190,6 +190,11 @@ async fn update_handler(
     payload: RequestData,
 ) -> (StatusCode, Json<ResponseMessage>) {
     if !state.verify_domains(&payload.domains) {
+        debug!(
+            "Received request with forbidden domains: '{}', allowed domains: '{}'",
+            payload.domains.join(","),
+            state.domains.join(",")
+        );
         return (
             StatusCode::FORBIDDEN,
             Json(ResponseMessage {
@@ -201,6 +206,10 @@ async fn update_handler(
 
     let mut data = ClientData::new(payload.proxy, payload.domains);
     if let Err(e) = data.set_ipv4(&payload.ipv4) {
+        debug!(
+            "Received request with invalid IPv4 address: '{}'",
+            payload.ipv4
+        );
         return (
             StatusCode::BAD_REQUEST,
             Json(ResponseMessage {
@@ -210,6 +219,10 @@ async fn update_handler(
         );
     }
     if let Err(e) = data.set_ipv6(&payload.ipv6) {
+        debug!(
+            "Received request with invalid IPv6 address: '{}'",
+            payload.ipv6
+        );
         return (
             StatusCode::BAD_REQUEST,
             Json(ResponseMessage {
@@ -220,6 +233,7 @@ async fn update_handler(
     }
 
     if let Err(e) = data.check() {
+        debug!("Received request with incomplete data: {e:#}");
         return (
             StatusCode::BAD_REQUEST,
             Json(ResponseMessage {
@@ -232,7 +246,7 @@ async fn update_handler(
     let client = Client::from_data(payload.token, data);
     let http_client = new_http_client();
     if let Err(e) = client.verify_token(&http_client).await {
-        info!("Failed to verify token: {e:#}");
+        warn!("Failed to verify token: {e:#}");
         return (
             StatusCode::UNAUTHORIZED,
             Json(ResponseMessage {
@@ -243,7 +257,7 @@ async fn update_handler(
     }
 
     if let Err(e) = client.send_update(&http_client).await {
-        info!(
+        warn!(
             "Failed to update records, domains='{}', ipv4='{}', ipv6='{}', proxy='{}': {e:#}",
             client.data().domains.join(","),
             client.data().ipv4(),

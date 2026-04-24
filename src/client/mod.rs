@@ -6,7 +6,7 @@ use crate::{
 use anyhow::{Context, Result, bail};
 use reqwest::Client as HttpClient;
 use serde::Deserialize;
-use tracing::debug;
+use tracing::{debug, info};
 
 pub mod cloudflare;
 #[cfg(test)]
@@ -23,6 +23,12 @@ pub struct Client {
 impl Client {
     /// Create a new Client instance from the client config.
     pub fn from_config(config: ClientConfig) -> Self {
+        info!(
+            "Creating a new client, proxy='{}', domains='{}', interval='{}s'",
+            config.proxy,
+            config.domains.join(","),
+            config.interval,
+        );
         Self {
             api_url: DEFAULT_API_URL.to_string(),
             token: config.token,
@@ -81,7 +87,7 @@ impl Client {
             bail!("Invalid domain");
         }
 
-        debug!("Retrieving zone id for domain: {}", domain);
+        debug!("Retrieving zone id for domain: {domain}");
         let url = format!("{}/zones?name={}&status=active", self.api_url, domain);
         let zones: Vec<Zone> = self
             .get(http_client, &url)
@@ -102,6 +108,8 @@ impl Client {
         zone_id: &str,
         domain: &str,
     ) -> Result<Vec<Record>> {
+        debug!("Retrieving dns records for domain '{domain}', zone_id='{zone_id}'");
+
         let url = format!(
             "{}/zones/{}/dns_records?name={}",
             self.api_url, zone_id, domain
@@ -127,6 +135,9 @@ impl Client {
             RecordType::A => ("A".to_string(), self.data().ipv4()),
             RecordType::AAAA => ("AAAA".to_string(), self.data().ipv6()),
         };
+        debug!(
+            "Updating dns record for domain '{domain}', zone_id='{zone_id}', record_id='{record_id}', type='{record_type}' with ip '{ip}'"
+        );
         let record = Record {
             name: domain.to_string(),
             ttl: 1,
@@ -166,6 +177,9 @@ impl Client {
             RecordType::A => ("A".to_string(), self.data().ipv4()),
             RecordType::AAAA => ("AAAA".to_string(), self.data().ipv6()),
         };
+        debug!(
+            "Creating dns record for domain '{domain}', zone_id='{zone_id}', type='{record_type}' with ip '{ip}'"
+        );
         let record = Record {
             name: domain.to_string(),
             ttl: 1,
@@ -212,7 +226,10 @@ impl DynDnsClient for Client {
             let mut v4 = false;
             let mut v6 = false;
             for record in records.iter() {
-                debug!("Received record from '{domain}': {:?}", record.content);
+                debug!(
+                    "Received record from '{domain}': type='{}', content='{}'",
+                    record.record_type, record.content
+                );
                 match record.record_type.as_str() {
                     "A" => {
                         if self.data().ipv4().is_empty() {
@@ -277,20 +294,12 @@ impl DynDnsClient for Client {
             }
             // Create A record if necessary
             if !v4 && !self.data().ipv4().is_empty() {
-                debug!(
-                    "Creating A record for '{domain}' with ip '{}'",
-                    self.data().ipv4()
-                );
                 self.create_record(http_client, &zone_id, domain, cloudflare::RecordType::A)
                     .await
                     .context(format!("Failed to create A record for '{domain}'"))?;
             }
             // Create AAAA record if necessary
             if !v6 && !self.data().ipv6().is_empty() {
-                debug!(
-                    "Creating AAAA record for '{domain}' with ip '{}'",
-                    self.data().ipv6()
-                );
                 self.create_record(http_client, &zone_id, domain, cloudflare::RecordType::AAAA)
                     .await
                     .context(format!("Failed to create AAAA record for '{domain}'"))?;
