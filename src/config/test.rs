@@ -195,6 +195,11 @@ test_invalid_config! {
         Mode::Server,
         "SSL is enabled but cert is empty",
     ),
+    test_config_invalid_log_level: (
+        "invalid-config-log-level.yaml",
+        Mode::Server,
+        "Invalid log level",
+    ),
 }
 
 #[test]
@@ -267,4 +272,32 @@ test_set_log_level! {
     test_set_log_level_warn: ("warn", false),
     test_set_log_level_error: ("error", false),
     test_set_log_level_invalid: ("unknown", true),
+}
+
+#[test]
+fn test_config_empty_path_client_mode() {
+    let error = Config::from_file("", Mode::Client, false);
+    assert!(
+        error.is_err(),
+        "Expected error when using empty path in client mode"
+    );
+    let e = error.unwrap_err();
+    assert!(
+        e.to_string().contains("Failed to read config file at ''"),
+        "Expected file read error but got: {e}"
+    );
+}
+
+#[test]
+fn test_config_empty_path_relay_mode() {
+    let error = Config::from_file("", Mode::Relay, false);
+    assert!(
+        error.is_err(),
+        "Expected error when using empty path in relay mode"
+    );
+    let e = error.unwrap_err();
+    assert!(
+        e.to_string().contains("Failed to read config file at ''"),
+        "Expected file read error but got: {e}"
+    );
 }

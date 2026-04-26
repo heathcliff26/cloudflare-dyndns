@@ -148,4 +148,21 @@ mod tests {
         let debug_string = format!("{:?}", error);
         assert!(debug_string.contains("ReadKeyError"));
     }
+
+    #[tokio::test]
+    async fn test_tls_listener_bind_key_not_found() {
+        let result = TlsListener::bind(
+            "127.0.0.1:0".parse().unwrap(),
+            "/tmp/non_existent_dyndns_key_file.pem",
+            "/tmp/non_existent_dyndns_cert_file.pem",
+        )
+        .await;
+
+        assert!(result.is_err(), "Should fail when key file does not exist");
+        let err = match result {
+            Err(e) => e,
+            Ok(_) => panic!("Expected error but got success"),
+        };
+        assert!(matches!(err, TlsError::ReadKeyError(_)));
+    }
 }

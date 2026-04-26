@@ -1,0 +1,7 @@
+logLevel: "invalid"
+
+client:
+  token: "test-token"
+  domains:
+    - example.org
+  interval: 300
