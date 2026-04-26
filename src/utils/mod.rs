@@ -2,6 +2,9 @@ use reqwest::Client;
 use std::time::Duration;
 use tokio::{select, signal, sync::watch};
 
+#[cfg(test)]
+mod test;
+
 /// Listen for SIGINT or SIGTERM signals and notify over the returned channel.
 /// Should be used to gracefully shutdown application loops.
 pub fn new_interrupt_signal(stop_rx: Option<watch::Receiver<()>>) -> watch::Receiver<()> {

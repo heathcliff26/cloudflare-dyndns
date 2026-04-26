@@ -14,6 +14,18 @@ fn test_from_config() {
     );
 }
 
+#[test]
+fn test_from_data() {
+    let data = ClientData::new(true, vec!["example.com".to_string()]);
+    let client = Client::from_data("test-token".to_string(), data);
+    assert_eq!(
+        client.api_url.as_str(),
+        DEFAULT_API_URL,
+        "Should have default API URL"
+    );
+    assert_eq!(client.token, "test-token", "Should have the correct token");
+}
+
 #[tokio::test]
 async fn test_verify_token_success() {
     let (client, http_client, mut server) = new_test_client().await;
@@ -529,6 +541,164 @@ fn test_base_domain() {
     assert_eq!(base_domain("example.com"), "example.com");
     assert_eq!(base_domain("sub.example.com"), "example.com");
     assert_eq!(base_domain("foo.bar.example.com"), "example.com");
+}
+
+#[tokio::test]
+async fn test_get_zone_id_api_error() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let zones_mock = server
+        .mock("GET", "/zones?name=example.com&status=active")
+        .with_status(500)
+        .with_body("Internal Server Error")
+        .create();
+
+    let e = client
+        .get_zone_id(&http_client, "foo.example.com")
+        .await
+        .expect_err("Should fail with API error");
+    assert!(
+        e.to_string().contains("Failed to list zones"),
+        "Expected error about listing zones but got: {e}"
+    );
+
+    zones_mock.assert();
+}
+
+#[tokio::test]
+async fn test_update_record_aaaa() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let record_mock = server
+        .mock("PATCH", "/zones/zone-id-123/dns_records/record-id-aaaa")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(dns_single_result_response(dns_record_aaaa_json(
+            "record-id-aaaa",
+            "foo.example.com",
+            "fd00::dead",
+        )))
+        .create();
+
+    client
+        .update_record(
+            &http_client,
+            "zone-id-123",
+            "foo.example.com",
+            "record-id-aaaa",
+            RecordType::AAAA,
+        )
+        .await
+        .expect("Should update AAAA dns record");
+
+    record_mock.assert();
+}
+
+#[tokio::test]
+async fn test_create_record_aaaa() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let record_mock = server
+        .mock("POST", "/zones/zone-id-123/dns_records")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(dns_single_result_response(dns_record_aaaa_json(
+            "record-aaaa",
+            "foo.example.com",
+            "fd00::dead",
+        )))
+        .create();
+
+    client
+        .create_record(
+            &http_client,
+            "zone-id-123",
+            "foo.example.com",
+            RecordType::AAAA,
+        )
+        .await
+        .expect("Should create AAAA dns record");
+
+    record_mock.assert();
+}
+
+#[tokio::test]
+async fn test_send_update_update_record_fails() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let zones_mock = server
+        .mock("GET", "/zones?name=example.com&status=active")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(zone_list_response_ok())
+        .create();
+
+    let records = vec![dns_record_a_json("record-a", "example.com", "1.1.1.1")];
+    let records_mock = server
+        .mock("GET", "/zones/zone-id-123/dns_records?name=example.com")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(dns_list_response(records))
+        .create();
+
+    let update_mock = server
+        .mock("PATCH", "/zones/zone-id-123/dns_records/record-a")
+        .with_status(500)
+        .with_body("Internal Server Error")
+        .create();
+
+    let e = client
+        .send_update(&http_client)
+        .await
+        .expect_err("Should fail when update_record fails");
+    assert!(
+        e.to_string()
+            .contains("Failed to update A record for 'example.com'"),
+        "Expected update error but got: {e}"
+    );
+
+    zones_mock.assert();
+    records_mock.assert();
+    update_mock.assert();
+}
+
+#[tokio::test]
+async fn test_send_update_create_record_fails() {
+    let (client, http_client, mut server) = new_test_client().await;
+
+    let zones_mock = server
+        .mock("GET", "/zones?name=example.com&status=active")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(zone_list_response_ok())
+        .create();
+
+    let records_mock = server
+        .mock("GET", "/zones/zone-id-123/dns_records?name=example.com")
+        .with_status(200)
+        .with_header("Content-Type", "application/json")
+        .with_body(dns_list_response(vec![]))
+        .create();
+
+    let create_mock = server
+        .mock("POST", "/zones/zone-id-123/dns_records")
+        .with_status(500)
+        .with_body("Internal Server Error")
+        .create();
+
+    let e = client
+        .send_update(&http_client)
+        .await
+        .expect_err("Should fail when create_record fails");
+    assert!(
+        e.to_string()
+            .contains("Failed to create A record for 'example.com'"),
+        "Expected create error but got: {e}"
+    );
+
+    zones_mock.assert();
+    records_mock.assert();
+    create_mock.assert();
 }
 
 async fn new_test_client() -> (Client, HttpClient, ServerGuard) {

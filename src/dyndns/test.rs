@@ -3,6 +3,19 @@ use tokio::time::timeout;
 use super::*;
 
 #[test]
+fn test_client_data_new() {
+    let data = ClientData::new(true, vec!["example.com".to_string()]);
+    assert!(data.proxy, "Proxy should match constructor argument");
+    assert_eq!(
+        data.domains,
+        vec!["example.com".to_string()],
+        "Domains should match constructor argument"
+    );
+    assert!(data.ipv4().is_empty(), "IPv4 should be empty initially");
+    assert!(data.ipv6().is_empty(), "IPv6 should be empty initially");
+}
+
+#[test]
 fn test_client_data_set_ipv4() {
     let test_cases = vec![("", true), ("not an ip", false), ("100.100.100.100", true)];
     let mut data = ClientData::new(false, vec![]);

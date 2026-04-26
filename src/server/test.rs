@@ -335,3 +335,22 @@ fn shared_state(domains: Vec<&str>) -> SharedState {
             .collect(),
     }
 }
+
+#[test]
+fn test_server_from_config() {
+    let config = ServerConfig {
+        port: 9090,
+        domains: vec!["example.org".to_string()],
+        ssl: Default::default(),
+    };
+    let server = Server::from_config(config.clone());
+    assert_eq!(server.options.port, config.port, "Port should match config");
+    assert_eq!(
+        server.options.domains, config.domains,
+        "Domains should match config"
+    );
+    assert_eq!(
+        server.options.ssl.enabled, config.ssl.enabled,
+        "SSL setting should match config"
+    );
+}
