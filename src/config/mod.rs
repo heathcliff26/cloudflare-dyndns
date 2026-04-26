@@ -18,7 +18,8 @@ pub enum Mode {
     Relay,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(Debug, PartialEq))]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", default)]
 pub struct Config {
     /// Log level of the application
@@ -29,7 +30,8 @@ pub struct Config {
     pub client: ClientConfig,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(Debug, PartialEq))]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ServerConfig {
     /// Port to listen on. Default: 8080
@@ -40,7 +42,8 @@ pub struct ServerConfig {
     pub ssl: SSLConfig,
 }
 
-#[derive(Debug, Default, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(Debug, PartialEq))]
+#[derive(Clone, Default, Serialize, Deserialize)]
 #[serde(default)]
 pub struct SSLConfig {
     /// Enable SSL. Default: false
@@ -51,7 +54,8 @@ pub struct SSLConfig {
     pub key: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[cfg_attr(test, derive(Debug, PartialEq))]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct ClientConfig {
     /// Token for accessing the cloudflare api
