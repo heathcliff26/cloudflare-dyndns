@@ -10,7 +10,7 @@ LABEL   org.opencontainers.image.authors="heathcliff@heathcliff.eu" \
 ARG GORELEASER_VERSION=v2.15.4
 
 # renovate: datasource=github-releases depName=dyne/musl extractVersion=^(?<version>.*)$
-ARG DYNE_MUSL_VERSION=2.1.5
+ARG DYNE_MUSL_VERSION=2.2.0
 
 COPY install-deps.sh .
 RUN ./install-deps.sh
