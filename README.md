@@ -2,7 +2,6 @@
 [![Coverage Status](https://coveralls.io/repos/github/heathcliff26/cloudflare-dyndns/badge.svg)](https://coveralls.io/github/heathcliff26/cloudflare-dyndns)
 [![Editorconfig Check](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/editorconfig-check.yaml/badge.svg?event=push)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/editorconfig-check.yaml)
 [![Coverprofiles](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/coverprofiles.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/coverprofiles.yaml)
-[![Renovate](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/renovate.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/renovate.yaml)
 [![Builder Image](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/build-builder.yaml/badge.svg)](https://github.com/heathcliff26/cloudflare-dyndns/actions/workflows/build-builder.yaml)
 
 # cloudflare-dyndns
