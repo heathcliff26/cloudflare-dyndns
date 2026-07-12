@@ -1,6 +1,6 @@
 [package]
 name = "cloudflare-dyndns"
-version = "2.1.2"
+version = "2.1.3"
 authors = ["Heathcliff <heathcliff@heathcliff.eu>"]
 edition = "2024"
 description = "DynDNS client or relay server for cloudflare"
