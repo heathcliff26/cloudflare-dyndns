@@ -5,8 +5,11 @@ set -e
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 dist_dir="${base_dir}/dist"
 
+# renovate: datasource=docker depName=ghcr.io/heathcliff26/rust-builder extractVersion=^(?<version>.*)$
+export BUILDER_VERSION=202608131527
+
 echo "Building releaser artifacts with goreleaser"
-podman run --name cloudflare-dyndns-builder --rm -v "${base_dir}:/app:z" ghcr.io/heathcliff26/rust-builder:latest goreleaser release --skip=announce,archive,publish,validate --clean
+podman run --name cloudflare-dyndns-builder --rm -v "${base_dir}:/app:z" "ghcr.io/heathcliff26/rust-builder:${BUILDER_VERSION}" goreleaser release --skip=announce,archive,publish,validate --clean
 
 echo "Moving release artifacts to top level of dist directory"
 artifacts="$(cat "${dist_dir}/artifacts.json" | jq -r -c '.[]')"
