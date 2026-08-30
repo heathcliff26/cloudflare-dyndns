@@ -82,8 +82,7 @@ Please use the latest version from the releases page.
 
 ## OpenWrt
 
-When installing the arm64 package on OpenWrt 24.10 or older, you need to enable arm64 as an architecture in your opkg.conf.
-This is caused by goreleaser not using aarch64 as architecture string for .ipk packages.
+When installing the arm64 package on OpenWrt 25+, you might need to add `aarch64` to `/etc/apk/arch`.
 
 ## API (Server Mode)
 

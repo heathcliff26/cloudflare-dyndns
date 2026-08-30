@@ -92,7 +92,6 @@ nfpms:
     description: DDNS client for cloudflare
     license: Apache 2.0
     formats:
-      - ipk
       - apk
     dependencies:
       - ca-bundle
@@ -117,7 +116,6 @@ nfpms:
     description: DDNS client for cloudflare
     license: Apache 2.0
     formats:
-      - ipk
       - apk
     dependencies:
       - ca-bundle
