@@ -85,6 +85,7 @@ archives:
 
 nfpms:
   - id: openwrt
+    package_name: "{{ .ProjectName }}"
     file_name_template: "{{ .PackageName }}_v{{ .Version }}_openwrt-{{ .Arch }}"
     ids:
       - static
@@ -95,6 +96,7 @@ nfpms:
       - apk
     dependencies:
       - ca-bundle
+      - "!cloudflare-dyndns-compressed"
     bindir: /usr/sbin
     contents:
       - src: packages/openwrt/etc-config
@@ -109,7 +111,8 @@ nfpms:
       postinstall: packages/openwrt/postinstall.sh
       preremove: packages/openwrt/preremove.sh
   - id: openwrt-compressed
-    file_name_template: "{{ .PackageName }}-compressed_v{{ .Version }}_openwrt-{{ .Arch }}"
+    package_name: "{{ .ProjectName }}-compressed"
+    file_name_template: "{{ .PackageName }}_v{{ .Version }}_openwrt-{{ .Arch }}"
     ids:
       - compressed
     maintainer: Heathcliff <heathcliff@heathcliff.eu>
@@ -119,6 +122,7 @@ nfpms:
       - apk
     dependencies:
       - ca-bundle
+      - "!cloudflare-dyndns"
     bindir: /usr/sbin
     contents:
       - src: packages/openwrt/etc-config
