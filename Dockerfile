@@ -18,7 +18,7 @@ RUN touch README.md
 
 ARG CI_COMMIT_SHA=unknown
 
-RUN cargo build --release
+RUN cargo rustc --release -- -C relocation-model=static
 
 #
 # END build-stage
