@@ -2,7 +2,13 @@ use anyhow::{Context, Result, bail};
 use serde::{Deserialize, Serialize};
 use std::fs;
 use tracing::Level;
-use tracing_subscriber::filter::EnvFilter;
+use tracing_subscriber::{
+    Layer,
+    filter::{LevelFilter, Targets},
+    fmt,
+    layer::SubscriberExt,
+    util::SubscriberInitExt,
+};
 
 #[cfg(test)]
 mod test;
@@ -187,17 +193,16 @@ fn set_log_level(level: &str) -> Result<()> {
         "debug" => Level::DEBUG,
         _ => bail!(format!("Invalid log level: {level}.")),
     };
-    let filter = EnvFilter::builder()
-        .with_default_directive(Level::INFO.into())
-        .from_env()?
-        .add_directive(format!("cloudflare_dyndns={level}").parse()?);
-    let logger = tracing_subscriber::fmt().with_env_filter(filter);
-    #[cfg(not(test))]
-    logger.init();
+    let filter = Targets::new()
+        .with_target("cloudflare_dyndns", level)
+        .with_default(LevelFilter::OFF);
+    let logger = tracing_subscriber::registry().with(fmt::layer().with_filter(filter));
 
     // We can only initialize the logger once, but testing might call the parent function multiple times.
     #[cfg(test)]
     logger.try_init().unwrap_or_default();
+    #[cfg(not(test))]
+    logger.init();
 
     Ok(())
 }
