@@ -6,7 +6,7 @@ base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 dist_dir="${base_dir}/dist"
 
 # renovate: datasource=docker depName=ghcr.io/heathcliff26/rust-builder extractVersion=^(?<version>.*)$
-export BUILDER_VERSION=202608131539
+export BUILDER_VERSION=202609060502
 
 echo "Building releaser artifacts with goreleaser"
 podman run --name cloudflare-dyndns-builder --rm -v "${base_dir}:/app:z" "ghcr.io/heathcliff26/rust-builder:${BUILDER_VERSION}" goreleaser release --skip=announce,archive,publish,validate --clean
