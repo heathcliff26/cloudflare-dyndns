@@ -1,0 +1,15 @@
+logLevel: "info"
+
+server:
+  port: 8080
+  domains:
+    - example.org
+    - example.net
+
+client:
+  token: "${NOT_AN_EXISTING_VARIABLE}"
+  proxy: true
+  domains:
+    - foo.example.org
+  interval: 300
+  endpoint: "dyndns.example.org"

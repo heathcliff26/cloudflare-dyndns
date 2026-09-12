@@ -1,6 +1,6 @@
 use anyhow::{Context, Result, bail};
 use serde::{Deserialize, Serialize};
-use std::fs;
+use std::{borrow::Cow, env, fs};
 use tracing::Level;
 use tracing_subscriber::{
     Layer,
@@ -124,7 +124,7 @@ impl Config {
             .context(format!("Failed to read config file at '{}'", path))?;
 
         let content = if expand_env {
-            shellexpand::env(&content)
+            shellexpand::env_with_context(&content, env_context)
                 .context("Failed to expand environment variables in config file")?
                 .to_string()
         } else {
@@ -205,4 +205,12 @@ fn set_log_level(level: &str) -> Result<()> {
     logger.init();
 
     Ok(())
+}
+
+fn env_context(s: &str) -> Result<Option<Cow<'static, str>>, env::VarError> {
+    match env::var(s) {
+        Ok(value) => Ok(Some(value.into())),
+        Err(env::VarError::NotPresent) => Ok(Some("".into())),
+        Err(e) => Err(e),
+    }
 }
