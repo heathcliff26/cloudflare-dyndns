@@ -254,6 +254,24 @@ fn test_config_environment_variable_expansion() {
     }
 }
 
+#[test]
+fn test_config_environment_unset_variable() {
+    let mut expected = valid_config_1();
+    expected.client.token = "".to_string();
+
+    let config = Config::from_file(
+        "src/config/testdata/env-unset-variable.yaml",
+        Mode::Server,
+        true,
+    )
+    .expect("Failed to load config with environment variable expansion");
+
+    assert_eq!(
+        expected, config,
+        "Config did not match expected value after environment variable expansion"
+    );
+}
+
 macro_rules! test_set_log_level {
     ($($name:ident: $value:expr,)*) => {
     $(
