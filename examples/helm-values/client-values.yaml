@@ -1,11 +1,16 @@
 type: client
 config:
   client:
-    token: "secret-token"
     proxy: true
     domains:
       - "${NODE_NAME}.heathcliff26.net"
     interval: 300
+env:
+  - name: CLOUDFLARE_DYNDNS_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-token
+        key: token
 tolerations:
   - key: "node-role.kubernetes.io/control-plane"
     operator: "Exists"

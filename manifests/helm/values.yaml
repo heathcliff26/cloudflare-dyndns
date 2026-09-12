@@ -30,7 +30,8 @@ config:
   # Config for running in client/relay mode
   client:
     # Token for accessing the cloudflare api
-    token: ""
+    # Should be set via env from secret
+    token: "${CLOUDFLARE_DYNDNS_TOKEN}"
     # Indicate if entries should be proxied by cloudflare.
     proxy: true
     # List of domains to update
@@ -55,6 +56,10 @@ imagePullSecrets: []
 # This is to override the chart name.
 nameOverride: ""
 fullnameOverride: ""
+
+# Configure the environment variables for the container
+env: []
+envFrom: []
 
 # Annotations for the deployment/daemonset
 annotations: {}
