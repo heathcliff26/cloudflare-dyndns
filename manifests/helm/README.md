@@ -29,12 +29,14 @@ See [values.yaml](./values.yaml) for all available configuration options.
 
 ### Key Parameters
 
-| Parameter                | Description                                              | Default                                  |
-| ------------------------ | -------------------------------------------------------- | ---------------------------------------- |
-| `type`                   | The mode to deploy, can be "server", "relay" or "client" | `server`                                 |
-| `image.repository`       | Container image repository                               | `ghcr.io/heathcliff26/cloudflare-dyndns` |
-| `image.tag`              | Container image tag                                      | Same as chart version                    |
-| `ingress.enabled`        | Enable ingress                                           | `false`                                  |
+| Parameter          | Description                                                    | Default                                  |
+| ------------------ | -------------------------------------------------------------- | ---------------------------------------- |
+| `type`             | The mode to deploy, can be "server", "relay" or "client"       | `server`                                 |
+| `image.repository` | Container image repository                                     | `ghcr.io/heathcliff26/cloudflare-dyndns` |
+| `image.tag`        | Container image tag                                            | Same as chart version                    |
+| `ingress.enabled`  | Enable ingress                                                 | `false`                                  |
+| `config`           | Configure the app                                              | See [values.yaml](./values.yaml)         |
+| `env`              | Additional environment variables, useful for injecting secrets | []                                       |
 
 ## Support
 
