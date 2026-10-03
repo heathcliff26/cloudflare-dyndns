@@ -61,6 +61,16 @@ jobs:
       tag: ${{ needs.extract-version.outputs.version }}
     secrets: inherit
 
+  push-gemfury:
+    uses: heathcliff26/ci/.github/workflows/gemfury-push.yaml@main
+    needs:
+      - build
+      - extract-version
+    permissions: {}
+    with:
+      artifacts: "cloudflare-dyndns"
+    secrets: inherit
+
   release:
     uses: heathcliff26/ci/.github/workflows/release.yaml@main
     needs:
