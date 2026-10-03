@@ -65,7 +65,6 @@ jobs:
     uses: heathcliff26/ci/.github/workflows/gemfury-push.yaml@main
     needs:
       - build
-      - extract-version
     permissions: {}
     with:
       artifacts: "cloudflare-dyndns"
@@ -74,9 +73,9 @@ jobs:
   release:
     uses: heathcliff26/ci/.github/workflows/release.yaml@main
     needs:
-      - build
       - extract-version
       - push-helm
+      - push-gemfury
     permissions:
       contents: write
     with:

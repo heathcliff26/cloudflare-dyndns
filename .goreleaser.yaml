@@ -136,6 +136,47 @@ nfpms:
     scripts:
       postinstall: packages/openwrt/postinstall.sh
       preremove: packages/openwrt/preremove.sh
+  - id: linux
+    package_name: "{{ .ProjectName }}"
+    file_name_template: "{{ .PackageName }}_v{{ .Version }}_linux-{{ .Arch }}"
+    ids:
+      - dynamic
+    maintainer: Heathcliff <heathcliff@heathcliff.eu>
+    description: DynDNS client or relay server for cloudflare, implemented in rust.
+    license: Apache-2.0
+    homepage: https://github.com/heathcliff26/{{ .ProjectName }}
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
+    contents:
+      - dst: /usr/share/licenses/{{ .ProjectName }}
+        type: dir
+      - dst: /usr/share/doc/{{ .ProjectName }}
+        type: dir
+      - src: LICENSE
+        dst: /usr/share/licenses/{{ .ProjectName }}/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/{{ .ProjectName }}/README.md
+      - src: tools/{{ .ProjectName }}-client.service
+        dst: /usr/lib/systemd/system/{{ .ProjectName }}-client.service
+      - src: tools/{{ .ProjectName }}-relay.service
+        dst: /usr/lib/systemd/system/{{ .ProjectName }}-relay.service
+      - src: tools/{{ .ProjectName }}-server.service
+        dst: /usr/lib/systemd/system/{{ .ProjectName }}-server.service
+      - dst: /etc/{{ .ProjectName }}
+        type: dir
+      - src: examples/example-config.yaml
+        dst: /etc/{{ .ProjectName }}/config.yaml
+        type: config|noreplace
+      - src: io.github.heathcliff26.{{ .ProjectName }}.metainfo.xml
+        dst: /usr/share/metainfo/io.github.heathcliff26.{{ .ProjectName }}.metainfo.xml
+    scripts:
+      postinstall: "packages/linux/postinstall.sh"
+      preremove: "packages/linux/preremove.sh"
+      postremove: "packages/linux/postremove.sh"
+    rpm:
+      summary: DynDNS client or relay server for cloudflare
 
 changelog:
   disable: true
