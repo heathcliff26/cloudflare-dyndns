@@ -42,16 +42,17 @@ systemctl daemon-reload
 
 %preun
 for mode in "client" "relay" "server"; do
-  if [ $1 == 0 ]; then #uninstall
+  if [ $1 == 0 ]; then
+    echo "Clean up %{name}-${mode} service"
     systemctl unmask %{name}-${mode}.service
     systemctl stop %{name}-${mode}.service
     systemctl disable %{name}-${mode}.service
-    echo "Clean up %{name}-${mode} service"
+
   fi
 done
 
 %postun
-if [ $1 == 0 ]; then #uninstall
+if [ $1 == 0 ]; then
   systemctl daemon-reload
   systemctl reset-failed
 fi
