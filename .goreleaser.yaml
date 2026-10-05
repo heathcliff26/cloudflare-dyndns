@@ -138,7 +138,7 @@ nfpms:
       preremove: packages/openwrt/preremove.sh
   - id: linux
     package_name: "{{ .ProjectName }}"
-    file_name_template: "{{ .PackageName }}_v{{ .Version }}_linux-{{ .Arch }}"
+    file_name_template: "{{ .PackageName }}-linux-{{ .Arch }}"
     ids:
       - dynamic
     maintainer: Heathcliff <heathcliff@heathcliff.eu>
