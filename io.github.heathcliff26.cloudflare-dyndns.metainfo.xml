@@ -1,30 +1,422 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <component type="service">
-    <id>io.github.heathcliff26.cloudflare-dyndns</id>
-
-    <name>cloudflare-dyndns</name>
-    <summary>DynDNS client or relay server for cloudflare</summary>
-
-    <metadata_license>MIT</metadata_license>
-    <project_license>Apache-2.0</project_license>
-
-    <description>
-        <p>
+  <id>io.github.heathcliff26.cloudflare-dyndns</id>
+  <name>cloudflare-dyndns</name>
+  <summary>DynDNS client or relay server for cloudflare</summary>
+  <metadata_license>MIT</metadata_license>
+  <project_license>Apache-2.0</project_license>
+  <description>
+    <p>
             DynDNS client or relay server for cloudflare, implemented in rust.
         </p>
-    </description>
-
-    <url type="homepage">https://github.com/heathcliff26/cloudflare-dyndns</url>
-    <developer id="io.github.heathcliff26">
-        <name>Heathcliff</name>
-    </developer>
-
-    <launchable type="service">cloudflare-dyndns-client.service</launchable>
-    <launchable type="service">cloudflare-dyndns-relay.service</launchable>
-    <launchable type="service">cloudflare-dyndns-server.service</launchable>
-
-    <categories>
-        <category>Network</category>
-        <category>Utility</category>
-    </categories>
+  </description>
+  <developer id="io.github.heathcliff26">
+    <name>Heathcliff</name>
+  </developer>
+  <launchable type="service">cloudflare-dyndns-client.service</launchable>
+  <launchable type="service">cloudflare-dyndns-relay.service</launchable>
+  <launchable type="service">cloudflare-dyndns-server.service</launchable>
+  <url type="homepage">https://github.com/heathcliff26/cloudflare-dyndns</url>
+  <categories>
+    <category>Network</category>
+    <category>Utility</category>
+  </categories>
+  <releases>
+    <release type="stable" version="v2.1.8" date="2026-10-12T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(ci)* Push packages to Gemfury on release</li>
+          <li>*(release)* Add rpm and deb package artifacts</li>
+          <li>*(container)* Update image docker.io/library/rust to v1.99.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(script)* Run script only on uninstall</li>
+          <li>*(container)* Update image docker.io/library/alpine to v3.24.2</li>
+          <li>🚜 Refactor:</li>
+          <li>Rename rpm package artifact</li>
+          <li>⚙️ Miscellaneous Tasks:</li>
+          <li>Enforce conventional commits</li>
+          <li>Add new changelog workflow</li>
+          <li>*(builder)* Update image ghcr.io/heathcliff26/rust-builder to v202610090432</li>
+          <li>💼 Other:</li>
+          <li>Fix coverprofiles permissions</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.7" date="2026-09-12T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Allow unset variable on shell expansion</p>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.6" date="2026-09-12T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* [**breaking**] Update image ghcr.io/heathcliff26/rust-builder to v202609090334</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(container)* Update image docker.io/library/rust to v1.98.1</li>
+          <li>💼 Other:</li>
+          <li>Allow users to inject env</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.5" date="2026-09-07T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* [**breaking**] Update image ghcr.io/heathcliff26/rust-builder to v202608131539</li>
+          <li>*(container)* Update image docker.io/library/rust to v1.98.0</li>
+          <li>*(container)* [**breaking**] Update image ghcr.io/heathcliff26/rust-builder to v202609060502</li>
+          <li>💼 Other:</li>
+          <li>Move to container repo</li>
+          <li>Move helm to release workflow</li>
+          <li>Add suffix to compressed package</li>
+          <li>Switch logging to using target instead of envfilter</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.4" date="2026-08-12T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/rust to v1.97.1</p>
+        <p>*(github-release)* Update goreleaser/goreleaser to v2.17.1</p>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.3" date="2026-07-12T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(github-release)* Update goreleaser/goreleaser to v2.17.0</li>
+          <li>*(container)* Update image docker.io/library/rust to v1.97.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(container)* Update image docker.io/library/alpine to v3.24.1</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.2" date="2026-06-12T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/alpine to v3.24.0</li>
+          <li>💼 Other:</li>
+          <li>Move renovate and Link Check to tekton</li>
+          <li>Remove obsolete Renovate status badge</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.1" date="2026-06-01T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(github-release)* Update dyne/musl to 2.2.0</li>
+          <li>*(github-release)* Update goreleaser/goreleaser to v2.16.0</li>
+          <li>*(container)* Update image docker.io/library/rust to v1.96.0</li>
+          <li>💼 Other:</li>
+          <li>*(deps)* Bump openssl from 0.10.79 to 0.10.80</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v2.1.0" date="2026-05-15T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>*(deps)* Bump openssl from 0.10.78 to 0.10.79</p>
+        <p>Add support for HTTPRoute and ListenerSet</p>
+      </description>
+    </release>
+    <release type="stable" version="v2.0.1" date="2026-04-25T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Add Commit sha to build args</p>
+        <p>Fix permissions for coverprofile workflow</p>
+        <p>Fix interval format</p>
+        <p>*(deps)* Bump rustls-webpki from 0.103.12 to 0.103.13</p>
+      </description>
+    </release>
+    <release type="stable" version="v2.0.0" date="2026-04-24T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/rust to v1.95.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(container)* Update image docker.io/library/alpine to v3.23.4</li>
+          <li>*(github-release)* Update goreleaser/goreleaser to v2.15.4</li>
+          <li>💼 Other:</li>
+          <li>Update RPM build for rust version</li>
+          <li>Update for new rust workflow</li>
+          <li>Update manifest to drop metrics</li>
+          <li>Update goreleaser to support rust cross compilation</li>
+          <li>Update for v2</li>
+          <li>Update excludes for publishing</li>
+          <li>Do not publish to crates.io</li>
+          <li>Update default memory request</li>
+          <li>Add tests covering verify_token function</li>
+          <li>*(deps)* Bump openssl from 0.10.77 to 0.10.78</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v1.4.0" date="2026-03-30T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.26.1</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.3.0</p>
+        <p>🛡️ Security:</p>
+        <p>Use hardcoded security context</p>
+        <p>💼 Other:</p>
+        <p>Use user and group nobody</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.3.5" date="2026-03-01T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/golang to v1.26.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.18</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v1.3.4" date="2026-02-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/alpine to v3.23.3</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.6</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.17</p>
+        <p>💼 Other:</p>
+        <p>Use go.yaml.in/yaml/v3 for YAML parsing</p>
+        <p>Remove unneeded prepare step in renovate workflow</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.3.3" date="2026-01-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/alpine to v3.23.2</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.16</p>
+        <p>💼 Other:</p>
+        <p>Set default resource requests</p>
+        <p>Rollout pods when config changes</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.3.2" date="2025-12-11T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/alpine to v3.23.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.25.5</li>
+          <li>*(deps)* Update module github.com/spf13/cobra to v1.10.2</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v1.3.1" date="2025-12-05T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Relabel servicemonitor instance label</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.3.0" date="2025-12-05T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Implement basic Prometheus metrics server</p>
+        <p>Simplify update loop controls</p>
+        <p>Add healthz endpoint</p>
+        <p>Implement application specific metrics</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.2.2" date="2025-12-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.4</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.15</p>
+        <p>💼 Other:</p>
+        <p>Enable signing artifacts in release workflow</p>
+        <p>Consolidate targets after F41 moved to go1.24</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.2.1" date="2025-10-25T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/alpine to v3.22.2</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.3</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.13</p>
+        <p>💼 Other:</p>
+        <p>Add Fedora 43 and Rawhide targets</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.2.0" date="2025-10-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module github.com/spf13/cobra to v1.10.0</p>
+        <p>*(deps)* Update module github.com/spf13/cobra to v1.10.1</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.25.1</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.11</p>
+        <p>💼 Other:</p>
+        <p>Add binary leftover from packaing openwrt</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.10" date="2025-09-01T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/golang to v1.25.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(deps)* Update gomod</li>
+          <li>💼 Other:</li>
+          <li>Switch to alpine as final base image</li>
+        </ul>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.9" date="2025-08-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.5</p>
+        <p>*(deps)* Update gomod</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>*(container)* Update image docker.io/library/golang to 270cd53</p>
+        <p>*(container)* Update image docker.io/library/golang to 1bb140b</p>
+        <p>*(container)* Update image docker.io/library/golang to 1aa97dd</p>
+        <p>*(container)* Update image docker.io/library/golang to a92f3b1</p>
+        <p>*(container)* Update image docker.io/library/golang to 764d7e0</p>
+        <p>*(container)* Update image docker.io/library/golang to 20a022e</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.8" date="2025-07-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.4</p>
+        <p>*(deps)* Update gomod</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.7" date="2025-06-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.3</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.5</p>
+        <p>💼 Other:</p>
+        <p>Tag release to ensure correct version in binary</p>
+        <p>Update release job to target renamed workflow</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.6" date="2025-05-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.2</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.4</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>*(container)* Update image docker.io/library/golang to 30baaea</p>
+        <p>💼 Other:</p>
+        <p>Add help function</p>
+        <p>Add gosec to improve code quality</p>
+        <p>Move target description to above them</p>
+        <p>Fix release workflow permissions</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.5" date="2025-04-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.24.1</p>
+        <p>*(deps)* Update module github.com/heathcliff26/simple-fileserver to v1.2.3</p>
+        <p>💼 Other:</p>
+        <p>Use middleware for logging and code simplification</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.4" date="2025-03-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module github.com/spf13/cobra to v1.9.1</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>*(container)* Update image docker.io/library/golang to 3f74443</p>
+        <p>💼 Other:</p>
+        <p>Fix broken docker hub link</p>
+        <p>Use the version from build info</p>
+        <p>Replace abandoned yaml module with sig-kubernetes version</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.3" date="2025-02-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.23.5</p>
+        <p>💼 Other:</p>
+        <p>Upload coverprofile to coveralls</p>
+        <p>Add -trimpath option to minimally reduce binary size</p>
+        <p>Fix missing explicit permissions for workflow runs</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.2" date="2025-01-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(deps)* Update module github.com/stretchr/testify to v1.10.0</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.23.3</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.23.4</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>Tag container as latest by default</p>
+        <p>*(container)* Update image docker.io/library/golang to e5ca199</p>
+        <p>💼 Other:</p>
+        <p>Add fmt and validate commands</p>
+        <p>Add validate step to ci job</p>
+        <p>Update go version to 1.N.P notation</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.1.1" date="2024-11-01T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(container)* Update image docker.io/library/golang to v1.23.2</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>*(container)* Update image docker.io/library/golang to 4f063a2</p>
+      </description>
+    </release>
+    <release type="stable" version="v1.0.0" date="2024-09-29T00:00:00Z">
+      <description>
+        <p>💼 Other:</p>
+        <p>Update go version to 1.22</p>
+        <p>Add example kubernetes daemonset</p>
+        <p>Add indentation to json body in response</p>
+        <p>Add unit-test for update method</p>
+        <p>Fix IPv4/IPv6 only update to dual stack domain</p>
+      </description>
+    </release>
+    <release type="stable" version="v0.1.0" date="2024-09-28T00:00:00Z">
+      <description>
+        <p>This release adds the following features:</p>
+        <ul>
+          <li>*(container)* Update image docker.io/library/golang to v1.22.0</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.23.0</li>
+          <li>🐛 Bug Fixes:</li>
+          <li>*(deps)* Update module github.com/stretchr/testify to v1.9.0</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.22.1</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.22.2</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.22.3</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.22.4</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.22.5</li>
+          <li>*(container)* Update image docker.io/library/golang to v1.23.1</li>
+          <li>⚙️ Miscellaneous Tasks:</li>
+          <li>*(container)* Update image docker.io/library/golang to 7b575fe</li>
+          <li>*(container)* Update image docker.io/library/golang to 7b297d9</li>
+          <li>*(container)* Update image docker.io/library/golang to 0b55ab8</li>
+          <li>*(container)* Update image docker.io/library/golang to 450e382</li>
+          <li>*(container)* Update image docker.io/library/golang to d5302d4</li>
+          <li>*(container)* Update image docker.io/library/golang to f43c6f0</li>
+          <li>*(container)* Update image docker.io/library/golang to 2303a02</li>
+          <li>*(container)* Update image docker.io/library/golang to a1dc408</li>
+          <li>*(container)* Update image docker.io/library/golang to a0679ac</li>
+          <li>*(container)* Update image docker.io/library/golang to 4950c1c</li>
+          <li>*(container)* Update image docker.io/library/golang to c2010b9</li>
+          <li>*(container)* Update image docker.io/library/golang to a66eda6</li>
+          <li>*(container)* Update image docker.io/library/golang to c8736b8</li>
+          <li>*(container)* Update image docker.io/library/golang to 829eff9</li>
+          <li>*(container)* Update image docker.io/library/golang to 86a3c48</li>
+          <li>💼 Other:</li>
+          <li>Add initial implementation of CI</li>
+          <li>Do not use branch type for automerge</li>
+          <li>Remove unneeded go get from script</li>
+          <li>Run Renovate less frequently</li>
+          <li>Adapt commands to be equal to other repos</li>
+          <li>Add unit-tests as separate step</li>
+          <li>Drop expose option</li>
+          <li>Add binary artifact to outputs</li>
+          <li>Add workflow for release</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
 </component>
