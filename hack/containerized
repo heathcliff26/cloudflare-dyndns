@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
+
+# renovate: datasource=docker depName=ghcr.io/heathcliff26/rust-builder extractVersion=^(?<version>.*)$
+export BUILDER_VERSION=202611071338
+
+export BUILDER_IMAGE="${BUILDER_IMAGE:-ghcr.io/heathcliff26/rust-builder:$BUILDER_VERSION}"
+
+podman run -t --rm \
+    --name cloudflare-dyndns-builder \
+    -v "${base_dir}:/app:z" \
+    "${BUILDER_IMAGE}" \
+    "$@"
