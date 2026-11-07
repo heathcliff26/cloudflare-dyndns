@@ -22,6 +22,25 @@
     <category>Utility</category>
   </categories>
   <releases>
+    <release type="stable" version="v2.1.9" date="2026-11-07T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>*(ci)* Install grcov from upstream release</p>
+        <p>Add missing commit sha to version information</p>
+        <p>🚜 Refactor:</p>
+        <p>Use containerized script for release</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>Synced file(s) with heathcliff26/ci</p>
+        <p>Synced file(s) with heathcliff26/ci</p>
+        <p>Synced file(s) with heathcliff26/ci</p>
+        <p>*(ci)* Remove gemfury job</p>
+        <p>*(container)* Update image docker.io/library/rust to v1.99.1</p>
+        <p>*(container)* Update image docker.io/library/alpine to v3.24.4</p>
+        <p>💼 Other:</p>
+        <p>*(deps)* Bump rustls</p>
+        <p>*(deps)* Bump rustls</p>
+      </description>
+    </release>
     <release type="stable" version="v2.1.8" date="2026-10-12T00:00:00Z">
       <description>
         <p>This release adds the following features:</p>
@@ -38,6 +57,7 @@
           <li>Enforce conventional commits</li>
           <li>Add new changelog workflow</li>
           <li>*(builder)* Update image ghcr.io/heathcliff26/rust-builder to v202610090432</li>
+          <li>*(release)* Bump crate version to v2.1.8</li>
           <li>💼 Other:</li>
           <li>Fix coverprofiles permissions</li>
         </ul>

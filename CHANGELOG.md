@@ -1,5 +1,28 @@
 # Changelog
 
+Version v2.1.9
+--------------------
+Released: 2026-11-07
+
+🐛 Bug Fixes:
+- *(ci)* Install grcov from upstream release
+- Add missing commit sha to version information
+
+🚜 Refactor:
+- Use containerized script for release
+
+⚙️ Miscellaneous Tasks:
+- Synced file(s) with heathcliff26/ci
+- Synced file(s) with heathcliff26/ci
+- Synced file(s) with heathcliff26/ci
+- *(ci)* Remove gemfury job
+- *(container)* Update image docker.io/library/rust to v1.99.1
+- *(container)* Update image docker.io/library/alpine to v3.24.4
+
+💼 Other:
+- *(deps)* Bump rustls
+- *(deps)* Bump rustls
+
 Version v2.1.8
 --------------------
 Released: 2026-10-12
@@ -20,6 +43,7 @@ Released: 2026-10-12
 - Enforce conventional commits
 - Add new changelog workflow
 - *(builder)* Update image ghcr.io/heathcliff26/rust-builder to v202610090432
+- *(release)* Bump crate version to v2.1.8
 
 💼 Other:
 - Fix coverprofiles permissions
