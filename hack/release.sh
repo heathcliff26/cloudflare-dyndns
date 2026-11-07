@@ -5,6 +5,9 @@ set -e
 base_dir="$(dirname "${BASH_SOURCE[0]}" | xargs realpath | xargs dirname)"
 dist_dir="${base_dir}/dist"
 
+CI_COMMIT_SHA="$(git rev-parse HEAD)"
+export CI_COMMIT_SHA
+
 echo "Building releaser artifacts with goreleaser"
 goreleaser release --skip=announce,archive,publish,validate --clean
 

@@ -6,7 +6,6 @@ version: 2
 project_name: cloudflare-dyndns
 
 env:
-  - CI_COMMIT_SHA={{ .FullCommit }}
   - CARGO_TARGET_X86_64_UNKNOWN_LINUX_GNU_LINKER=/usr/bin/x86_64-linux-gnu-gcc
   - CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=/usr/bin/aarch64-linux-gnu-gcc
   - CARGO_TARGET_X86_64_UNKNOWN_LINUX_MUSL_LINKER=/usr/bin/x86_64-linux-musl-gcc
