@@ -10,7 +10,7 @@ build:
 
 # Build all artifacts used for release, except the container images
 release:
-	hack/release.sh
+	hack/containerized hack/release.sh
 
 # Build the container image
 image:
