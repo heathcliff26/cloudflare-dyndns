@@ -38,24 +38,13 @@ install -D -m 0644 examples/example-config.yaml %{buildroot}%{_sysconfdir}/%{nam
 install -D -m 0644 %{package_id}.metainfo.xml %{buildroot}/%{_datadir}/metainfo/%{package_id}.metainfo.xml
 
 %post
-systemctl daemon-reload
+PLACEHOLDER_POSTINSTALL
 
 %preun
-for mode in "client" "relay" "server"; do
-  if [ $1 == 0 ]; then
-    echo "Clean up %{name}-${mode} service"
-    systemctl unmask %{name}-${mode}.service
-    systemctl stop %{name}-${mode}.service
-    systemctl disable %{name}-${mode}.service
-
-  fi
-done
+PLACEHOLDER_PREREMOVE
 
 %postun
-if [ $1 == 0 ]; then
-  systemctl daemon-reload
-  systemctl reset-failed
-fi
+PLACEHOLDER_POSTREMOVE
 
 %files
 %license LICENSE
