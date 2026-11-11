@@ -27,7 +27,7 @@ RUN cargo rustc --release -- -C relocation-model=static
 ###############################################################################
 # BEGIN final-stage
 # Create final docker image
-FROM docker.io/library/alpine:3.24.4@sha256:93b41ef40b1677fce8fcc64ff4af09daddfacf5040afde618bc46c1e2d1cc7d4 AS final-stage
+FROM docker.io/library/alpine:3.24.4@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf AS final-stage
 
 WORKDIR /
 
