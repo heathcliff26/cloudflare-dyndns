@@ -1,5 +1,17 @@
 # Changelog
 
+Version v2.1.10
+--------------------
+Released: 2026-11-12
+
+🐛 Bug Fixes:
+- Improve systemctl command checks in rpm/deb scripts
+- Add library dependencies to rpm
+
+⚙️ Miscellaneous Tasks:
+- *(container)* Update image docker.io/library/alpine to f59abe6
+- *(builder)* Update image ghcr.io/heathcliff26/rust-builder to v202611110607
+
 Version v2.1.9
 --------------------
 Released: 2026-11-07
@@ -18,6 +30,7 @@ Released: 2026-11-07
 - *(ci)* Remove gemfury job
 - *(container)* Update image docker.io/library/rust to v1.99.1
 - *(container)* Update image docker.io/library/alpine to v3.24.4
+- *(release)* Bump crate version to v2.1.9
 
 💼 Other:
 - *(deps)* Bump rustls

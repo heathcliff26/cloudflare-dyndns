@@ -22,6 +22,16 @@
     <category>Utility</category>
   </categories>
   <releases>
+    <release type="stable" version="v2.1.10" date="2026-11-12T00:00:00Z">
+      <description>
+        <p>🐛 Bug Fixes:</p>
+        <p>Improve systemctl command checks in rpm/deb scripts</p>
+        <p>Add library dependencies to rpm</p>
+        <p>⚙️ Miscellaneous Tasks:</p>
+        <p>*(container)* Update image docker.io/library/alpine to f59abe6</p>
+        <p>*(builder)* Update image ghcr.io/heathcliff26/rust-builder to v202611110607</p>
+      </description>
+    </release>
     <release type="stable" version="v2.1.9" date="2026-11-07T00:00:00Z">
       <description>
         <p>🐛 Bug Fixes:</p>
@@ -36,6 +46,7 @@
         <p>*(ci)* Remove gemfury job</p>
         <p>*(container)* Update image docker.io/library/rust to v1.99.1</p>
         <p>*(container)* Update image docker.io/library/alpine to v3.24.4</p>
+        <p>*(release)* Bump crate version to v2.1.9</p>
         <p>💼 Other:</p>
         <p>*(deps)* Bump rustls</p>
         <p>*(deps)* Bump rustls</p>
