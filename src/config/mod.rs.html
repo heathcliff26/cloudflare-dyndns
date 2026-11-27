@@ -7,7 +7,7 @@
     <body>
         <div class="container">
     <nav class="breadcrumb is-right" aria-label="breadcrumbs">
-        <ul><li><a href="../../index.html">top_level</a></li><li><a href="./index.html">src&#x2F;config</a></li><li class="is-active"><a href="#">mod.rs</a></li>
+        <ul><li><a href="../../index.html">top_level</a></li><li><a href="./index.html">src/config</a></li><li class="is-active"><a href="#">mod.rs</a></li>
         </ul>
     </nav>
     <nav class="level">
@@ -23,7 +23,7 @@
         <div>
             <p class="heading">Functions</p>
             <p class="title has-text-success">
-                <abbr title="8 / 8">100 %</abbr></p>
+                <abbr title="8 / 8">100.0 %</abbr></p>
         </div>
     </div>
 
@@ -32,7 +32,7 @@
         <div>
             <p class="heading">Branches</p>
             <p class="title has-text-success">
-                <abbr title="0 / 0">100 %</abbr></p>
+                <abbr title="0 / 0">100.0 %</abbr></p>
         </div>
     </div>
 
@@ -325,7 +325,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">const DEFAULT_CLIENT_INTERVAL: u64 = 300; &#x2F;&#x2F; 5 minutes in seconds</pre>
+                <pre class="has-background-white py-0 px-2">const DEFAULT_CLIENT_INTERVAL: u64 = 300; // 5 minutes in seconds</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -533,7 +533,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Log level of the application</pre>
+                <pre class="has-background-white py-0 px-2">    /// Log level of the application</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -565,7 +565,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Config for running in server mode</pre>
+                <pre class="has-background-white py-0 px-2">    /// Config for running in server mode</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -597,7 +597,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Config for running in client&#x2F;relay mode</pre>
+                <pre class="has-background-white py-0 px-2">    /// Config for running in client/relay mode</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -725,7 +725,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Port to listen on. Default: 8080</pre>
+                <pre class="has-background-white py-0 px-2">    /// Port to listen on. Default: 8080</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -757,7 +757,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; List of root domains that are allowed to be updated. Allows all when empty.</pre>
+                <pre class="has-background-white py-0 px-2">    /// List of root domains that are allowed to be updated. Allows all when empty.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -789,7 +789,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; SSL config, default is no ssl</pre>
+                <pre class="has-background-white py-0 px-2">    /// SSL config, default is no ssl</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -917,7 +917,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Enable SSL. Default: false</pre>
+                <pre class="has-background-white py-0 px-2">    /// Enable SSL. Default: false</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -949,7 +949,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; SSL certificate, needs to contain the whole chain</pre>
+                <pre class="has-background-white py-0 px-2">    /// SSL certificate, needs to contain the whole chain</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -981,7 +981,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; SSL private key</pre>
+                <pre class="has-background-white py-0 px-2">    /// SSL private key</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1109,7 +1109,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Token for accessing the cloudflare api</pre>
+                <pre class="has-background-white py-0 px-2">    /// Token for accessing the cloudflare api</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1141,7 +1141,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Indicate if entries should be proxied by cloudflare. Default: true</pre>
+                <pre class="has-background-white py-0 px-2">    /// Indicate if entries should be proxied by cloudflare. Default: true</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1173,7 +1173,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; List of domains to update</pre>
+                <pre class="has-background-white py-0 px-2">    /// List of domains to update</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1205,7 +1205,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Interval in seconds in which the client should check for ip changes. Default: 300 (5m)</pre>
+                <pre class="has-background-white py-0 px-2">    /// Interval in seconds in which the client should check for ip changes. Default: 300 (5m)</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1237,7 +1237,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Endpoint to call when using relay mode</pre>
+                <pre class="has-background-white py-0 px-2">    /// Endpoint to call when using relay mode</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1829,7 +1829,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Loads config from file, returns error if config is invalid</pre>
+                <pre class="has-background-white py-0 px-2">    /// Loads config from file, returns error if config is invalid</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1845,7 +1845,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Arguments:</pre>
+                <pre class="has-background-white py-0 px-2">    /// Arguments:</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1861,7 +1861,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;     path: Path to config file</pre>
+                <pre class="has-background-white py-0 px-2">    ///     path: Path to config file</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1877,7 +1877,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;     mode: Mode used, determines how the config will be validated and which values will be processed</pre>
+                <pre class="has-background-white py-0 px-2">    ///     mode: Mode used, determines how the config will be validated and which values will be processed</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1893,7 +1893,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F;     env: Determines if environment variables in the file will be expanded before decoding</pre>
+                <pre class="has-background-white py-0 px-2">    ///     env: Determines if environment variables in the file will be expanded before decoding</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2021,7 +2021,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">            .context(format!(&quot;Failed to read config file at &#x27;{}&#x27;&quot;, path))?;</pre>
+                <pre class="has-background-success-light py-0 px-2">            .context(format!(&quot;Failed to read config file at &#39;{}&#39;&quot;, path))?;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2549,7 +2549,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Validates the server config, returns error if config is invalid</pre>
+                <pre class="has-background-white py-0 px-2">    /// Validates the server config, returns error if config is invalid</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2789,7 +2789,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Validate the client part of the config</pre>
+                <pre class="has-background-white py-0 px-2">    /// Validate the client part of the config</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3029,7 +3029,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Parse a given string and set the resulting log level</pre>
+                <pre class="has-background-white py-0 px-2">/// Parse a given string and set the resulting log level</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3253,7 +3253,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F; We can only initialize the logger once, but testing might call the parent function multiple times.</pre>
+                <pre class="has-background-white py-0 px-2">    // We can only initialize the logger once, but testing might call the parent function multiple times.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3397,7 +3397,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">fn env_context(s: &amp;str) -&gt; Result&lt;Option&lt;Cow&lt;&#x27;static, str&gt;&gt;, env::VarError&gt; {</pre>
+                <pre class="has-background-success-light py-0 px-2">fn env_context(s: &amp;str) -&gt; Result&lt;Option&lt;Cow&lt;&#39;static, str&gt;&gt;, env::VarError&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3500,7 +3500,7 @@
         <footer class="footer">
             
                 <div class="content has-text-centered">
-                    <p class="heading">Date: 2026-11-20 15:37</p>
+                    <p class="heading">Date: 2026-11-27 06:41</p>
                 </div>
             
         </footer>

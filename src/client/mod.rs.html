@@ -7,7 +7,7 @@
     <body>
         <div class="container">
     <nav class="breadcrumb is-right" aria-label="breadcrumbs">
-        <ul><li><a href="../../index.html">top_level</a></li><li><a href="./index.html">src&#x2F;client</a></li><li class="is-active"><a href="#">mod.rs</a></li>
+        <ul><li><a href="../../index.html">top_level</a></li><li><a href="./index.html">src/client</a></li><li class="is-active"><a href="#">mod.rs</a></li>
         </ul>
     </nav>
     <nav class="level">
@@ -32,7 +32,7 @@
         <div>
             <p class="heading">Branches</p>
             <p class="title has-text-success">
-                <abbr title="0 / 0">100 %</abbr></p>
+                <abbr title="0 / 0">100.0 %</abbr></p>
         </div>
     </div>
 
@@ -277,7 +277,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Dyndns client using the server mode as relay for updating records.</pre>
+                <pre class="has-background-white py-0 px-2">/// Dyndns client using the server mode as relay for updating records.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -293,7 +293,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Will determine the public ip&#x27;s and send them to the relay server.</pre>
+                <pre class="has-background-white py-0 px-2">/// Will determine the public ip&#39;s and send them to the relay server.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -421,7 +421,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Create a new Client instance from the client config.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Create a new Client instance from the client config.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -469,7 +469,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">            &quot;Creating a new client, proxy=&#x27;{}&#x27;, domains=&#x27;{}&#x27;, interval=&#x27;{}s&#x27;&quot;,</pre>
+                <pre class="has-background-white py-0 px-2">            &quot;Creating a new client, proxy=&#39;{}&#39;, domains=&#39;{}&#39;, interval=&#39;{}s&#39;&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -645,7 +645,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Create a new Client instance from the provided data.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Create a new Client instance from the provided data.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -789,7 +789,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Send a get request to the endpoint and parse the response.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Send a get request to the endpoint and parse the response.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -805,7 +805,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">    pub async fn get&lt;T: for&lt;&#x27;de&gt; Deserialize&lt;&#x27;de&gt;&gt;(</pre>
+                <pre class="has-background-success-light py-0 px-2">    pub async fn get&lt;T: for&lt;&#39;de&gt; Deserialize&lt;&#39;de&gt;&gt;(</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1045,7 +1045,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Verify that the provided token is valid and active.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Verify that the provided token is valid and active.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1061,7 +1061,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; GET: &#x2F;user&#x2F;tokens&#x2F;verify</pre>
+                <pre class="has-background-white py-0 px-2">    /// GET: /user/tokens/verify</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1157,7 +1157,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">        let url = format!(&quot;{}&#x2F;user&#x2F;tokens&#x2F;verify&quot;, self.api_url);</pre>
+                <pre class="has-background-success-light py-0 px-2">        let url = format!(&quot;{}/user/tokens/verify&quot;, self.api_url);</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1349,7 +1349,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Retrieve the zone id for the given domain.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Retrieve the zone id for the given domain.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1365,7 +1365,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; GET: &#x2F;zones?name={domain}&amp;status=active</pre>
+                <pre class="has-background-white py-0 px-2">    /// GET: /zones?name={domain}&amp;status=active</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1493,7 +1493,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">        let url = format!(&quot;{}&#x2F;zones?name={}&amp;status=active&quot;, self.api_url, domain);</pre>
+                <pre class="has-background-success-light py-0 px-2">        let url = format!(&quot;{}/zones?name={}&amp;status=active&quot;, self.api_url, domain);</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1685,7 +1685,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Retrieve the dns records for the given domain.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Retrieve the dns records for the given domain.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1701,7 +1701,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; GET: &#x2F;zones&#x2F;{zone_id}&#x2F;dns_records?name={domain}</pre>
+                <pre class="has-background-white py-0 px-2">    /// GET: /zones/{zone_id}/dns_records?name={domain}</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1813,7 +1813,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">        debug!(&quot;Retrieving dns records for domain &#x27;{domain}&#x27;, zone_id=&#x27;{zone_id}&#x27;&quot;);</pre>
+                <pre class="has-background-success-light py-0 px-2">        debug!(&quot;Retrieving dns records for domain &#39;{domain}&#39;, zone_id=&#39;{zone_id}&#39;&quot;);</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -1861,7 +1861,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">            &quot;{}&#x2F;zones&#x2F;{}&#x2F;dns_records?name={}&quot;,</pre>
+                <pre class="has-background-white py-0 px-2">            &quot;{}/zones/{}/dns_records?name={}&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2021,7 +2021,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Update the dns record with the given content.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Update the dns record with the given content.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2037,7 +2037,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; PATCH: &#x2F;zones&#x2F;{zone_id}&#x2F;dns_records&#x2F;{record_id}</pre>
+                <pre class="has-background-white py-0 px-2">    /// PATCH: /zones/{zone_id}/dns_records/{record_id}</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2261,7 +2261,7 @@
             </div>
             <div class="column has-background-danger-light p-0"
                  role="cell">
-                <pre class="has-background-danger-light py-0 px-2">            &quot;Updating dns record for domain &#x27;{domain}&#x27;, zone_id=&#x27;{zone_id}&#x27;, record_id=&#x27;{record_id}&#x27;, type=&#x27;{record_type}&#x27; with ip &#x27;{ip}&#x27;&quot;</pre>
+                <pre class="has-background-danger-light py-0 px-2">            &quot;Updating dns record for domain &#39;{domain}&#39;, zone_id=&#39;{zone_id}&#39;, record_id=&#39;{record_id}&#39;, type=&#39;{record_type}&#39; with ip &#39;{ip}&#39;&quot;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2437,7 +2437,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">            &quot;{}&#x2F;zones&#x2F;{}&#x2F;dns_records&#x2F;{}&quot;,</pre>
+                <pre class="has-background-white py-0 px-2">            &quot;{}/zones/{}/dns_records/{}&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2709,7 +2709,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; Create the dns record with the given content.</pre>
+                <pre class="has-background-white py-0 px-2">    /// Create the dns record with the given content.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2725,7 +2725,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F;&#x2F; POST: &#x2F;zones&#x2F;{zone_id}&#x2F;dns_records</pre>
+                <pre class="has-background-white py-0 px-2">    /// POST: /zones/{zone_id}/dns_records</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -2933,7 +2933,7 @@
             </div>
             <div class="column has-background-danger-light p-0"
                  role="cell">
-                <pre class="has-background-danger-light py-0 px-2">            &quot;Creating dns record for domain &#x27;{domain}&#x27;, zone_id=&#x27;{zone_id}&#x27;, type=&#x27;{record_type}&#x27; with ip &#x27;{ip}&#x27;&quot;</pre>
+                <pre class="has-background-danger-light py-0 px-2">            &quot;Creating dns record for domain &#39;{domain}&#39;, zone_id=&#39;{zone_id}&#39;, type=&#39;{record_type}&#39; with ip &#39;{ip}&#39;&quot;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3093,7 +3093,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">        let url = format!(&quot;{}&#x2F;zones&#x2F;{}&#x2F;dns_records&quot;, self.api_url, zone_id);</pre>
+                <pre class="has-background-success-light py-0 px-2">        let url = format!(&quot;{}/zones/{}/dns_records&quot;, self.api_url, zone_id);</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3557,7 +3557,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">                .context(format!(&quot;Failed to get zone for &#x27;{domain}&#x27;&quot;))?;</pre>
+                <pre class="has-background-success-light py-0 px-2">                .context(format!(&quot;Failed to get zone for &#39;{domain}&#39;&quot;))?;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3621,7 +3621,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">                .context(format!(&quot;Failed to list dns records for &#x27;{domain}&#x27;&quot;))?;</pre>
+                <pre class="has-background-success-light py-0 px-2">                .context(format!(&quot;Failed to list dns records for &#39;{domain}&#39;&quot;))?;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3717,7 +3717,7 @@
             </div>
             <div class="column has-background-danger-light p-0"
                  role="cell">
-                <pre class="has-background-danger-light py-0 px-2">                    &quot;Received record from &#x27;{domain}&#x27;: type=&#x27;{}&#x27;, content=&#x27;{}&#x27;&quot;,</pre>
+                <pre class="has-background-danger-light py-0 px-2">                    &quot;Received record from &#39;{domain}&#39;: type=&#39;{}&#39;, content=&#39;{}&#39;&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -3893,7 +3893,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">                                &quot;IPv4 address &#x27;{}&#x27; for &#x27;{}&#x27; is up to date&quot;,</pre>
+                <pre class="has-background-white py-0 px-2">                                &quot;IPv4 address &#39;{}&#39; for &#39;{}&#39; is up to date&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4021,7 +4021,7 @@
             </div>
             <div class="column has-background-danger-light p-0"
                  role="cell">
-                <pre class="has-background-danger-light py-0 px-2">                            &quot;Updating A record for &#x27;{domain}&#x27; with ip &#x27;{}&#x27;&quot;,</pre>
+                <pre class="has-background-danger-light py-0 px-2">                            &quot;Updating A record for &#39;{domain}&#39; with ip &#39;{}&#39;&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4197,7 +4197,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">                        .context(format!(&quot;Failed to update A record for &#x27;{domain}&#x27;&quot;))?;</pre>
+                <pre class="has-background-success-light py-0 px-2">                        .context(format!(&quot;Failed to update A record for &#39;{domain}&#39;&quot;))?;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4341,7 +4341,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">                                &quot;IPv6 address &#x27;{}&#x27; for &#x27;{}&#x27; is up to date&quot;,</pre>
+                <pre class="has-background-white py-0 px-2">                                &quot;IPv6 address &#39;{}&#39; for &#39;{}&#39; is up to date&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4469,7 +4469,7 @@
             </div>
             <div class="column has-background-danger-light p-0"
                  role="cell">
-                <pre class="has-background-danger-light py-0 px-2">                            &quot;Updating AAAA record for &#x27;{domain}&#x27; with ip &#x27;{}&#x27;&quot;,</pre>
+                <pre class="has-background-danger-light py-0 px-2">                            &quot;Updating AAAA record for &#39;{domain}&#39; with ip &#39;{}&#39;&quot;,</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4645,7 +4645,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">                        .context(format!(&quot;Failed to update AAAA record for &#x27;{domain}&#x27;&quot;))?;</pre>
+                <pre class="has-background-success-light py-0 px-2">                        .context(format!(&quot;Failed to update AAAA record for &#39;{domain}&#39;&quot;))?;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4757,7 +4757,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">            &#x2F;&#x2F; Create A record if necessary</pre>
+                <pre class="has-background-white py-0 px-2">            // Create A record if necessary</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4821,7 +4821,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">                    .context(format!(&quot;Failed to create A record for &#x27;{domain}&#x27;&quot;))?;</pre>
+                <pre class="has-background-success-light py-0 px-2">                    .context(format!(&quot;Failed to create A record for &#39;{domain}&#39;&quot;))?;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4853,7 +4853,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">            &#x2F;&#x2F; Create AAAA record if necessary</pre>
+                <pre class="has-background-white py-0 px-2">            // Create AAAA record if necessary</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -4917,7 +4917,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">                    .context(format!(&quot;Failed to create AAAA record for &#x27;{domain}&#x27;&quot;))?;</pre>
+                <pre class="has-background-success-light py-0 px-2">                    .context(format!(&quot;Failed to create AAAA record for &#39;{domain}&#39;&quot;))?;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -5029,7 +5029,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Parse the returned cloudflare response</pre>
+                <pre class="has-background-white py-0 px-2">/// Parse the returned cloudflare response</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -5045,7 +5045,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">async fn parse_response&lt;T: for&lt;&#x27;de&gt; Deserialize&lt;&#x27;de&gt;&gt;(response: reqwest::Response) -&gt; Result&lt;T&gt; {</pre>
+                <pre class="has-background-success-light py-0 px-2">async fn parse_response&lt;T: for&lt;&#39;de&gt; Deserialize&lt;&#39;de&gt;&gt;(response: reqwest::Response) -&gt; Result&lt;T&gt; {</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -5429,7 +5429,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Return the base domain for a given domain.</pre>
+                <pre class="has-background-white py-0 px-2">/// Return the base domain for a given domain.</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -5445,7 +5445,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">&#x2F;&#x2F;&#x2F; Example: &quot;sub.example.com&quot; -&gt; &quot;example.com&quot;</pre>
+                <pre class="has-background-white py-0 px-2">/// Example: &quot;sub.example.com&quot; -&gt; &quot;example.com&quot;</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -5477,7 +5477,7 @@
             </div>
             <div class="column has-background-success-light p-0"
                  role="cell">
-                <pre class="has-background-success-light py-0 px-2">    let parts: Vec&lt;&amp;str&gt; = domain.split(&#x27;.&#x27;).collect();</pre>
+                <pre class="has-background-success-light py-0 px-2">    let parts: Vec&lt;&amp;str&gt; = domain.split(&#39;.&#39;).collect();</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -5493,7 +5493,7 @@
             </div>
             <div class="column has-background-white p-0"
                  role="cell">
-                <pre class="has-background-white py-0 px-2">    &#x2F;&#x2F; Should be at least 2 entries</pre>
+                <pre class="has-background-white py-0 px-2">    // Should be at least 2 entries</pre>
             </div>
         </div><div class="columns p-0 m-0" role="row">
             <div
@@ -5580,7 +5580,7 @@
         <footer class="footer">
             
                 <div class="content has-text-centered">
-                    <p class="heading">Date: 2026-11-20 15:37</p>
+                    <p class="heading">Date: 2026-11-27 06:41</p>
                 </div>
             
         </footer>
